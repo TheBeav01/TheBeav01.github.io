@@ -5,11 +5,16 @@
   <link rel="stylesheet" href="css/layout.css">
 </head>
 
-<body>
-  <div id="Blah">
+<body onload="load()">
+  <div id="Left_Panel">
     <h1>A start of something?</h1>
-    <button class="Main_Button" onclick="helloWorld()">Click me!</button>
-    <label class="Button_Label">Foo</label>
+      <div class="Splitter_Div" id="Button_Div">
+      <button class="Main_Button" onclick="handleClick()">Gatther gold</button>
+    </div>
+    <div class="Splitter_Div" id="Label_Div">
+      <label class="Button_Label" id="ManualGoldButtonLabel">Gold:</label>
+    </div>
   </div>
   <script type="text/javascript" src="main.js"></script>
+  <script type="text/javascript" src="Utils.js"></script>
 </body>
