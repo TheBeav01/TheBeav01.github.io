@@ -1,3 +1,4 @@
 var helloWorld() {
-  alert("Sup?")
+  console.log("Button has been clicked");
+  alert("Sup?");
 }
