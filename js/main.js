@@ -6,6 +6,9 @@ function load() {
 }
 function handleClick() {
   console.log("Gold: " + gold);
+  if(gold === 0) {
+    update();
+  }
   gold += 1;
 }
 function gameLoop(timeStamp) {
