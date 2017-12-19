@@ -6,16 +6,20 @@
 </head>
 
 <body onload="load()">
+  <div id="Top_Panel">
+    <p><span id="TS1">Game version: xx.xx</span><span id="TS2">Current time: xx:xx </span><span id="TS3"><button onclick="SetCookie()">Save</button></span></p>
+  </div>
+
   <div id="Left_Panel">
     <h1>A start of something?</h1>
       <div class="Splitter_Div" id="Button_Div">
       <button class="Main_Button" onclick="handleClick()">Gatther gold</button>
     </div>
     <div class="Splitter_Div" id="Label_Div">
-      <label class="Button_Label" id="ManualGoldButtonLabel">Gold:</label>
+      <label class="Button_Label" id="ManualGoldButton">Gold:</label>
     </div>
   </div>
-  
-  <script type="text/javascript" src="main.js"></script>
-  <script type="text/javascript" src="Utils.js"></script>
+  <script type="text/javascript" src="js/main.js"></script>
+  <script type="text/javascript" src="js/Utils.js"></script>
+  <script type="text/javascript" src="js/Unlocks.js"></script>
 </body>

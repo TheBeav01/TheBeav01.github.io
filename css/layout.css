@@ -3,14 +3,27 @@
   max-width: 500px;
   height: auto;
 }
-.Splitter_Div {
-  max-width: 250px;
-  display: inline;
-}
 #Label_Div {
   border: 2px #00ffff solid;
   margin-left: 50%;
 }
+#Top_Panel {
+  border: 1px black solid;
+  text-align: center;
+}
+#TS1 {
+  float: left;
+}
+#TS3 {
+  float: right;
+  margin-right: 5px;
+}
+.Splitter_Div {
+  max-width: 250px;
+  display: inline;
+}
+
+
 .Button_Label {
   color: #57626d;
 }
