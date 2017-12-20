@@ -9,6 +9,7 @@ function load() {
     console.log("Save file exists");
     decodeSave(cookieSaveString);
     initGame();
+    SaveGame();
   }
   else {
     console.log("Save file does not exist. Creating...");
@@ -33,4 +34,5 @@ function gameLoop(timeStamp) {
   }
 function update() {
   adjustLabel("ManualGoldButton", "Gold: " + gold);
+  adjustLabel("TS2",getDate());
 }

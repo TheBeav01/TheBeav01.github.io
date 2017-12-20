@@ -29,7 +29,21 @@ function setCookie(cookieName, cookieValue, expiresAt) {
   document.cookie = cookieName + "=" + cookieValue + "=" + expires + ";path=/";
 }
 
-
 function initGame() {
+  var date = new Date();
   adjustLabel("ManualGoldButton",gold);
+  adjustLabel("TS1", "Game version: " + save.gameVersion);
+  adjustLabel("TS2", getDate());
+}
+
+function getDate() {
+  var date = new Date();
+  var dateStr = "Current time: " + date.getUTCHours() + ":" + date.getUTCMinutes() + 
+  ":" + date.getUTCSeconds();
+  return dateStr;
+}
+
+function closeExportField() {
+  var div = document.getElementById("Export_div");
+  div.style.visibility = "hidden";
 }

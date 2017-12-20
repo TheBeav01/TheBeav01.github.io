@@ -1,6 +1,8 @@
 var save = {
     gold : gold,
+    gameVersion : "0.01",
 }
+var saveString;
 function getSave() {
     return save;
 }
@@ -20,7 +22,18 @@ function encodeSave() {
   }
 
 function SaveGame() {
-    var saveString = encodeSave();
+    saveString = encodeSave();
     setCookie("save",saveString,365);
+  }
+  function Import() {
+    return 0;
+  }
+  function Export() {
+      SaveGame();
+      adjustLabel("export_field", saveString);
+      var tb_div = document.getElementById("Export_div");
+      tb_div.style.visibility="visible";
+      document.getElementById("export_field").select();
+      document.execCommand("copy");
   }
   

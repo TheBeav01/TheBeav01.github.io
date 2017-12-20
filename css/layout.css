@@ -18,7 +18,17 @@
   float: right;
   margin-right: 5px;
 }
-
+#Export_div {
+  visibility: hidden;
+  background-color: #747373;
+  text-align: center;
+  z-index: 1;
+  position: absolute;
+  width: 1000px;
+  height: 500px;
+  padding-top: 240px;
+  top: 0px;
+}
 .Splitter_Div {
   max-width: 250px;
   display: inline;

@@ -7,7 +7,8 @@
 
 <body onload="load()">
   <div id="Top_Panel">
-    <p><span id="TS1">Game version: xx.xx</span><span id="TS2">Current time: xx:xx </span><span id="TS3"><button onclick="SaveGame()">Save</button></span></p>
+    <p><span id="TS1">Game version: xx.xx</span><span id="TS2">Current time: xx:xx </span>
+      <span id="TS3"><button onClick="Import()">Import</button><button onClick="Export()">Export</button><button onclick="SaveGame()">Save</button></span></p>
   </div>
 
   <div id="Left_Panel">
@@ -18,6 +19,12 @@
     <div class="Splitter_Div" id="Label_Div">
       <label class="Button_Label" id="ManualGoldButton">Gold:</label>
     </div>
+  </div>
+  <div id="Export_div">
+    <p>Your save has been copied to the clipboard. Store this somewhere useful.</p>
+    <textarea id="export_field" ></textarea>
+    <button onclick="closeExportField()">Submit</button>
+
   </div>
   <script type="text/javascript" src="js/main.js"></script>
   <script type="text/javascript" src="js/Utils.js"></script>
