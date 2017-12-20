@@ -45,5 +45,10 @@ function getDate() {
 
 function closeExportField() {
   var div = document.getElementById("Export_div");
+  var textField = document.getElementById("export_field");
   div.style.visibility = "hidden";
+  if(isImporting === true) {
+    var save = textField.textContent;
+    console.log(save);
+  }
 }
