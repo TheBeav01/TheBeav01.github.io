@@ -1,0 +1,3 @@
+function unlockWorker() {
+    var x;
+}

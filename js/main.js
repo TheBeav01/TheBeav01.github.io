@@ -1,14 +1,27 @@
 var lastTime = 0;
 var gold = 0;
+var isNewPlayer = true;
+var s;
 function load() {
+  var cookieSaveString = cookieExists("save");
+  console.log(cookieSaveString);
+  if(cookieExists("save") != "") {
+    console.log("Save file exists");
+    decodeSave(cookieSaveString);
+    initGame();
+  }
+  else {
+    console.log("Save file does not exist. Creating...");
+    setCookie("save",gold.toString(),365);  
+  }
   adjustLabel("ManualGoldButton", "Gold: " + gold);
   gameLoop(lastTime);
 }
 function handleClick() {
-  if(gold === 0) {
+  if(gold == 0) {
     update();
   }
-  gold += 1;
+  gold = gold+1;
   console.log("Gold: " + gold);
 }
 function gameLoop(timeStamp) {
