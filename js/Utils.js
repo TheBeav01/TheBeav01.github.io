@@ -1,4 +1,4 @@
-UPS = 100;
+UPS = 1;
 function adjustLabel(ID,newLabel) {
   document.getElementById(ID).innerHTML = newLabel;
 }
@@ -35,6 +35,7 @@ function initGame() {
   adjustLabel("ManualGoldButton",save.gold);
   adjustLabel("TS1", "Game version: " + save.gameVersion);
   adjustLabel("TS2", "Current Time: " + getDate());
+  adjustLabel("UL1_label", "Workers: " + save.workers);
   unlockHandler();
 }
 
