@@ -33,13 +33,12 @@ function initGame() {
   var date = new Date();
   adjustLabel("ManualGoldButton",gold);
   adjustLabel("TS1", "Game version: " + save.gameVersion);
-  adjustLabel("TS2", getDate());
+  adjustLabel("TS2", "Cuttent Time: " + getDate());
 }
 
 function getDate() {
   var date = new Date();
-  var dateStr = "Current time: " + date.getUTCHours() + ":" + date.getUTCMinutes() + 
-  ":" + date.getUTCSeconds();
+  var dateStr = date.toTimeString().substring(0,9);
   return dateStr;
 }
 

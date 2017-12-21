@@ -6,6 +6,8 @@
 #Label_Div {
   border: 2px #00ffff solid;
   margin-left: 50%;
+  bottom: 90px;
+  position: relative;
 }
 #Top_Panel {
   border: 1px black solid;
@@ -31,12 +33,31 @@
 }
 .Splitter_Div {
   max-width: 250px;
-  display: inline;
+  /* display: inline; */
 }
 
 .Button_Label {
   color: #57626d;
+  border: black 1px solid;
+  display: block;
+  margin-bottom: 30px;
+
 }
 .Main_Button {
   padding: 10px 20px;
+  margin-bottom: 10px;
+  display: block;
+}
+#UL1, #UL1_label {
+  visibility: hidden;
+  /* display: none; */
+}
+
+@keyframes fadein {
+  from{
+    visibility: hidden;
+  }
+  to{
+    visibility: visible;
+  }
 }

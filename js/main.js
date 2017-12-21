@@ -18,7 +18,7 @@ function load() {
   adjustLabel("ManualGoldButton", "Gold: " + gold);
   gameLoop(lastTime);
 }
-function handleClick() {
+function getGold() {
   if(gold == 0) {
     update();
   }
