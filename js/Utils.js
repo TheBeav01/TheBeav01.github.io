@@ -37,7 +37,7 @@ function initGame() {
     console.log("SAVE GOLD: " + save.gold);
     gold = 0;
   }
-  console.log(save.gold + " | " + save.game);
+  console.log(save.gold + " | " + save.gameVersion);
   adjustLabel("ManualGoldButton",save.gold);
   gold = save.gold;
   adjustLabel("TS1", "Game version: " + save.gameVersion);

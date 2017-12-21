@@ -1,8 +1,10 @@
 #Left_Panel {
   border-right: 1px #ff00ff solid;
-  max-width: 500px;
+  float: left;
+  min-width: 500px;
   height: auto;
 }
+
 #Label_Div {
   border: 2px #00ffff solid;
   margin-left: 50%;

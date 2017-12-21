@@ -30,13 +30,12 @@ function checkCosts(costToCheck) {
     }
 }
 function unlockWorker() {
-    console.log(save.workers);
-    save.workers = 0;
-    GPS = 0;
+    console.log("Unlocking workers: " + save.workers + "workers");
+    GPS = save.workers;
     save.workersUnlocked = true;
     var worker_button = document.getElementById("UL1");
     var worker_label = document.getElementById("UL1_label");
-    adjustLabel("UL1_label", "Workers: 0");
+    adjustLabel("UL1_label", "Workers: " + save.workers);
     worker_button.style.visibility = "visible";
     worker_label.style.visibility = "visible";
 }

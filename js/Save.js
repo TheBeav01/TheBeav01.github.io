@@ -17,6 +17,9 @@ function decodeSave(stringToDecode) {
     save.gameVersion = saveArr[0];
     save.gold = saveArr[1];
     save.workers = saveArr[2];
+    if(save.workers > 0) {
+        unlockWorker();
+    }
     GPS = Number.parseInt(save.workers);
     console.log(save.gold + " " + save.workers);
     if(saveArr[1] === "NaN") {
@@ -43,6 +46,7 @@ function encodeSave() {
 
 function SaveGame() {
     saveString = encodeSave();
+    console.log("SG: " + save.gold + " Gold: " + gold);
     save.gold = gold;
     setCookie("save",saveString,365);
   }

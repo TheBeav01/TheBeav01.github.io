@@ -30,7 +30,8 @@ function getGold() {
   }
   gold = save.gold;
   save.gold++;
-  console.log("Save gold: " + save.gold);
+  gold++;
+  console.log("SG: " + save.gold + " Gold: " + gold);
 }
 function gameLoop(timeStamp) {
   ticks++;
@@ -47,7 +48,8 @@ function update() {
     console.log("Setting gold to 0");
     gold = 0;
   }
-  if(workers > 0) {
+  if(save.workers > 0) {
+    workers = save.workers;
     GPT = workers/60;
     var parsedFloatSG = Number.parseFloat(save.gold);
     parsedFloatSG += GPT;
@@ -57,8 +59,9 @@ function update() {
 
     checkCosts(displayGold);
     adjustLabel("ManualGoldButton", "Gold: " + displayGold);
-    var nextString = displayGold + "/" + CalculateCost("worker", save.gold, workers);
-    adjustLabel("UL1_label", "Workers: " + workers + " (" + GPS + " GPS) " + nextString);
+    var nextString = displayGold + "/" + CalculateCost("worker", save.gold, save.workers);
+    adjustLabel("UL1_label", "Workers: " + save.workers + " (" + GPS + " GPS) " + nextString);
+    gold = displayGold; 
     }
   else {
     adjustLabel("ManualGoldButton", "Gold: " + save.gold);
