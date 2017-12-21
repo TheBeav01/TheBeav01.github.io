@@ -31,11 +31,13 @@ function setCookie(cookieName, cookieValue, expiresAt) {
 
 function initGame() { 
   var date = new Date();
+  save.gameVersion = version;
   if(save.gold === undefined) {
     save.gold = 0;
+    console.log("SAVE GOLD: " + save.gold);
     gold = 0;
   }
-  console.log(save.gold);
+  console.log(save.gold + " | " + save.game);
   adjustLabel("ManualGoldButton",save.gold);
   gold = save.gold;
   adjustLabel("TS1", "Game version: " + save.gameVersion);

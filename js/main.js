@@ -6,6 +6,8 @@ var s;
 var GPT = 0;
 var GPS = 0;
 var ticks = 0;
+var version = "0.01";
+
 function load() {
   var cookieSaveString = cookieExists("save");
   console.log(cookieSaveString);
@@ -23,9 +25,11 @@ function load() {
   gameLoop(lastTime);
 }
 function getGold() {
+  if(save.gold === undefined) {
+    console.log("Undefined?");
+  }
   gold = save.gold;
   save.gold++;
-  console.log("Gold: " + gold);
   console.log("Save gold: " + save.gold);
 }
 function gameLoop(timeStamp) {
@@ -33,7 +37,7 @@ function gameLoop(timeStamp) {
   var dt = timeStamp - lastTime;
   var roundDt = Math.round(dt);
   if(ticks%60 === 0) {
-    console.log("Tick");
+    // console.log("Tick");
   }
   update();
   requestAnimationFrame(gameLoop)
@@ -49,15 +53,18 @@ function update() {
     parsedFloatSG += GPT;
     save.gold = parsedFloatSG;
     var displayGold = Number.parseInt(save.gold);
-   
-    }
-  console.log(displayGold);
+    console.log(displayGold);
 
-  checkCosts(displayGold);
-  adjustLabel("ManualGoldButton", "Gold: " + displayGold);
+    checkCosts(displayGold);
+    adjustLabel("ManualGoldButton", "Gold: " + displayGold);
+    var nextString = displayGold + "/" + CalculateCost("worker", save.gold, workers);
+    adjustLabel("UL1_label", "Workers: " + workers + " (" + GPS + " GPS) " + nextString);
+    }
+  else {
+    adjustLabel("ManualGoldButton", "Gold: " + save.gold);
+  }
   adjustLabel("TS2","Current time: " + getDate());
-  var nextString = displayGold + "/" + CalculateCost("worker", save.gold, workers);
-  adjustLabel("UL1_label", "Workers: " + workers + " (" + GPS + " GPS) " + nextString);
+ 
   unlockHandler();
 }
 

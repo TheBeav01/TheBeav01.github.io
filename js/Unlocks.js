@@ -1,6 +1,7 @@
 var UL1 = false;
 function unlockHandler() {
     if((gold > 25 || save.gold > 25) && !save.workersUnlocked)  {
+        workers = 0;
         UL1 = true;
         console.log("Unlocking workers");
         unlockWorker();
@@ -22,19 +23,20 @@ function checkCosts(costToCheck) {
     var button = document.getElementById("UL1");
     var cost = CalculateCost("worker", save.gold, workers);
     if(costToCheck < cost) {
-       console.log("Higher. Cost: " + cost);
         button.disabled = true;
     }
     else {
         button.disabled = false;
-        console.log("Lower");
     }
 }
 function unlockWorker() {
-    workers = save.workers;
+    console.log(save.workers);
+    save.workers = 0;
+    GPS = 0;
     save.workersUnlocked = true;
     var worker_button = document.getElementById("UL1");
     var worker_label = document.getElementById("UL1_label");
+    adjustLabel("UL1_label", "Workers: 0");
     worker_button.style.visibility = "visible";
     worker_label.style.visibility = "visible";
 }

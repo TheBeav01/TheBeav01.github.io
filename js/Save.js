@@ -21,7 +21,7 @@ function decodeSave(stringToDecode) {
     GPS = Number.parseInt(save.workers);
     console.log(save.gold + " " + save.workers);
     if(saveArr[1] === "NaN") {
-        console.log("Boop");
+        // console.log("Boop");
         window.alert("Your save is compromised, sadly. Resetting gold to zero...");
         save.gold = 0;
         gold = 0;
