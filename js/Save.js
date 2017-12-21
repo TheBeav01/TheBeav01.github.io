@@ -33,7 +33,7 @@ function encodeSave() {
     if(g === NaN) {
         console.log("NaN detected");
     }
-    var g = gold
+    var g = Number.parseInt(gold);
     var w = workers;
     if(w === undefined) {
         w = 0;

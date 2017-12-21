@@ -3,7 +3,7 @@ var gold = 0;
 var workers = 0;
 var isNewPlayer = true;
 var s;
-var GPS = 0;
+var GPT = 0;
 var ticks = 0;
 function load() {
   var cookieSaveString = cookieExists("save");
@@ -31,13 +31,10 @@ function gameLoop(timeStamp) {
   ticks++;
   var dt = timeStamp - lastTime;
   var roundDt = Math.round(dt);
-  if(ticks % 60 === 0) {
+  if(ticks%60 === 0) {
     console.log("Tick");
-    updatePSValues();
   }
-  if(dt >= UPS*100) {
-    update();
-  }
+  update();
   requestAnimationFrame(gameLoop)
   }
 function update() {
@@ -45,16 +42,27 @@ function update() {
     console.log("Setting gold to 0");
     gold = 0;
   }
-  adjustLabel("ManualGoldButton", "Gold: " + save.gold);
+  if(workers > 0) {
+    GPT = workers/60;
+    var parsedFloatSG = Number.parseFloat(save.gold);
+    parsedFloatSG += GPT;
+    save.gold = parsedFloatSG;
+    var displayGold = Number.parseInt(save.gold);
+   
+    }
+  console.log(displayGold);
+
+  checkCosts(displayGold);
+  adjustLabel("ManualGoldButton", "Gold: " + displayGold);
   adjustLabel("TS2","Current time: " + getDate());
   adjustLabel("UL1_label","Workers: " + workers);
   unlockHandler();
 }
-function updatePSValues() {
+function updateGoldValues() {
   if(save.workersUnlocked){
-    console.log("Save gold: " + save.gold + " Local gold: " + gold);
-    save.gold = Number.parseInt(save.gold) + GPS;
-    gold = save.gold;
+    // console.log("Save gold: " + save.gold + " Local gold: " + gold);
+    // save.gold = Math.floor(Number.parseInt(save.gold) + GPS);
+    // gold = save.gold;
   }
 }
 
@@ -67,9 +75,10 @@ function hireWorker() {
   else {
     save.gold -= cost;
     workers++;
-    GPS++;
+    GPT = workers/60;
+    GPS = workers;
     save.workers = workers;
-    adjustLabel("UL1_label", "Workers: " + workers + " (" + GPS + " gold per second)");
+    adjustLabel("UL1_label", "Workers: " + workers + " (" + GPT + " gold per second)");
   }
   console.log(save.workers + " | " + cost);
 }

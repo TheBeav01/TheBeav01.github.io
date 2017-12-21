@@ -14,9 +14,21 @@ function CalculateCost(resourceToCalculate, resourceGiven, amOwned) {
         //TODO: Fix this.
         //NOTE: These numbers are experimental!
         am = Math.floor(25 * Math.pow(1.10,amOwned));
-        console.log("Calculated the cost of buying 1 worker when " + amOwned + " exist: " + am);
     }
     return am;
+}
+
+function checkCosts(costToCheck) {
+    var button = document.getElementById("UL1");
+    var cost = CalculateCost("worker", save.gold, workers);
+    if(costToCheck < cost) {
+       console.log("Higher. Cost: " + cost);
+        button.disabled = true;
+    }
+    else {
+        button.disabled = false;
+        console.log("Lower");
+    }
 }
 function unlockWorker() {
     workers = save.workers;
