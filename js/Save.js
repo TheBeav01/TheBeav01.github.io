@@ -6,7 +6,6 @@ var save = {
 }
 var saveString = "";
 var isImporting = false;
-var version = "0.01";
 var splitter = '|'
 function getSave() {
     return save;
