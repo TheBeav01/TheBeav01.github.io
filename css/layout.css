@@ -31,6 +31,12 @@
   padding-top: 240px;
   top: 0px;
 }
+
+#UL1, #UL1_label {
+  visibility: hidden;
+  /* display: none; */
+}
+
 .Splitter_Div {
   max-width: 250px;
   /* display: inline; */
@@ -48,9 +54,8 @@
   margin-bottom: 10px;
   display: block;
 }
-#UL1, #UL1_label {
-  visibility: hidden;
-  /* display: none; */
+.export {
+  opacity: 1;
 }
 
 @keyframes fadein {

@@ -29,25 +29,17 @@ function setCookie(cookieName, cookieValue, expiresAt) {
   document.cookie = cookieName + "=" + cookieValue + "=" + expires + ";path=/";
 }
 
-function initGame() {
+function initGame() { 
   var date = new Date();
-  adjustLabel("ManualGoldButton",gold);
+  console.log(save.gold);
+  adjustLabel("ManualGoldButton",save.gold);
   adjustLabel("TS1", "Game version: " + save.gameVersion);
-  adjustLabel("TS2", "Cuttent Time: " + getDate());
+  adjustLabel("TS2", "Current Time: " + getDate());
+  unlockHandler();
 }
 
 function getDate() {
   var date = new Date();
   var dateStr = date.toTimeString().substring(0,9);
   return dateStr;
-}
-
-function closeExportField() {
-  var div = document.getElementById("Export_div");
-  var textField = document.getElementById("export_field");
-  div.style.visibility = "hidden";
-  if(isImporting === true) {
-    var save = textField.textContent;
-    console.log(save);
-  }
 }

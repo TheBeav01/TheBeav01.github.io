@@ -1,29 +1,49 @@
 var save = {
     gold : gold,
     gameVersion : "0.01",
+    workers : workers,
 }
 var saveString;
 var isImporting;
+var version = "0.01";
+var splitter = '|'
 function getSave() {
     return save;
 }
 
 function decodeSave(stringToDecode) {
     var loadString = stringToDecode;
-    save.gold = stringToDecode.substring(0,3);
-    console.log("LS: " + loadString);
-    gold = Number.parseInt(save.gold);
+    var saveArr = loadString.split("|");
+    save.gameVersion = saveArr[0];
+    save.gold = saveArr[1];
+    
+    save.workers = saveArr[2];
+    console.log(save.gold + " " + save.workers);
+    if(saveArr[1] === "NaN") {
+        console.log("Boop");
+        window.alert("Your save is compromised, sadly. Resetting gold to zero...");
+        save.gold = 0;
+        gold = 0;
+    }
     return loadString;
   }
 
 function encodeSave() {
+    if(g === NaN) {
+        console.log("NaN detected");
+    }
     var g = gold
-    console.log(g);
-    return g;
+    var w = workers;
+    if(w === undefined) {
+        w = 0;
+    }
+    console.log("Encoded Save: " + version + "|" + g + "|" + w + "|");
+    return version + "|" + g + "|" + w + "|";
   }
 
 function SaveGame() {
     saveString = encodeSave();
+    save.gold = gold;
     setCookie("save",saveString,365);
   }
   function Import() {
@@ -46,4 +66,12 @@ function SaveGame() {
       document.getElementById("export_field").select();
       document.execCommand("copy");
   }
-  
+  function closeExportField() {
+    var div = document.getElementById("Export_div");
+    var textField = document.getElementById("export_field");
+    div.style.visibility = "hidden";
+    if(isImporting === true) {
+      var save = textField.textContent;
+      console.log(save);
+    }
+  }
