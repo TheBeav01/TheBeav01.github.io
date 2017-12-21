@@ -55,15 +55,9 @@ function update() {
   checkCosts(displayGold);
   adjustLabel("ManualGoldButton", "Gold: " + displayGold);
   adjustLabel("TS2","Current time: " + getDate());
-  adjustLabel("UL1_label","Workers: " + workers);
+  var nextString = displayGold + "/" + CalculateCost("worker", save.gold, workers);
+  adjustLabel("UL1_label", "Workers: " + workers + " (" + GPS + " GPS) " + nextString);
   unlockHandler();
-}
-function updateGoldValues() {
-  if(save.workersUnlocked){
-    // console.log("Save gold: " + save.gold + " Local gold: " + gold);
-    // save.gold = Math.floor(Number.parseInt(save.gold) + GPS);
-    // gold = save.gold;
-  }
 }
 
 function hireWorker() {
@@ -78,7 +72,7 @@ function hireWorker() {
     GPT = workers/60;
     GPS = workers;
     save.workers = workers;
-    adjustLabel("UL1_label", "Workers: " + workers + " (" + GPT + " gold per second)");
+    adjustLabel("UL1_label", "Workers: " + workers + " (" + GPS + " gold per second)");
   }
   console.log(save.workers + " | " + cost);
 }
