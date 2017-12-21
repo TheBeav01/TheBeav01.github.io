@@ -31,6 +31,10 @@ function setCookie(cookieName, cookieValue, expiresAt) {
 
 function initGame() { 
   var date = new Date();
+  if(save.gold === undefined) {
+    save.gold = 0;
+    gold = 0;
+  }
   console.log(save.gold);
   adjustLabel("ManualGoldButton",save.gold);
   gold = save.gold;

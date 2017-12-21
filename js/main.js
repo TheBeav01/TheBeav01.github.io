@@ -4,6 +4,7 @@ var workers = 0;
 var isNewPlayer = true;
 var s;
 var GPT = 0;
+var GPS = 0;
 var ticks = 0;
 function load() {
   var cookieSaveString = cookieExists("save");
