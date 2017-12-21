@@ -52,13 +52,15 @@ function update() {
 }
 function updatePSValues() {
   if(save.workersUnlocked){
+    console.log("Save gold: " + save.gold + " Local gold: " + gold);
     save.gold = Number.parseInt(save.gold) + GPS;
+    gold = save.gold;
   }
 }
 
 function hireWorker() {
-  var cost = CalculateCost("worker", gold, workers);
-  if(cost > gold) {
+  var cost = CalculateCost("worker", save.gold, workers);
+  if(cost > save.gold) {
     console.log("Too expensive!");
     return;
   }

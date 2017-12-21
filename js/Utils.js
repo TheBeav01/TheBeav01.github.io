@@ -33,6 +33,7 @@ function initGame() {
   var date = new Date();
   console.log(save.gold);
   adjustLabel("ManualGoldButton",save.gold);
+  gold = save.gold;
   adjustLabel("TS1", "Game version: " + save.gameVersion);
   adjustLabel("TS2", "Current Time: " + getDate());
   adjustLabel("UL1_label", "Workers: " + save.workers);
