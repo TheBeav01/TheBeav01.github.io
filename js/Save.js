@@ -1,11 +1,18 @@
 //Represents a save someone might have.
 var save = {
-    gold : gold,
     gameVersion : "0.01",
+    gold : gold,
     workers : workers,
+    maxWorkers : workers,
+    availableWorkers : 0,
     workersUnlocked : false,
     genChance : 0.5*workers,
-    maxWorkers : workers,
+}
+var encSave = {
+    version : "",
+    gold : 0,
+    workers : 0,
+    maxWorkers : 0,
     availableWorkers : 0,
 }
 var saveString = "";
@@ -26,11 +33,17 @@ function getSave() {
 function decodeSave(stringToDecode) {
     var loadString = stringToDecode;
     var saveArr = loadString.split("|");
-    save.gameVersion = saveArr[0];
-    save.gold = saveArr[1];
-    save.workers = saveArr[2];
+    var decProp = Object.keys(save);
+    for(var i = 0; i < saveArr.length-1; i++) {
+        var propToLoad = decProp[i];
+        save[propToLoad] = saveArr[i];
+        console.log("Set " + propToLoad + " to: " + saveArr[i] + " ---> Checking: " + 
+        save.availableWorkers + " workers out of " + save.maxWorkers);
+    }
+    console.log(save.availableWorkers + " Available workers (after iteration)");
     if(save.workers > 0) {
-        unlockWorker();
+        unlockWorker(1);
+        
     }
     GPS = Number.parseInt(save.workers);
     console.log(save.gold + " " + save.workers);
@@ -40,6 +53,7 @@ function decodeSave(stringToDecode) {
         save.gold = 0;
         gold = 0;
     }
+    adjustLabel("T1_1", "Town info: " + save.availableWorkers + " available workers (Max: " + save.maxWorkers + ")")
     return loadString;
   }
 
@@ -47,23 +61,31 @@ function decodeSave(stringToDecode) {
    * Translates a variety of game features into a save string that will likely grow over time.
    */
 function encodeSave() {
-    if(g === NaN) {
+    var encString = "";
+    if(gold === NaN) {
         console.log("NaN detected");
     }
-    var g = Number.parseInt(gold);
-    var w = workers;
-    if(w === undefined) {
-        w = 0;
+    encSave.version = version;
+    encSave.gold = Number.parseInt(gold);
+    encSave.workers = workers;
+    encSave.maxWorkers = save.maxWorkers;
+    encSave.availableWorkers = save.availableWorkers;
+    if(encSave.workers === undefined) {
+        encSave.workers = 0;
     }
-    console.log("Encoded Save: " + version + "|" + g + "|" + w + "|");
-    return version + "|" + g + "|" + w + "|";
+    var prop = Object.keys(encSave);
+    for(var i = 0; i < prop.length; i++) {
+        var encProp = prop[i];
+        var encString = encString + encSave[encProp] + "|";
+    }
+    return encString;
   }
 /**
  * Saves the game
  */
 function SaveGame() {
     saveString = encodeSave();
-    console.log("SG: " + save.gold + " Gold: " + gold);
+    console.log("SS: " + saveString);
     save.gold = gold;
     setCookie("save",saveString,365);
   }

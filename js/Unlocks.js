@@ -45,12 +45,15 @@ function checkCosts(costToCheck) {
 /**
  * Unlocks the worker
  */
-function unlockWorker() {
+function unlockWorker(fromSave) {
     console.log("Unlocking workers: " + save.workers + "workers");
-    GPS = save.workers;
+    if(fromSave === 0) {
+        GPS = save.workers;
+    
+        save.availableWorkers = 10;
+        save.maxWorkers = 10; 
+    }
     save.workersUnlocked = true;
-    save.availableWorkers = 10;
-    save.maxWorkers = 10;
     var worker_button = document.getElementById("UL1");
     var worker_label = document.getElementById("UL1_label");
     var T2 = document.getElementById("Right_Panel");
