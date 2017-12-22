@@ -1,8 +1,17 @@
 UPS = 1;
+/**
+ * Helper method that edits a given HTML label's inner text.
+ * @param {*} ID The HTML ID
+ * @param {*} newLabel What label you want to assign it.
+ */
 function adjustLabel(ID,newLabel) {
   document.getElementById(ID).innerHTML = newLabel;
 }
 
+/**
+ * Helper method used on load that checks if a cookie with that name exists.
+ * @param {*} cookieName 
+ */
 function cookieExists(cookieName) {
   var cookieN = cookieName+"=";
   var cookieList=decodeURIComponent(document.cookie);
@@ -21,6 +30,12 @@ function cookieExists(cookieName) {
   }
   return "";
 }
+/**
+ * Sets a cookie in the browser
+ * @param {*} cookieName The cookie name
+ * @param {*} cookieValue THe value of the cookie
+ * @param {*} expiresAt How many days it will take for it to expire.
+ */
 function setCookie(cookieName, cookieValue, expiresAt) {
   var date = new Date();
   date.setTime(date.getTime() + (expiresAt*1000*60*60*24));
@@ -29,6 +44,9 @@ function setCookie(cookieName, cookieValue, expiresAt) {
   document.cookie = cookieName + "=" + cookieValue + "=" + expires + ";path=/";
 }
 
+/**
+ * Initializes the game
+ */
 function initGame() { 
   var date = new Date();
   save.gameVersion = version;
@@ -46,8 +64,28 @@ function initGame() {
   unlockHandler();
 }
 
+/**
+ * Returns a date string in hh:mm:ss format.
+ */
 function getDate() {
   var date = new Date();
   var dateStr = date.toTimeString().substring(0,9);
   return dateStr;
+}
+
+/**
+ * Returns the percentage chance to generate a new possible worker per tick.
+ * @param {*} worker 
+ */
+function getGenChance(worker) {
+  return 0.5*worker;
+}
+/**
+ * Returns true if a worker is generated on this tick
+ * @param {*} number NOTE: This number needs to be between 0 and 1. Random numbers are used.
+ */
+function genWorker(number) {
+  if(number > (getGenChance(worker))/100) {
+    return true;
+  }
 }

@@ -4,7 +4,15 @@
   min-width: 500px;
   height: auto;
 }
-
+#UL1, #UL1_label {
+  visibility: hidden;
+  /* display: none; */
+}
+#Right_Panel {
+  margin-top: 5px;
+  visibility: hidden;
+  /* margin-bottom: 25px; */
+}
 #Label_Div {
   border: 2px #00ffff solid;
   margin-left: 50%;
@@ -22,6 +30,7 @@
   float: right;
   margin-right: 5px;
 }
+
 #Export_div {
   visibility: hidden;
   background-color: #747373;
@@ -34,10 +43,7 @@
   top: 0px;
 }
 
-#UL1, #UL1_label {
-  visibility: hidden;
-  /* display: none; */
-}
+
 
 .Splitter_Div {
   max-width: 250px;
@@ -59,7 +65,17 @@
 .export {
   opacity: 1;
 }
-
+.PAN_LAB {
+  color: #57626d;
+  font-size: 15pt;
+  padding-bottom: 2px;
+}
+.T1 {
+  display: block;
+}
+.Tab {
+  margin-bottom: 30px;
+}
 @keyframes fadein {
   from{
     visibility: hidden;

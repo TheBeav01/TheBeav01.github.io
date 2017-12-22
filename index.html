@@ -12,9 +12,9 @@
   </div>
 
   <div id="Left_Panel">
-    <h1>A start of something?</h1>
+    <h1 class="PAN_LAB">Gold management</h1>
       <div class="Splitter_Div" id="Button_Div">
-      <button class="Main_Button" onclick="getGold()">Gatther gold</button>
+      <button class="Main_Button" onclick="recieveGold()">Gatther gold</button>
       <button class="Main_Button" id="UL1"onclick="hireWorker()">Hire Worker</button>
     </div>
     <div class="Splitter_Div" id="Label_Div">
@@ -24,7 +24,17 @@
   </div>
 
   <div id="Right_Panel">
-    <h1>Second panel</h2>
+    <button class="Tab" onclick="manageTabs(1)">Town information</button>
+    <button class="Tab" onclick="manageTabs(2)">Manage Workers</button>
+    <button class="Tab" onclick="manageTabs(3)">???</button>
+    <div id="Tab_1">
+    <label class="T1" id="T1_1">Town info: x/x available workers.</label>
+    <label class="T1" id="T1_2">Percentage chance of generation: x%</label>
+    </div>
+    <div id="Tab_2"><label class="T2">Foo</label></div>
+    
+    <div id="Tab_3"><label class="T3">Foo</label></div>
+    
   </div>
 
   <div id="Export_div">
@@ -37,4 +47,5 @@
   <script type="text/javascript" src="js/Utils.js"></script>
   <script type="text/javascript" src="js/Unlocks.js"></script>
   <script type="text/javascript" src="js/Save.js"></script>
+  <script type="text/javascript" src="js/layout.js"></script>
 </body>

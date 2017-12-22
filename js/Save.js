@@ -1,16 +1,26 @@
+//Represents a save someone might have.
 var save = {
     gold : gold,
     gameVersion : "0.01",
     workers : workers,
     workersUnlocked : false,
+    genChance : 0.5*workers
 }
 var saveString = "";
 var isImporting = false;
 var splitter = '|'
+/**
+ * Simple getter. Gets the save just in case it is needed elsewhere.
+ */
 function getSave() {
     return save;
 }
 
+/**
+ * Translates the string from a series of ints and '|' to something that is implementable by the game.
+ * As the creator is too lazy to properly implement a base-32 string, the '|' acts as a splitter for the various fields.
+ * @param {*} stringToDecode The save string retrieved from the cookie 
+ */
 function decodeSave(stringToDecode) {
     var loadString = stringToDecode;
     var saveArr = loadString.split("|");
@@ -31,6 +41,9 @@ function decodeSave(stringToDecode) {
     return loadString;
   }
 
+  /**
+   * Translates a variety of game features into a save string that will likely grow over time.
+   */
 function encodeSave() {
     if(g === NaN) {
         console.log("NaN detected");
@@ -43,13 +56,18 @@ function encodeSave() {
     console.log("Encoded Save: " + version + "|" + g + "|" + w + "|");
     return version + "|" + g + "|" + w + "|";
   }
-
+/**
+ * Saves the game
+ */
 function SaveGame() {
     saveString = encodeSave();
     console.log("SG: " + save.gold + " Gold: " + gold);
     save.gold = gold;
     setCookie("save",saveString,365);
   }
+  /**
+   * Imports the game. Doesn't do anything of note ATM
+   */
   function Import() {
     isImporting = true;
     var export_para = document.getElementById("exP");
@@ -59,6 +77,9 @@ function SaveGame() {
     export_para.style.paddingRight = "50px"
     export_para.innerHTML = "Import a save here";
   }
+  /**
+   * Exports the game into a save string that is copied to the clipboard. Unlike import, this does something
+   */
   function Export() {
       isImporting = false;
       var export_para = document.getElementById("exP");
@@ -70,6 +91,9 @@ function SaveGame() {
       document.getElementById("export_field").select();
       document.execCommand("copy");
   }
+  /**
+   * Closes the export div so you can keep playing
+   */
   function closeExportField() {
     var div = document.getElementById("Export_div");
     var textField = document.getElementById("export_field");

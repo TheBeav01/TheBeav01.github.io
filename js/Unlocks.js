@@ -1,4 +1,8 @@
 var UL1 = false;
+
+/**
+ * Handles unlocks at load or update.
+ */
 function unlockHandler() {
     if((gold > 25 || save.gold > 25) && !save.workersUnlocked)  {
         workers = 0;
@@ -7,7 +11,12 @@ function unlockHandler() {
         unlockWorker();
     }
 }
-
+/**
+ * calculates the cost of a specific resource given how many of that you already own.
+ * @param {*} resourceToCalculate The resource to calculate
+ * @param {*} resourceGiven The resource that is used up in the process
+ * @param {*} amOwned The amount of resources owned
+ */
 function CalculateCost(resourceToCalculate, resourceGiven, amOwned) {
     var am = 0;
     if(resourceToCalculate === "worker") {
@@ -19,6 +28,10 @@ function CalculateCost(resourceToCalculate, resourceGiven, amOwned) {
     return am;
 }
 
+/**
+ * Checks the cost of a generic resource
+ * @param {*} costToCheck The amount of a resource you already own.
+ */
 function checkCosts(costToCheck) {
     var button = document.getElementById("UL1");
     var cost = CalculateCost("worker", save.gold, workers);
@@ -29,13 +42,18 @@ function checkCosts(costToCheck) {
         button.disabled = false;
     }
 }
+/**
+ * Unlocks the worker
+ */
 function unlockWorker() {
     console.log("Unlocking workers: " + save.workers + "workers");
     GPS = save.workers;
     save.workersUnlocked = true;
     var worker_button = document.getElementById("UL1");
     var worker_label = document.getElementById("UL1_label");
+    var T2 = document.getElementById("Right_Panel");
     adjustLabel("UL1_label", "Workers: " + save.workers);
     worker_button.style.visibility = "visible";
     worker_label.style.visibility = "visible";
+    T2.style.visibility = "visible";
 }

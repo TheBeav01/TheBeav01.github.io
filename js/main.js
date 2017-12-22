@@ -8,13 +8,16 @@ var GPS = 0;
 var ticks = 0;
 var version = "0.01";
 
+/**
+ * Loads the game. Is the first function called.
+ */
 function load() {
   var cookieSaveString = cookieExists("save");
   console.log(cookieSaveString);
   if(cookieExists("save") != "") {
     console.log("Save file exists");
     decodeSave(cookieSaveString);
-    initGame();
+    initGame(); //This is in Utils.js
     // SaveGame();
   }
   else {
@@ -24,7 +27,10 @@ function load() {
   adjustLabel("ManualGoldButton", "Gold: " + save.gold);
   gameLoop(lastTime);
 }
-function getGold() {
+/**
+ * Adds 1 gold per click.
+ */
+function recieveGold() {
   if(save.gold === undefined) {
     console.log("Undefined?");
   }
@@ -33,6 +39,11 @@ function getGold() {
   gold++;
   console.log("SG: " + save.gold + " Gold: " + gold);
 }
+/**
+ * The loop of this game. This runs via requestAnimationFrame(), 
+ * and a tick counter is kept for timekeeping purposes. It should run at 60 ticks per second
+ * @param {*} timeStamp Is the time that the frame was requested (in ms.)
+ */
 function gameLoop(timeStamp) {
   ticks++;
   var dt = timeStamp - lastTime;
@@ -43,6 +54,9 @@ function gameLoop(timeStamp) {
   update();
   requestAnimationFrame(gameLoop)
   }
+  /**
+   * Updates what is on the screen and what is in the backend. 
+   */
 function update() {
   if(gold === NaN || gold === undefined) {
     console.log("Setting gold to 0");
@@ -55,13 +69,13 @@ function update() {
     parsedFloatSG += GPT;
     save.gold = parsedFloatSG;
     var displayGold = Number.parseInt(save.gold);
-    console.log(displayGold);
-
+    gold = displayGold; 
     checkCosts(displayGold);
     adjustLabel("ManualGoldButton", "Gold: " + displayGold);
     var nextString = displayGold + "/" + CalculateCost("worker", save.gold, save.workers);
     adjustLabel("UL1_label", "Workers: " + save.workers + " (" + GPS + " GPS) " + nextString);
-    gold = displayGold; 
+    adjustLabel("T1_2", "Percentage chance of generation: " + getGenChance(save.workers));
+    
     }
   else {
     adjustLabel("ManualGoldButton", "Gold: " + save.gold);
@@ -70,7 +84,9 @@ function update() {
  
   unlockHandler();
 }
-
+/**
+ * Calculates the cost, then hires a worker if you have enough gold. Workers give a flat +1 GPS bonus.
+ */
 function hireWorker() {
   var cost = CalculateCost("worker", save.gold, workers);
   if(cost > save.gold) {
