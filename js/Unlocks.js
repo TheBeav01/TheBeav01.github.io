@@ -54,6 +54,10 @@ function unlockWorker(fromSave) {
         save.availableWorkers = 10;
         save.maxWorkers = 10; 
     }
+    if(save.maxWorkers === 0) {
+        console.log("max workers at 0");
+        save.maxWorkers = 10;
+    }
     save.workersUnlocked = true;
     var worker_button = document.getElementById("UL1");
     var worker_label = document.getElementById("UL1_label");
