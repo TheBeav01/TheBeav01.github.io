@@ -53,6 +53,10 @@ function decodeSave(stringToDecode) {
         save.gold = 0;
         gold = 0;
     }
+    console.log(saveArr[4]);
+    if(saveArr[4] < 0) {
+        save.availableWorkers = Math.abs(saveArr[4]);
+    }
     adjustLabel("T1_1", "Town info: " + save.availableWorkers + " available workers (Max: " + save.maxWorkers + ")")
     return loadString;
   }

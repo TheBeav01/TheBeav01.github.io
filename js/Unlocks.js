@@ -8,7 +8,7 @@ function unlockHandler() {
         workers = 0;
         UL1 = true;
         console.log("Unlocking workers");
-        unlockWorker();
+        unlockWorker(0);
     }
 }
 /**
@@ -48,6 +48,7 @@ function checkCosts(costToCheck) {
 function unlockWorker(fromSave) {
     console.log("Unlocking workers: " + save.workers + "workers");
     if(fromSave === 0) {
+        console.log("Unlocking from natural play");
         GPS = save.workers;
     
         save.availableWorkers = 10;

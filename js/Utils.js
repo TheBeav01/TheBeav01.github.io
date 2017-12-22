@@ -80,8 +80,12 @@ function getDate() {
  * @param {*} worker 
  */
 function getGenChance(worker) {
-  var chance = Math.pow(save.maxWorkers-save.availableWorkers,1/2)/2;
+ var chance = Math.pow(save.maxWorkers-save.availableWorkers,1/2)/2;
  chance = chance.toPrecision(2);
+ if(chance === NaN) {
+   console.log("Chance is nan");
+   chance = 0;
+ }
   return chance;
 }
 /**
