@@ -81,6 +81,7 @@ function getDate() {
  */
 function getGenChance(worker) {
   var chance = Math.pow(save.maxWorkers-save.availableWorkers,1/2)/2;
+ chance = chance.toPrecision(2);
   return chance;
 }
 /**
