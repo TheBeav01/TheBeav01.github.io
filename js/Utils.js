@@ -50,6 +50,7 @@ function setCookie(cookieName, cookieValue, expiresAt) {
 function initGame() { 
   var date = new Date();
   save.gameVersion = version;
+  manageTabs(1);
   if(save.gold === undefined) {
     save.gold = 0;
     console.log("SAVE GOLD: " + save.gold);
@@ -74,18 +75,31 @@ function getDate() {
 }
 
 /**
- * Returns the percentage chance to generate a new possible worker per tick.
+ * Returns the percentage chance to generate a new possible worker per second. Starts at 0 and scales
+ * up as available workers decrease
  * @param {*} worker 
  */
 function getGenChance(worker) {
-  return 0.5*worker;
+  var chance = Math.pow(save.maxWorkers-save.availableWorkers,1/2)/2;
+  return chance;
 }
 /**
  * Returns true if a worker is generated on this tick
  * @param {*} number NOTE: This number needs to be between 0 and 1. Random numbers are used.
  */
 function genWorker(number) {
-  if(number > (getGenChance(worker))/100) {
-    return true;
+  if(save.availableWorkers === save.maxWorkers) {
+    console.log("At max workers!");
+    return;
+  }
+  var chance = getGenChance(save.availableWorkers) / 10;
+  if(number > chance) {
+    console.log("Not generated " + number + " " + chance)
+  }
+  else {
+    console.log("generated" + number + " " + chance);
+    save.availableWorkers++;
+    adjustLabel("T1_1","Town info: " + save.availableWorkers + " available workers (Max: " + save.maxWorkers + ")")
+
   }
 }

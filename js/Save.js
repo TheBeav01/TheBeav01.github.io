@@ -4,7 +4,9 @@ var save = {
     gameVersion : "0.01",
     workers : workers,
     workersUnlocked : false,
-    genChance : 0.5*workers
+    genChance : 0.5*workers,
+    maxWorkers : workers,
+    availableWorkers : 0,
 }
 var saveString = "";
 var isImporting = false;

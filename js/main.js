@@ -48,16 +48,20 @@ function gameLoop(timeStamp) {
   ticks++;
   var dt = timeStamp - lastTime;
   var roundDt = Math.round(dt);
-  if(ticks%60 === 0) {
-    // console.log("Tick");
-  }
-  update();
+  update(ticks);
   requestAnimationFrame(gameLoop)
   }
   /**
    * Updates what is on the screen and what is in the backend. 
    */
-function update() {
+function update(ticks) {
+  if(ticks%60 === 0) {
+    // console.log("Tick");
+    if(save.workers > 0) {
+      
+    }
+
+  }
   if(gold === NaN || gold === undefined) {
     console.log("Setting gold to 0");
     gold = 0;
@@ -70,12 +74,17 @@ function update() {
     save.gold = parsedFloatSG;
     var displayGold = Number.parseInt(save.gold);
     gold = displayGold; 
-    checkCosts(displayGold);
-    adjustLabel("ManualGoldButton", "Gold: " + displayGold);
     var nextString = displayGold + "/" + CalculateCost("worker", save.gold, save.workers);
+
+    checkCosts(displayGold);
+
+    adjustLabel("ManualGoldButton", "Gold: " + displayGold);
     adjustLabel("UL1_label", "Workers: " + save.workers + " (" + GPS + " GPS) " + nextString);
-    adjustLabel("T1_2", "Percentage chance of generation: " + getGenChance(save.workers));
-    
+    adjustLabel("T1_2", "Percentage chance of generation: " + getGenChance(save.availableWorkers));
+    if(ticks%60 === 0) {
+      var ranNumber = Math.random();
+      genWorker(ranNumber);
+    }
     }
   else {
     adjustLabel("ManualGoldButton", "Gold: " + save.gold);
@@ -93,13 +102,18 @@ function hireWorker() {
     console.log("Too expensive!");
     return;
   }
+  else if(save.availableWorkers === 0) {
+    return;
+  }
   else {
     save.gold -= cost;
     workers++;
     GPT = workers/60;
     GPS = workers;
     save.workers = workers;
+    save.availableWorkers--;
     adjustLabel("UL1_label", "Workers: " + workers + " (" + GPS + " gold per second)");
+    adjustLabel("T1_1","Town info: " + save.availableWorkers + " available workers (Max: " + save.maxWorkers + ")")
   }
   console.log(save.workers + " | " + cost);
 }
