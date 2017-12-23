@@ -3,6 +3,7 @@
   float: left;
   min-width: 500px;
   height: auto;
+  
 }
 #UL1, #UL1_label {
   visibility: hidden;
@@ -11,7 +12,12 @@
 #Right_Panel {
   margin-top: 5px;
   visibility: hidden;
-  /* margin-bottom: 25px; */
+  position:absolute;
+  min-width: 700px;
+  max-width: 1340px;
+  left:508px;
+  border-right: 1px #ff00ff solid;
+  border-left: 1px #ff00ff solid;
 }
 #Label_Div {
   border: 2px #00ffff solid;
@@ -37,17 +43,50 @@
   text-align: center;
   z-index: 1;
   position: absolute;
-  width: 1000px;
+  min-width: 1340px;
+  max-width:1340px;
   height: 500px;
   padding-top: 240px;
   top: 0px;
 }
+#T2_LD {
+  border: 2px #00ffff solid;
+  /* max-width:500px;
+  max-height:1000px; */
+  position: relative;
+  top: -95px;
+  left: 200px;
+  z-index: 0;
 
+}
+#T2_1L, #T2_2L {
+  color: #57626d;
+  border: black 1px solid;
+  margin-bottom: 30px;
+}
 
+#T2_1B, #T2_2B {
+  padding: 10px 20px;
+  margin-bottom: 10px;
+  width:100%;
+  display: block;
+}
+
+#Tab_2 {
+  border: black 1px solid;
+  max-width: 500px;
+  float: left;
+}
 
 .Splitter_Div {
   max-width: 250px;
   /* display: inline; */
+}
+
+.Main_Button{
+  padding: 10px 20px;
+  margin-bottom: 10px;
+  display: block;
 }
 
 .Button_Label {
@@ -55,13 +94,8 @@
   border: black 1px solid;
   display: block;
   margin-bottom: 30px;
+}
 
-}
-.Main_Button {
-  padding: 10px 20px;
-  margin-bottom: 10px;
-  display: block;
-}
 .export {
   opacity: 1;
 }
@@ -70,12 +104,13 @@
   font-size: 15pt;
   padding-bottom: 2px;
 }
-.T1 {
+.T1,.T2,.T3{
   display: block;
 }
 .Tab {
   margin-bottom: 30px;
 }
+
 @keyframes fadein {
   from{
     visibility: hidden;

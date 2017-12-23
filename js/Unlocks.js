@@ -46,7 +46,7 @@ function checkCosts(costToCheck) {
  * Unlocks the worker
  */
 function unlockWorker(fromSave) {
-    console.log("Unlocking workers: " + save.workers + "workers");
+    console.log("Unlocking workers: " + save.workers + " workers");
     if(fromSave === 0) {
         console.log("Unlocking from natural play");
         GPS = save.workers;
