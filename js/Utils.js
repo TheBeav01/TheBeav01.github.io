@@ -1,4 +1,5 @@
 UPS = 1;
+var chanceMod = 0.0;
 /**
  * Helper method that edits a given HTML label's inner text.
  * @param {*} ID The HTML ID
@@ -44,8 +45,7 @@ function setCookie(cookieName, cookieValue, expiresAt) {
   var date = new Date();
   date.setTime(date.getTime() + (expiresAt*1000*60*60*24));
   var expires = "expires=" + date.toUTCString();
-  Log(expires);
-  Log(expires);
+  Log("Cookie expires at: " + expires);
   document.cookie = cookieName + "=" + cookieValue + "=" + expires + ";path=/";
 }
 
@@ -58,10 +58,8 @@ function initGame() {
   manageTabs(1);
   if(save.gold === undefined) {
     save.gold = 0;
-    Log("SAVE GOLD: " + save.gold);
     gold = 0;
   }
-  Log(save.gold + " | " + save.gameVersion);
   adjustLabel("ManualGoldButton",save.gold);
   gold = save.gold;
   adjustLabel("TS1", "Game version: " + save.gameVersion);
@@ -86,12 +84,24 @@ function getDate() {
  */
 function getGenChance(worker) {
  var chance = Math.pow(save.maxWorkers-save.availableWorkers,1/2)/2;
- chance = chance.toPrecision(2);
+ var adjChance = Number.parseFloat(chance);
+ var adjMod = Number.parseFloat(chanceMod);
+ chance = (adjChance+adjMod).toPrecision(3);
  if(chance === NaN) {
    Log("Chance is nan");
    chance = 0;
  }
   return chance;
+}
+
+function setChanceMod(newMod) {
+  if(newMod >= 1 || newMod < 0) {
+    return;
+  }
+  chanceMod = newMod;
+}
+function getChanceMod() {
+  return chanceMod;
 }
 /**
  * Returns true if a worker is generated on this tick
@@ -104,12 +114,19 @@ function genWorker(number) {
   }
   var chance = getGenChance(save.availableWorkers) / 10;
   if(number > chance) {
-    Log("Not generated " + number + " " + chance)
   }
   else {
-    Log("generated" + number + " " + chance);
+    Log("Worker generated");
     save.availableWorkers++;
     adjustLabel("T1_1","Town info: " + save.availableWorkers + " available workers (Max: " + save.maxWorkers + ")")
 
   }
+}
+  function getWorkerGoldPerSecond() {
+    if(save.workersInField === 0) {
+      return save.workers;
+    }
+    else {
+      return (Math.pow(goldGenMultiplier,save.workersInField)*save.workers).toPrecision(4);
+    }
 }

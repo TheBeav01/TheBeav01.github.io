@@ -46,8 +46,7 @@ function decodeSave(stringToDecode) {
     for(var i = 0; i < saveArr.length-1; i++) {
         var propToLoad = decProp[i];
         save[propToLoad] = saveArr[i];
-        Log("Set " + propToLoad + " to: " + saveArr[i] + " ---> Checking: " + 
-        save.availableWorkers + " workers out of " + save.maxWorkers);
+        Log(propToLoad + " ---> " + saveArr[i]);
     }
     Log(save.availableWorkers + " Available workers (after iteration)");
     if(save.workers > 0) {
@@ -55,14 +54,12 @@ function decodeSave(stringToDecode) {
         
     }
     GPS = Number.parseInt(save.workers);
-    Log(save.gold + " " + save.workers);
     if(saveArr[1] === "NaN") {
         // Log("Boop");
         window.alert("Your save is compromised, sadly. Resetting gold to zero...");
         save.gold = 0;
         gold = 0;
     }
-    Log(saveArr[4]);
     if(saveArr[4] < 0) {
         save.availableWorkers = Math.abs(saveArr[4]);
     }
@@ -91,7 +88,6 @@ function encodeSave() {
         encSave.workers = 0;
     }
     
-    Log(encSave.gold + " " + save.gold);
     return encString;
   }
 /**

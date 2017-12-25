@@ -6,7 +6,7 @@ var s;
 var GPT = 0;
 var GPS = 0;
 var ticks = 0;
-var version = "0.01";
+var version = "0.02.0";
 var goldGenMultiplier = 1.05;
 var wGPS= 0;
 /**
@@ -19,7 +19,6 @@ function load() {
     Log("Save file exists");
     decodeSave(cookieSaveString);
     initGame(); //This is in Utils.js
-    // SaveGame();
   }
   else {
     Log("Save file does not exist. Creating...");
@@ -38,7 +37,6 @@ function recieveGold() {
   gold = save.gold;
   save.gold++;
   gold++;
-  Log("SG: " + save.gold + " Gold: " + gold);
 }
 /**
  * The loop of this game. This runs via requestAnimationFrame(), 
@@ -56,19 +54,28 @@ function gameLoop(timeStamp) {
    * Updates what is on the screen and what is in the backend. 
    */
 function update(ticks) {
+  
+  //Just in case anything needs to fire once a second
   if(ticks%60 === 0) {
     // Log("Tick");
-
+    Log(save.workers);
   }
   if(gold === NaN || gold === undefined) {
     Log("Setting gold to 0");
     gold = 0;
   }
-  if(save.workers >= 0) {
-    var finGoldGenMultiplier = save.workersInField*goldGenMultiplier;
-    var wGPS = finGoldGenMultiplier;
+  if(save.workersRecieved > 0) {
+    if(save.workers > 0) {
+      document.getElementById("T2_1B").disabled = false;
+      document.getElementById("T2_2B").disabled = false;
+    }
+    else {
+      document.getElementById("T2_1B").disabled = true;
+      document.getElementById("T2_2B").disabled = true;
+    }
     workers = save.workers;
-    GPS = (save.workersInField*finGoldGenMultiplier) + workers;
+    wGPS = getWorkerGoldPerSecond();
+    GPS = wGPS; //Plus anything else!
     GPT = GPS/60;
     var parsedFloatSG = Number.parseFloat(save.gold);
     parsedFloatSG += GPT;
@@ -89,6 +96,7 @@ function update(ticks) {
     }
   else {
     adjustLabel("ManualGoldButton", "Gold: " + save.gold);
+
   }
   adjustLabel("TS2","Current time: " + getDate());
  
@@ -110,23 +118,25 @@ function hireWorker() {
     save.gold -= cost;
     workers++;
     save.workersRecieved++;
-    GPS = workers + save.workersInField*goldGenMultiplier;
+    GPS = Number.parseInt(workers)*wGPS;
     GPT = GPS/60;
     save.workers = workers;
     save.availableWorkers--;
     adjustLabel("UL1_label", "Workers: " + save.workers + " (" + GPS + " gold per second)");
     adjustLabel("T1_1","Town info: " + save.availableWorkers + " available workers (Max: " + save.maxWorkers + ")")
   }
-  Log(save.workers + " | " + cost);
 }
 function deductWorkers(opCode) {
-  if(save.workers === 0) {
+  if(save.workers === 0 ) {
+    Log("Returning");
     return;
   }
+  var Field = document.getElementById("T2_1B");
+  var Recruit = document.getElementById("T2_2B");
+ 
   save.workers--;
   GPS--;
   var nextString = Number.parseInt(save.gold) + "/" + CalculateCost("worker", save.gold, save.workersRecieved);
-  Log(nextString);
   if(save.workers === 0) {
     adjustLabel("UL1_label", "Workers: " + save.workers + " (" + GPS + " gold per second) " + nextString);
     save.gold = Number.parseInt(save.gold);
@@ -134,16 +144,22 @@ function deductWorkers(opCode) {
   switch(opCode) {
     case 0:
       save.workersInField++;
-      var finGoldGenMultiplier = save.workersInField*goldGenMultiplier;
-      Log(finGoldGenMultiplier + " | " + save.workers);
-      GPS = workers + save.workersInField*finGoldGenMultiplier;
+      workers--;
+      var finGoldGenMultiplier = Math.pow(goldGenMultiplier,save.workersInField).toPrecision(5);
+      wGPS = finGoldGenMultiplier;
+      GPS = Number.parseInt(workers)*wGPS;
       adjustLabel("T2_1L", "Committed workers: " + save.workersInField);
 
       break;
     case 1:
-    adjustLabel("T2_2L", "Committed workers: " + save.workersInField);
+      save.workersRecruiting++;
+      var cm = getChanceMod() + 0.01;
+      setChanceMod(cm);
+      Log("Set chance to " + cm);
+      adjustLabel("T2_2L", "Committed workers: " + save.workersRecruiting);
       break;
     default:
       Log("Something went wrong?");
+      break;
   }
 }

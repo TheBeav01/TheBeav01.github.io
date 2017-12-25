@@ -111,6 +111,9 @@
   margin-bottom: 30px;
 }
 
+
+/* Tooltips */
+
 @keyframes fadein {
   from{
     visibility: hidden;
