@@ -5,8 +5,15 @@ var save = {
     workers : workers,
     maxWorkers : workers,
     availableWorkers : 0,
+    workersRecieved : 0,
+    workersInField : 0,
+    workersRecruiting : 0,
+
+
+    //Encoding ends here
     workersUnlocked : false,
     genChance : 0.5*workers,
+
 }
 var encSave = {
     version : "",
@@ -14,10 +21,12 @@ var encSave = {
     workers : 0,
     maxWorkers : 0,
     availableWorkers : 0,
+    workersRecieved : 0,
+    workersInField : 0,
+    workersRecruiting : 0,
 }
 var saveString = "";
 var isImporting = false;
-var splitter = '|'
 /**
  * Simple getter. Gets the save just in case it is needed elsewhere.
  */
@@ -37,23 +46,23 @@ function decodeSave(stringToDecode) {
     for(var i = 0; i < saveArr.length-1; i++) {
         var propToLoad = decProp[i];
         save[propToLoad] = saveArr[i];
-        console.log("Set " + propToLoad + " to: " + saveArr[i] + " ---> Checking: " + 
+        Log("Set " + propToLoad + " to: " + saveArr[i] + " ---> Checking: " + 
         save.availableWorkers + " workers out of " + save.maxWorkers);
     }
-    console.log(save.availableWorkers + " Available workers (after iteration)");
+    Log(save.availableWorkers + " Available workers (after iteration)");
     if(save.workers > 0) {
         unlockWorker(1);
         
     }
     GPS = Number.parseInt(save.workers);
-    console.log(save.gold + " " + save.workers);
+    Log(save.gold + " " + save.workers);
     if(saveArr[1] === "NaN") {
-        // console.log("Boop");
+        // Log("Boop");
         window.alert("Your save is compromised, sadly. Resetting gold to zero...");
         save.gold = 0;
         gold = 0;
     }
-    console.log(saveArr[4]);
+    Log(saveArr[4]);
     if(saveArr[4] < 0) {
         save.availableWorkers = Math.abs(saveArr[4]);
     }
@@ -67,21 +76,22 @@ function decodeSave(stringToDecode) {
 function encodeSave() {
     var encString = "";
     if(gold === NaN) {
-        console.log("NaN detected");
+        Log("NaN detected");
     }
-    encSave.version = version;
-    encSave.gold = Number.parseInt(gold);
-    encSave.workers = workers;
-    encSave.maxWorkers = save.maxWorkers;
-    encSave.availableWorkers = save.availableWorkers;
+    var prop = Object.keys(encSave);
+    save.gold = Number.parseInt(save.gold);
+    save.version = version;
+    for(var i = 0; i < prop.length; i++) {
+        var encProp = prop[i];
+        Log((save[encProp] === encSave[encProp]) + " Save: " + save[encProp] + " Enc save: " + encSave[encProp]);
+        encSave[encProp] = save[encProp];
+        var encString = encString + encSave[encProp] + "|";
+    }
     if(encSave.workers === undefined) {
         encSave.workers = 0;
     }
-    var prop = Object.keys(encSave);
-    for(var i = 0; i < prop.length; i++) {
-        var encProp = prop[i];
-        var encString = encString + encSave[encProp] + "|";
-    }
+    
+    Log(encSave.gold + " " + save.gold);
     return encString;
   }
 /**
@@ -89,7 +99,7 @@ function encodeSave() {
  */
 function SaveGame() {
     saveString = encodeSave();
-    console.log("SS: " + saveString);
+    Log("SS: " + saveString);
     save.gold = gold;
     setCookie("save",saveString,365);
   }
@@ -128,6 +138,6 @@ function SaveGame() {
     div.style.visibility = "hidden";
     if(isImporting === true) {
       var save = textField.textContent;
-      console.log(save);
+      Log(save);
     }
   }

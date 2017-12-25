@@ -7,7 +7,7 @@ function unlockHandler() {
     if((gold > 25 || save.gold > 25) && !save.workersUnlocked)  {
         workers = 0;
         UL1 = true;
-        console.log("Unlocking workers");
+        Log("Unlocking workers");
         unlockWorker(0);
     }
 }
@@ -34,7 +34,8 @@ function CalculateCost(resourceToCalculate, resourceGiven, amOwned) {
  */
 function checkCosts(costToCheck) {
     var button = document.getElementById("UL1");
-    var cost = CalculateCost("worker", save.gold, workers);
+    var cost = CalculateCost("worker", save.gold, save.workersRecieved);
+    // Log("AMOWNED: " + costToCheck +" C: " + cost);
     if(costToCheck < cost) {
         button.disabled = true;
     }
@@ -46,19 +47,21 @@ function checkCosts(costToCheck) {
  * Unlocks the worker
  */
 function unlockWorker(fromSave) {
-    console.log("Unlocking workers: " + save.workers + " workers");
+    Log("Unlocking workers: " + save.workers + " workers");
     if(fromSave === 0) {
-        console.log("Unlocking from natural play");
+        Log("Unlocking from natural play");
         GPS = save.workers;
     
         save.availableWorkers = 10;
         save.maxWorkers = 10; 
     }
     if(save.maxWorkers === 0) {
-        console.log("max workers at 0");
+        Log("max workers at 0");
         save.maxWorkers = 10;
     }
     save.workersUnlocked = true;
+    save.workersRecieved = save.workers;
+    Log("WR: " + save.workersRecieved);
     var worker_button = document.getElementById("UL1");
     var worker_label = document.getElementById("UL1_label");
     var T2 = document.getElementById("Right_Panel");

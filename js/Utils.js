@@ -8,6 +8,10 @@ function adjustLabel(ID,newLabel) {
   document.getElementById(ID).innerHTML = newLabel;
 }
 
+
+function Log(string) {
+  console.log(string);
+}
 /**
  * Helper method used on load that checks if a cookie with that name exists.
  * @param {*} cookieName 
@@ -40,7 +44,8 @@ function setCookie(cookieName, cookieValue, expiresAt) {
   var date = new Date();
   date.setTime(date.getTime() + (expiresAt*1000*60*60*24));
   var expires = "expires=" + date.toUTCString();
-  console.log(expires);
+  Log(expires);
+  Log(expires);
   document.cookie = cookieName + "=" + cookieValue + "=" + expires + ";path=/";
 }
 
@@ -53,10 +58,10 @@ function initGame() {
   manageTabs(1);
   if(save.gold === undefined) {
     save.gold = 0;
-    console.log("SAVE GOLD: " + save.gold);
+    Log("SAVE GOLD: " + save.gold);
     gold = 0;
   }
-  console.log(save.gold + " | " + save.gameVersion);
+  Log(save.gold + " | " + save.gameVersion);
   adjustLabel("ManualGoldButton",save.gold);
   gold = save.gold;
   adjustLabel("TS1", "Game version: " + save.gameVersion);
@@ -83,7 +88,7 @@ function getGenChance(worker) {
  var chance = Math.pow(save.maxWorkers-save.availableWorkers,1/2)/2;
  chance = chance.toPrecision(2);
  if(chance === NaN) {
-   console.log("Chance is nan");
+   Log("Chance is nan");
    chance = 0;
  }
   return chance;
@@ -94,15 +99,15 @@ function getGenChance(worker) {
  */
 function genWorker(number) {
   if(save.availableWorkers === save.maxWorkers) {
-    console.log("At max workers!");
+    Log("At max workers!");
     return;
   }
   var chance = getGenChance(save.availableWorkers) / 10;
   if(number > chance) {
-    console.log("Not generated " + number + " " + chance)
+    Log("Not generated " + number + " " + chance)
   }
   else {
-    console.log("generated" + number + " " + chance);
+    Log("generated" + number + " " + chance);
     save.availableWorkers++;
     adjustLabel("T1_1","Town info: " + save.availableWorkers + " available workers (Max: " + save.maxWorkers + ")")
 
