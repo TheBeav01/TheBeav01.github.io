@@ -1,6 +1,6 @@
 //Represents a save someone might have.
 var save = {
-    gameVersion : "0.01",
+    gameVersion : "0.01.01",
     gold : gold,
     workers : workers,
     maxWorkers : workers,
