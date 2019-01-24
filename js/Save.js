@@ -41,28 +41,22 @@ function getSave() {
  */
 function decodeSave(stringToDecode) {
     var loadString = stringToDecode;
-    var saveArr = loadString.split("|");
-    var decProp = Object.keys(save);
-    for(var i = 0; i < saveArr.length-1; i++) {
-        var propToLoad = decProp[i];
-        save[propToLoad] = saveArr[i];
-        Log(propToLoad + " ---> " + saveArr[i]);
-    }
+    save = JSON.parse(loadString);
     Log(save.availableWorkers + " Available workers (after iteration)");
     if(save.workers > 0) {
         unlockWorker(1);
         
     }
     GPS = Number.parseInt(save.workers);
-    if(saveArr[1] === "NaN") {
-        // Log("Boop");
-        window.alert("Your save is compromised, sadly. Resetting gold to zero...");
-        save.gold = 0;
-        gold = 0;
-    }
-    if(saveArr[4] < 0) {
-        save.availableWorkers = Math.abs(saveArr[4]);
-    }
+    // if(saveArr[1] === "NaN") {
+    //     // Log("Boop");
+    //     window.alert("Your save is compromised, sadly. Resetting gold to zero...");
+    //     save.gold = 0;
+    //     gold = 0;
+    // }
+    // if(saveArr[4] < 0) {
+    //     save.availableWorkers = Math.abs(saveArr[4]);
+    // }
     adjustLabel("T1_1", "Town info: " + save.availableWorkers + " available workers (Max: " + save.maxWorkers + ")")
     return loadString;
   }
@@ -71,22 +65,9 @@ function decodeSave(stringToDecode) {
    * Translates a variety of game features into a save string that will likely grow over time.
    */
 function encodeSave() {
-    var encString = "";
-    if(gold === NaN) {
-        Log("NaN detected");
-    }
-    var prop = Object.keys(encSave);
-    save.gold = Number.parseInt(save.gold);
-    save.version = version;
-    for(var i = 0; i < prop.length; i++) {
-        var encProp = prop[i];
-        Log((save[encProp] === encSave[encProp]) + " Save: " + save[encProp] + " Enc save: " + encSave[encProp]);
-        encSave[encProp] = save[encProp];
-        var encString = encString + encSave[encProp] + "|";
-    }
-    if(encSave.workers === undefined) {
-        encSave.workers = 0;
-    }
+    console.log(JSON.stringify(save));
+    save.gold = Number.parseInt(gold);
+    var encString = JSON.stringify(save);
     
     return encString;
   }

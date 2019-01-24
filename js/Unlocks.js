@@ -4,12 +4,22 @@ var UL1 = false;
  * Handles unlocks at load or update.
  */
 function unlockHandler() {
+    var worker_button = document.getElementById("UL1");
+
     if((gold > 25 || save.gold > 25) && !save.workersUnlocked)  {
         workers = 0;
         UL1 = true;
         Log("Unlocking workers");
         unlockWorker(0);
     }
+    else if((gold > 25 || save.gold > 25) && worker_button.style.visibility != "visible") {
+        console.log("AA");
+        unlockWorker(save);
+    }
+    // else if(gold > 25 && save.workersUnlocked) {
+    //     save.workersUnlocked = true;
+    //     unlockWorker(save);
+    // }
 }
 /**
  * calculates the cost of a specific resource given how many of that you already own.

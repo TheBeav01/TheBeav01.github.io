@@ -58,7 +58,6 @@ function update(ticks) {
   //Just in case anything needs to fire once a second
   if(ticks%60 === 0) {
     // Log("Tick");
-    Log(save.workers);
   }
   if(gold === NaN || gold === undefined) {
     Log("Setting gold to 0");
