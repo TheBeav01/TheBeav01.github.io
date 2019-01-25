@@ -60,6 +60,7 @@
 
 }
 #T2_1L, #T2_2L {
+  position: relative;
   color: #57626d;
   border: black 1px solid;
   margin-bottom: 30px;

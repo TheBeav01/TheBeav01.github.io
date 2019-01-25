@@ -36,8 +36,8 @@ function manageTabs(tab) {
                 var element = arrT3[i];
                 element.style.display = "none";
             }
-            adjustLabel("T2_1L", "Committed workers: " + save.workersInField);
-            adjustLabel("T2_2L", "Committed workers: " + save.workersRecruiting);
+            // adjustLabel("T2_1L", "Committed workers: " + save.workersInField);
+            // adjustLabel("T2_2L", "Committed workers: " + save.workersRecruiting);
             break;
         case 2:
 

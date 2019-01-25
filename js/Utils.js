@@ -9,6 +9,10 @@ function adjustLabel(ID,newLabel) {
   document.getElementById(ID).innerHTML = newLabel;
 }
 
+function editTooltip(ID,newTooltip) {
+  document.getElementById(ID).title = newTooltip;
+}
+
 
 function Log(string) {
   console.log(string);

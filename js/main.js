@@ -7,7 +7,7 @@ var GPS = 0;
 var ticks = 0;
 var version = "0.01.01";
 var goldGenMultiplier = 1.05;
-var wGPS= 0;
+var wGPS = 0; //Worker gold per second
 var segment = -1;
 /**
  * Loads the game. Is the first function called.
@@ -144,15 +144,17 @@ function deductWorkers(opCode) {
       var finGoldGenMultiplier = Math.pow(goldGenMultiplier,save.workersInField).toPrecision(5);
       wGPS = finGoldGenMultiplier;
       GPS = Number.parseInt(workers)*wGPS;
-      adjustLabel("T2_1L", "Committed workers: " + save.workersInField);
 
+      // adjustLabel("T2_1L", "Committed workers: " + save.workersInField);
+      editTooltip("T2_1B","This increases the gold that workers give per second. Workers working: " + save.workersInField);
       break;
     case 1:
       save.workersRecruiting++;
       var cm = getChanceMod() + 0.01;
       setChanceMod(cm);
-      Log("Set chance to " + cm);
-      adjustLabel("T2_2L", "Committed workers: " + save.workersRecruiting);
+
+      // adjustLabel("T2_2L", "Committed workers: " + save.workersRecruiting);
+      editTooltip("T2_2B","This increases the gold that workers give per second. Workers working: " + save.workersRecruiting);
       break;
     default:
       Log("Something went wrong?");
