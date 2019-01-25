@@ -46,7 +46,6 @@ function recieveGold() {
 function gameLoop(timeStamp) {
   ticks++;
   var dt = timeStamp - lastTime;
-  var roundDt = Math.round(dt);
   update(ticks);
   requestAnimationFrame(gameLoop)
   }
@@ -56,9 +55,6 @@ function gameLoop(timeStamp) {
 function update(ticks) {
   
   //Just in case anything needs to fire once a second
-  if(ticks%60 === 0) {
-    // Log("Tick");
-  }
   if(gold === NaN || gold === undefined) {
     Log("Setting gold to 0");
     gold = 0;
@@ -95,7 +91,8 @@ function update(ticks) {
     }
   else {
     adjustLabel("ManualGoldButton", "Gold: " + save.gold);
-
+    document.getElementById("T2_1B").disabled = true;
+    document.getElementById("T2_2B").disabled = true;
   }
   adjustLabel("TS2","Current time: " + getDate());
  

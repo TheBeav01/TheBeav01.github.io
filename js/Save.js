@@ -15,16 +15,6 @@ var save = {
     genChance : 0.5*workers,
 
 }
-var encSave = {
-    version : "",
-    gold : 0,
-    workers : 0,
-    maxWorkers : 0,
-    availableWorkers : 0,
-    workersRecieved : 0,
-    workersInField : 0,
-    workersRecruiting : 0,
-}
 var saveString = "";
 var isImporting = false;
 /**
