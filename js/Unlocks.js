@@ -63,7 +63,7 @@ function unlockWorker(fromSave) {
         GPS = save.workers;
     
         save.availableWorkers = 10;
-        save.maxWorkers = 10; 
+        save.maxWorkers = 10;
     }
     if(save.maxWorkers === 0) {
         Log("max workers at 0");
@@ -71,13 +71,5 @@ function unlockWorker(fromSave) {
     }
     save.workersUnlocked = true;
     save.workersRecieved = save.workers;
-    var worker_button = document.getElementById("UL1");
-    var worker_label = document.getElementById("UL1_label");
-    var T2 = document.getElementById("Right_Panel");
-    adjustLabel("UL1_label", "Workers: " + save.workers);
-    adjustLabel("T1_1","Town info: " + save.availableWorkers + 
-    " available workers (Max: " + save.maxWorkers + ")")
-    worker_button.style.visibility = "visible";
-    worker_label.style.visibility = "visible";
-    T2.style.visibility = "visible";
+    lay_init(0);
 }

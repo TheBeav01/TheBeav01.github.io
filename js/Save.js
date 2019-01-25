@@ -41,22 +41,14 @@ function getSave() {
  */
 function decodeSave(stringToDecode) {
     var loadString = stringToDecode;
-    save = JSON.parse(loadString);
+    Log(atob(stringToDecode));
+    save = JSON.parse(atob(stringToDecode));
     Log(save.availableWorkers + " Available workers (after iteration)");
     if(save.workers > 0) {
         unlockWorker(1);
         
     }
     GPS = Number.parseInt(save.workers);
-    // if(saveArr[1] === "NaN") {
-    //     // Log("Boop");
-    //     window.alert("Your save is compromised, sadly. Resetting gold to zero...");
-    //     save.gold = 0;
-    //     gold = 0;
-    // }
-    // if(saveArr[4] < 0) {
-    //     save.availableWorkers = Math.abs(saveArr[4]);
-    // }
     adjustLabel("T1_1", "Town info: " + save.availableWorkers + " available workers (Max: " + save.maxWorkers + ")")
     return loadString;
   }
@@ -68,8 +60,9 @@ function encodeSave() {
     console.log(JSON.stringify(save));
     save.gold = Number.parseInt(gold);
     var encString = JSON.stringify(save);
-    
-    return encString;
+    var ret = btoa(encString);
+    Log("Test: " + ret);
+    return ret;
   }
 /**
  * Saves the game

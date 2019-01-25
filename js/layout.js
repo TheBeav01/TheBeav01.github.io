@@ -1,3 +1,22 @@
+function lay_init(segment) {
+    Log("Initializing layout...");
+    switch(segment) {
+    case 0:
+        var worker_button = document.getElementById("UL1");
+        var worker_label = document.getElementById("UL1_label");
+        var T2 = document.getElementById("Right_Panel");
+        adjustLabel("UL1_label", "Workers: " + save.workers);
+        adjustLabel("T1_1","Town info: " + save.availableWorkers + 
+        " available workers (Max: " + save.maxWorkers + ")")
+        worker_button.style.visibility = "visible";
+        worker_label.style.visibility = "visible";
+        T2.style.visibility = "visible";
+        manageTabs(1);
+        break;
+    }
+
+}
+
 function manageTabs(tab) {
     var arrT1, arrT2, arrT3;
     arrT1 = document.getElementsByClassName("T1");
@@ -55,3 +74,4 @@ function manageTabs(tab) {
             break;
     }
 }
+

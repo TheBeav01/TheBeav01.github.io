@@ -54,7 +54,6 @@ function setCookie(cookieName, cookieValue, expiresAt) {
  */
 function initGame() { 
   var date = new Date();
-  save.gameVersion = version;
   manageTabs(1);
   if(save.gold === undefined) {
     save.gold = 0;
@@ -62,7 +61,6 @@ function initGame() {
   }
   adjustLabel("ManualGoldButton",save.gold);
   gold = save.gold;
-  adjustLabel("TS1", "Game version: " + save.gameVersion);
   adjustLabel("TS2", "Current Time: " + getDate());
   adjustLabel("UL1_label", "Workers: " + save.workers);
   unlockHandler();
@@ -75,6 +73,11 @@ function getDate() {
   var date = new Date();
   var dateStr = date.toTimeString().substring(0,9);
   return dateStr;
+}
+
+function setVersion() {
+  save.gameVersion = version;
+  adjustLabel("TS1", "Game version: " + save.gameVersion);
 }
 
 /**

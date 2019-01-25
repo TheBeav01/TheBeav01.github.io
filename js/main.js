@@ -2,19 +2,19 @@ var lastTime = 0;
 var gold = 0;
 var workers = 0;
 var isNewPlayer = true;
-var s;
 var GPT = 0;
 var GPS = 0;
 var ticks = 0;
-var version = "0.02.0";
+var version = "0.01.01";
 var goldGenMultiplier = 1.05;
 var wGPS= 0;
+var segment = -1;
 /**
  * Loads the game. Is the first function called.
  */
 function load() {
   var cookieSaveString = cookieExists("save");
-  Log(cookieSaveString);
+  setVersion();
   if(cookieExists("save") != "") {
     Log("Save file exists");
     decodeSave(cookieSaveString);
