@@ -81,7 +81,7 @@ function LayoutCloseOverflowDropdown() {
 }
 
 function LoadChangelog() {
-    window.open('/changelog.html','_blank');
+    window.open('/Changelog.html','_blank');
     LayoutCloseOverflowDropdown();
 }
 
