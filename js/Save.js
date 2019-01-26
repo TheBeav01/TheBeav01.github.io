@@ -62,6 +62,7 @@ function SaveGame() {
     Log("SS: " + saveString);
     save.gold = gold;
     setCookie("save",saveString,365);
+    LayoutCloseOverflowDropdown();
   }
   /**
    * Imports the game. Doesn't do anything of note ATM
@@ -74,6 +75,7 @@ function SaveGame() {
     tb_div.style.visibility="visible";
     export_para.style.paddingRight = "50px"
     export_para.innerHTML = "Import a save here";
+    LayoutCloseOverflowDropdown();
   }
   /**
    * Exports the game into a save string that is copied to the clipboard. Unlike import, this does something
@@ -88,6 +90,7 @@ function SaveGame() {
       tb_div.style.visibility="visible";
       document.getElementById("export_field").select();
       document.execCommand("copy");
+      LayoutCloseOverflowDropdown();
   }
   /**
    * Closes the export div so you can keep playing

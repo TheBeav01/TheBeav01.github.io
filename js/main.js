@@ -88,6 +88,10 @@ function update(ticks) {
       var ranNumber = Math.random();
       genWorker(ranNumber);
     }
+    if(ticks%3600 == 0) {
+      SaveGame();
+      Log("Game saved!");
+    }
     }
   else {
     adjustLabel("ManualGoldButton", "Gold: " + save.gold);
@@ -145,7 +149,6 @@ function deductWorkers(opCode) {
       wGPS = finGoldGenMultiplier;
       GPS = Number.parseInt(workers)*wGPS;
 
-      // adjustLabel("T2_1L", "Committed workers: " + save.workersInField);
       editTooltip("T2_1B","This increases the gold that workers give per second. Workers working: " + save.workersInField);
       break;
     case 1:
@@ -153,8 +156,7 @@ function deductWorkers(opCode) {
       var cm = getChanceMod() + 0.01;
       setChanceMod(cm);
 
-      // adjustLabel("T2_2L", "Committed workers: " + save.workersRecruiting);
-      editTooltip("T2_2B","This increases the gold that workers give per second. Workers working: " + save.workersRecruiting);
+      editTooltip("T2_2B","This increases the chance of workers appearing. Workers working: " + save.workersRecruiting);
       break;
     default:
       Log("Something went wrong?");

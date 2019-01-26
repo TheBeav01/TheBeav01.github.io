@@ -15,7 +15,7 @@ function editTooltip(ID,newTooltip) {
 
 
 function Log(string) {
-  console.log(string);
+  console.log(getDate() + " " + string);
 }
 /**
  * Helper method used on load that checks if a cookie with that name exists.
@@ -116,7 +116,6 @@ function getChanceMod() {
  */
 function genWorker(number) {
   if(save.availableWorkers === save.maxWorkers) {
-    Log("At max workers!");
     return;
   }
   var chance = getGenChance(save.availableWorkers) / 10;

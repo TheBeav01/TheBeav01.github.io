@@ -75,3 +75,13 @@ function manageTabs(tab) {
     }
 }
 
+function LayoutCloseOverflowDropdown() {
+    var dd = document.getElementById("OverflowMenu");
+    dd.selectedIndex = 0;
+}
+
+function LoadChangelog() {
+    window.open('/changelog.html','_blank');
+    LayoutCloseOverflowDropdown();
+}
+
