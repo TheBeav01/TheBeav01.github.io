@@ -143,7 +143,6 @@ function adjustButtons() {
   if(save.availableWorkers == 0) {
     var workerButton = document.getElementById("UL1");
     workerButton.disabled = true;
-    Log("No workers lol");
   }
   else {
     var workerButton = document.getElementById("UL1");

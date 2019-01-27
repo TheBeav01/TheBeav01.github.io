@@ -1,3 +1,4 @@
+var story = 0;
 var UL1 = false;
 
 /**
@@ -5,15 +6,15 @@ var UL1 = false;
  */
 function unlockHandler() {
     var worker_button = document.getElementById("UL1");
-
-    if((gold > 25 || save.gold > 25) && !save.workersUnlocked)  {
+    handleStoryMessagesAndUnlocks();
+    if((gold >= 25 || save.gold >= 25) && !save.workersUnlocked)  {
         workers = 0;
         UL1 = true;
         Log("Unlocking workers");
         unlockWorker(0);
 
     }
-    else if((gold > 25 || save.gold > 25) && worker_button.style.visibility != "visible") {
+    else if((gold >= 25 || save.gold >= 25) && worker_button.style.visibility != "visible") {
         console.log("AA");
         unlockWorker(save);
     }
@@ -76,4 +77,31 @@ function unlockWorker(fromSave) {
     save.workersRecieved = save.workers;
 
     lay_init(0);
+}
+
+function handleStoryMessagesAndUnlocks() {
+    story = save.storyPos;
+    if(gold == 0 && story == 0) {
+        story++;
+        displayStoryMessage("You gaze outside of the tower you call home. A gentle breeze"
+        + " flutters through the window, displacing your royal robe. You feel... poor and pennnyless, though"
+        + " you have a whole kingdom to run. Something will get you out of this state..."
+        ,"Story");
+        Log("Blocking for story");
+        }
+    if(gold == 1 && !save.workersUnlocked && story == 1) {
+        displayStoryMessage("You extend your hand out and concentrate for a moment. A gold coin"
+        + " appears in the palm of your hand. Though plain, the coin's size and shape make it suitable"
+        + " to use for purchasing things."
+        ,"Story");
+        story++;
+    }
+    if(save.workersUnlocked && story == 2) {
+        displayStoryMessage("You call for one of your aides. A mere moment passes before they head into your room."
+        + " You place the gold coins in their hand and tell them to get more. They do your bidding. They always do your bidding."
+        + "\nWorkers unlocked!"
+        ,"Story");
+        story++;
+    }
+    save.storyPos = story;
 }

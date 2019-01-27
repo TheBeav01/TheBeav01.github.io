@@ -12,7 +12,7 @@ var save = {
     worldsCompleted : 0,
     realmNum : 0,
     realmsCompleted : 0,
-    
+    storyPos : 0,
     //Encoding ends here
     workersUnlocked : false,
     genChance : 0.5*workers,

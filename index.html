@@ -44,8 +44,8 @@
       </div>
       <div id="Tab_2">
         <div id="Tab2_Label">
-        <h5 class=T2>Repeatable Upgrades</h5>
-        <h5 class="T2">One-time upgrades</h5>
+        <h5 class="T2_L">Repeatable Upgrades</h5>
+        <h5 class="T2_R">One-time upgrades</h5>
         </div>
         <div id="Tab2_Buttons">
         <button class="T2" id="T2_1B" onclick="deductWorkers(0)" title="This increases the gold that workers give per second. Workers working: ">Work in the fields</button>
@@ -66,7 +66,18 @@
       <button class="export" onclick="closeExportField()">Submit</button>
 
     </div>
+    <div id="Popup">
+      <div class="Header">
+        <span id="Header_Text">TEST</span>
+        <span class="close" onclick="destroyPopup()">&times;</span>
+      </div>
+      <div class="Popup_Content">
+        <p id="Popup_Text">Text</p>
+
+      </div>
+    </div> 
   </div>
+ 
   <script type="text/javascript" src="js/main.js"></script>
   <script type="text/javascript" src="js/Utils.js"></script>
   <script type="text/javascript" src="js/Unlocks.js"></script>

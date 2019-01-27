@@ -130,3 +130,34 @@ function resizeTabs() {
     }
 }
 
+function createPopup() {
+    var popup = document.getElementById("Popup");
+    if(popup.style.display == "block") {
+        Log("Already displayed");
+        return;
+    }
+    popup.style.display = "block"
+}
+
+function destroyPopup() {
+    var popup = document.getElementById("Popup");
+    popup.style.display = "none";
+}
+function displayStoryMessage(message) {
+    var popupText = document.getElementById("Popup_Text");
+    popupText.innerHTML = message;
+    var header = document.getElementById("Header_Text");
+    header.innerHTML = "Story";
+    Log(header.innerHTML);
+    createPopup();
+
+
+}
+
+function displayStoryMessage(message,headerMsg) {
+    var popupText = document.getElementById("Popup_Text");
+    var header = document.getElementById("Header_Text");
+    popupText.innerHTML = message;
+    header.innerHTML = headerMsg;
+    createPopup();
+}
