@@ -8,8 +8,11 @@ var save = {
     workersRecieved : 0,
     workersInField : 0,
     workersRecruiting : 0,
-
-
+    worldNum : 0,
+    worldsCompleted : 0,
+    realmNum : 0,
+    realmsCompleted : 0,
+    
     //Encoding ends here
     workersUnlocked : false,
     genChance : 0.5*workers,

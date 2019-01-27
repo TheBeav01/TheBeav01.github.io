@@ -13,7 +13,7 @@
 #Left_Panel {
   border-right: 1px #ff00ff solid;
   float: left;
-  min-width: 500px;  
+  min-width: 25%;  
 }
 #UL1, #UL1_label {
   visibility: hidden;
@@ -22,12 +22,12 @@
   /* display: none; */
 }
 #Right_Panel {
-  margin-top: 5px;
   visibility: hidden;
   position:absolute;
   min-width: 700px;
   max-width: 1340px;
-  left:508px;
+  /* left:508px; */
+  left: 25%;
   border-right: 1px #ff00ff solid;
   border-left: 1px #ff00ff solid;
 }
@@ -39,6 +39,7 @@
 }
 #Top_Panel {
   text-align: center;
+  border-bottom: black 2px solid;
 }
 #TS1 {
   float: left;
@@ -65,33 +66,37 @@
   height: 100%;
   width: 100%;
 }
-#T2_1L, #T2_2L {
-  position: relative;
-  color: #57626d;
-  border: black 1px solid; 
-}
 
 #T2_1B, #T2_2B {
   padding: 10px 20px;
   margin-bottom: 10px;
-  width:100%;
+  width:50%;
   display: block;
   /* border: 1px #00ffff solid; */
 
 }
 
+.T2_OT {
+  float:right;
+  position: relative;
+}
 #Tab_2 {
-  border: black 1px solid;
-  max-width: 500px;
+  /* border: black 1px solid; */
+  position: relative;
+  min-width: 75%;
   float: left;
   /* border: 2px #00ffff solid; */
 
 }
 
+#OverflowMenu {
+  background-color: #16b8b8;
+  font-size: 14px;
+}
 .GameDropdown_Span {
-  border: #ff00ff 1px solid;
   margin-right: 12%;
   float: right;
+
 }
 .Splitter_Div {
   max-width: 250px;
@@ -102,6 +107,8 @@
 .Main_Button{
   padding: 10px 20px;
   margin-bottom: 10px;
+  border: none;
+  width: 50%;
   display: block;
 }
 
@@ -122,12 +129,13 @@
   font-size: 15pt;
   padding-bottom: 2px;
 }
-.T1,.T2,.T3{
-  display: block;
-}
-.Tab {
-  margin-bottom: 30px;
-}
+ .Tab {
+  width: 32%;
+  padding: 0px;
+  margin: 0px;
+  height: 26px;
+  border: none;
+} 
 .Bottom_Panel {
   display: table-row;
   vertical-align: bottom;

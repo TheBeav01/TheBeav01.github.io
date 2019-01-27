@@ -22,7 +22,7 @@
     </div>
 
     <div id="Left_Panel">
-      <h1 class="PAN_LAB">Gold management</h1>
+      <h1 class="PAN_LAB">Resource management</h1>
         <div class="Splitter_Div" id="Button_Div">
         <button class="Main_Button" onclick="recieveGold()">Gatther gold</button>
         <button class="Main_Button" id="UL1"onclick="hireWorker()">Hire Worker</button>
@@ -34,19 +34,29 @@
     </div>
 
     <div id="Right_Panel">
+        <h1 class="PAN_LAB">Other management</h1>
       <button class="Tab" onclick="manageTabs(1)">Town information</button>
-      <button class="Tab" onclick="manageTabs(2)">Manage Workers</button>
-      <button class="Tab" onclick="manageTabs(3)">???</button>
+      <button class="Tab" onclick="manageTabs(2)">Upgrades</button>
+      <button class="Tab" onclick="manageTabs(3)">Special</button>
       <div id="Tab_1">
       <label class="T1" id="T1_1">Town info: 0/0 available workers.</label>
       <label class="T1" id="T1_2">Percentage chance of generation: 0%</label>
       </div>
       <div id="Tab_2">
+        <div id="Tab2_Label">
+        <h5 class=T2>Repeatable Upgrades</h5>
+        <h5 class="T2">One-time upgrades</h5>
+        </div>
+        <div id="Tab2_Buttons">
         <button class="T2" id="T2_1B" onclick="deductWorkers(0)" title="This increases the gold that workers give per second. Workers working: ">Work in the fields</button>
         <button class="T2" id="T2_2B" onclick="deductWorkers(1)" title="This increases the chance of workers appearing. Workers working: ">Recruit more workers</button>
+        </div>
       </div>
       <div id="Tab_3">
-        <label class="T3">...</label>
+        <label class="T3" id="T3_Label">>.> You see nothing.</label>
+      </div>
+      <div id="Tab_4">
+        AA
       </div>
     </div>
 
