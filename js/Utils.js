@@ -58,7 +58,8 @@ function setCookie(cookieName, cookieValue, expiresAt) {
  */
 function initGame() { 
   var date = new Date();
-  manageTabs(1);
+  showTab(1);
+  resizeTabs();
   if(save.gold === undefined) {
     save.gold = 0;
     gold = 0;
@@ -135,4 +136,18 @@ function genWorker(number) {
     else {
       return (Math.pow(goldGenMultiplier,save.workersInField)*save.workers).toPrecision(4);
     }
+}
+
+function adjustButtons() {
+  
+  if(save.availableWorkers == 0) {
+    var workerButton = document.getElementById("UL1");
+    workerButton.disabled = true;
+    Log("No workers lol");
+  }
+  else {
+    var workerButton = document.getElementById("UL1");
+    workerButton.disabled = false;
+   // Log("Workers lol");
+  }
 }

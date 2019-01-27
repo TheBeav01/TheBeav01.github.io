@@ -11,6 +11,7 @@ function unlockHandler() {
         UL1 = true;
         Log("Unlocking workers");
         unlockWorker(0);
+
     }
     else if((gold > 25 || save.gold > 25) && worker_button.style.visibility != "visible") {
         console.log("AA");
@@ -64,12 +65,15 @@ function unlockWorker(fromSave) {
     
         save.availableWorkers = 10;
         save.maxWorkers = 10;
+
     }
     if(save.maxWorkers === 0) {
         Log("max workers at 0");
         save.maxWorkers = 10;
+
     }
     save.workersUnlocked = true;
     save.workersRecieved = save.workers;
+
     lay_init(0);
 }

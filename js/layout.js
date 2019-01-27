@@ -11,69 +11,11 @@ function lay_init(segment) {
         worker_button.style.visibility = "visible";
         worker_label.style.visibility = "visible";
         T2.style.visibility = "visible";
-        manageTabs(1);
+        showTab(1);
+        resizeTabs();
         break;
     }
 
-}
-
-function manageTabs(tab) {
-    var arrT1, arrT2, arrT3;
-    arrT1 = document.getElementsByClassName("T1");
-    arrT2 = document.getElementsByClassName("T2");
-    arrT3 = document.getElementsByClassName("T3");
-    switch(tab) {
-        case 1:
-            for(var i = 0; i < arrT1.length; i++) {
-                var element = arrT1[i];
-                element.style.display = "block";
-            }
-            for(var i = 0; i < arrT2.length; i++) {
-                var element = arrT2[i];
-                element.style.display = "none";
-            }
-            for(var i = 0; i < arrT3.length; i++) {
-                var element = arrT3[i];
-                element.style.display = "none";
-            }
-
-            // adjustLabel("T2_1L", "Committed workers: " + save.workersInField);
-            // adjustLabel("T2_2L", "Committed workers: " + save.workersRecruiting);
-            break;
-        case 2:
-
-            for(var i = 0; i < arrT1.length; i++) {
-                var element = arrT1[i];
-                element.style.display = "none";
-            }
-            for(var i = 0; i < arrT2.length; i++) {
-                var element = arrT2[i];
-                element.style.display = "inline-block";
-            }
-            
-            for(var i = 0; i < arrT3.length; i++) {
-                var element = arrT3[i];
-                element.style.display = "none";
-            }
-            break;
-        case 3:
-            for(var i = 0; i < arrT1.length; i++) {
-                var element = arrT1[i];
-                element.style.display = "none";
-            }
-            for(var i = 0; i < arrT2.length; i++) {
-                var element = arrT2[i];
-                element.style.display = "none";
-            }
-            for(var i = 0; i < arrT3.length; i++) {
-                var element = arrT3[i];
-                element.style.display = "block";
-            }
-            break;
-        default:
-            window.alert("Something went wrong :(");
-            break;
-    }
 }
 
 function LayoutCloseOverflowDropdown() {
@@ -86,7 +28,7 @@ function LoadChangelog() {
     LayoutCloseOverflowDropdown();
 }
 
-function testShow(tabNum) {
+function showTab(tabNum) {
     var elements = document.getElementById("Right_Panel").children;
     var counter = 1;
     var traverse = 0;
@@ -99,45 +41,40 @@ function testShow(tabNum) {
             for(var j = 0; j < childNodes.length; j++) {
                 if(childNodes[j].hasChildNodes) {
     
-                    var cNode = testRec(childNodes[j]);
+                    var cNode = tabRec(childNodes[j]);
                     traverse = 1;
-                    var doc = document.getElementById(cNode.id);
-                    var thing = document.getElementById(cNode.id).getElementsByTagName('*');
-                    if(thing.length == 0) {
+                    var foundDoc = document.getElementById(cNode.id);
+                    var elementList = document.getElementById(cNode.id).getElementsByTagName('*');
+                    if(elementList.length == 0) {
                         if(counter == tabNum) {
-                            Log("Show: " + doc.outerHTML);
                             if(counter != 2) {
-                                doc.style.display = "block";
+                                foundDoc.style.display = "block";
                             }
                             else {
-                                doc.style.display = "inline-block";
+                                foundDoc.style.display = "inline-block";
 
                             }
                         }
                         else {
-                            Log("Hide: " + doc.outerHTML);
-                            doc.style.display = "none";
+                            foundDoc.style.display = "none";
 
                         }
                     }
-                    for(var elem = 0; elem < thing.length;elem++) {
+                    for(var elem = 0; elem < elementList.length;elem++) {
                         if(counter == tabNum) {
-                            Log("Show: " + thing[elem].outerHTML);
                             if(counter != 2) {
-                                thing[elem].style.display = "block";
+                                elementList[elem].style.display = "block";
                             }
                             else {
-                                thing[elem].style.display = "inline-block";
+                                elementList[elem].style.display = "inline-block";
 
                             }
                         }
                         else {
-                            Log("Hide: " + thing[elem].outerHTML);
-                            thing[elem].style.display = "none";
+                            elementList[elem].style.display = "none";
                         }
                     }
                 }
-                var cNodeId = childNodes[j].className;
             }
             counter++;
 
@@ -168,13 +105,8 @@ function testShow(tabNum) {
         }
     }
 }
-function testRec(start) {
+function tabRec(start) {
     if(!start.children.hasChildNodes) {
-        // Log("Outer HTML: " + start.outerHTML + ".\nInner HTML: " + start.innerHTML + ".\nID: " +
-        // start.id);
-        // Log("Root at " + start.tagName);
-        // Log("Early term rec child size: " + start.length);
-        // Log("Next sibling: " + start.nextSiblingElement);
         return start;
 
     }
@@ -183,9 +115,18 @@ function testRec(start) {
     while(childList.hasChildNodes) {
         childList = childList.children;
         count++;
-        // Log(count);
     }
-    // Log("End rec child size: " + childList.length);
     return childList;
+}
+
+function getTabs() {
+    return document.getElementsByClassName('Tab');
+}
+function resizeTabs() {
+    var tabs = getTabs();
+    for(var i=0; i<tabs.length; i++) {
+        var w = (100/tabs.length) - 1;
+        tabs[i].style.width = w + "%";
+    }
 }
 

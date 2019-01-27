@@ -19,10 +19,12 @@ function load() {
     Log("Save file exists");
     decodeSave(cookieSaveString);
     initGame(); //This is in Utils.js
+
   }
   else {
     Log("Save file does not exist. Creating...");
     setCookie("save",gold.toString(),365);  
+    SaveGame();
   }
   adjustLabel("ManualGoldButton", "Gold: " + save.gold);
   gameLoop(lastTime);
@@ -97,10 +99,14 @@ function update(ticks) {
     adjustLabel("ManualGoldButton", "Gold: " + save.gold);
     document.getElementById("T2_1B").disabled = true;
     document.getElementById("T2_2B").disabled = true;
+
   }
   adjustLabel("TS2","Current time: " + getDate());
- 
+
   unlockHandler();
+  adjustButtons();
+  checkCosts(displayGold);
+
 }
 /**
  * Calculates the cost, then hires a worker if you have enough gold. Workers give a flat +1 GPS bonus.

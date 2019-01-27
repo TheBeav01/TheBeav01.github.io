@@ -15,28 +15,50 @@
   float: left;
   min-width: 25%;  
 }
-#UL1, #UL1_label {
-  visibility: hidden;
-  /* border: 1px #00ffff solid; */
 
-  /* display: none; */
+.Splitter_Div {
+  max-width: 250px;
+  /* display: inline; */
+  
 }
-#Right_Panel {
-  visibility: hidden;
-  position:absolute;
-  min-width: 700px;
-  max-width: 1340px;
-  /* left:508px; */
-  left: 25%;
-  border-right: 1px #ff00ff solid;
-  border-left: 1px #ff00ff solid;
-}
+/* Also splitter div */
 #Label_Div {
   border: 2px #00ffff solid;
   margin-left: 50%;
   bottom: 90px;
   position: relative;
 }
+
+.Main_Button{
+  padding: 10px 20px;
+  margin-bottom: 10px;
+  border: none;
+  width: 50%;
+  display: block;
+}
+
+.Main_Button:hover{
+  background-color: #16b8b8;
+}
+
+.Main_Button:disabled {
+  background-color: #b81616;
+  color: black; 
+}
+.Button_Label {
+  color: #57626d;
+  border: black 1px solid;
+  display: block;
+  margin-bottom: 30px;
+}
+
+#UL1, #UL1_label {
+  visibility: hidden;
+}
+
+
+
+
 #Top_Panel {
   text-align: center;
   border-bottom: black 2px solid;
@@ -46,9 +68,15 @@
   /* border: 1px #00ffff solid; */
 
 }
-#TS3 {
+
+.GameDropdown_Span {
+  margin-right: 12%;
   float: right;
-  margin-right: 5px;
+}
+
+#OverflowMenu {
+  background-color: #16b8b8;
+  font-size: 14px;
 }
 
 #Export_div {
@@ -67,19 +95,35 @@
   width: 100%;
 }
 
-#T2_1B, #T2_2B {
-  padding: 10px 20px;
-  margin-bottom: 10px;
-  width:50%;
-  display: block;
-  /* border: 1px #00ffff solid; */
-
+#Right_Panel {
+  visibility: hidden;
+  position:absolute;
+  min-width: 700px;
+  max-width: 1340px;
+  left: 25%;
+  border-right: 1px #ff00ff solid;
+  border-left: 1px #ff00ff solid;
 }
 
-.T2_OT {
-  float:right;
-  position: relative;
+.PAN_LAB {
+  color: #57626d;
+  font-size: 15pt;
+  padding-bottom: 2px;
 }
+
+.Tab {
+  width: 32%;
+  padding: 0px;
+  margin: 0px;
+  height: 26px;
+  border: none;
+} 
+
+.Tab:hover {
+  background-color: #16b8b8;
+}
+
+
 #Tab_2 {
   /* border: black 1px solid; */
   position: relative;
@@ -89,34 +133,25 @@
 
 }
 
-#OverflowMenu {
-  background-color: #16b8b8;
-  font-size: 14px;
-}
-.GameDropdown_Span {
-  margin-right: 12%;
-  float: right;
-
-}
-.Splitter_Div {
-  max-width: 250px;
-  /* display: inline; */
-  
-}
-
-.Main_Button{
+#T2_1B, #T2_2B {
   padding: 10px 20px;
   margin-bottom: 10px;
-  border: none;
-  width: 50%;
+  width:50%;
   display: block;
+  border:none;
+  /* border: 1px #00ffff solid; */
+  animation-duration: 0ms;
 }
-
-.Button_Label {
-  color: #57626d;
-  border: black 1px solid;
-  display: block;
-  margin-bottom: 30px;
+#T2_1B:hover, #T2_2B:hover {
+  background-color: #16b8b8;
+}
+#T2_1B:disabled, #T2_2B:disabled {
+  background-color: #b81616;
+  color: black;
+}
+.T2_OT {
+  float:right;
+  position: relative;
 }
 
 .export {
@@ -124,24 +159,12 @@
   border: 1px #00ffff solid;
 
 }
-.PAN_LAB {
-  color: #57626d;
-  font-size: 15pt;
-  padding-bottom: 2px;
-}
- .Tab {
-  width: 32%;
-  padding: 0px;
-  margin: 0px;
-  height: 26px;
-  border: none;
-} 
+
 .Bottom_Panel {
   display: table-row;
   vertical-align: bottom;
   height: 1px;
   border: 2px #AAAAAA solid;
-
 }
 
 
