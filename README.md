@@ -1,0 +1,1 @@
+You are a benevolent king without wealth presiding over a kingdom. Your subjects love you, and you have been at the job for as long as you can remember. One day, you decide that maybe someone so powerful should not be so poor. Creating wealth is easy, but keeping it is not as easy a task.
