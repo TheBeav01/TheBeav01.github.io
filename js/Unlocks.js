@@ -105,3 +105,7 @@ function handleStoryMessagesAndUnlocks() {
     }
     save.storyPos = story;
 }
+
+function unlockUpgrade(name, tooltip, resourceReq, resourceAmt, effect) {
+    
+}

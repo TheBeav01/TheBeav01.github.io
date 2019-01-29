@@ -1,5 +1,6 @@
 var lastTime = 0;
 var gold = 0;
+var goldRes = undefined;
 var workers = 0;
 var isNewPlayer = true;
 var GPT = 0;
@@ -9,6 +10,7 @@ var version = "0.01.05";
 var goldGenMultiplier = 1.05;
 var wGPS = 0; //Worker gold per second
 var segment = -1;
+var resourceList = [];
 /**
  * Loads the game. Is the first function called.
  */
@@ -19,11 +21,14 @@ function load() {
     Log("Save file exists");
     decodeSave(cookieSaveString);
     initGame(); //This is in Utils.js
-
+    
   }
   else {
     Log("Save file does not exist. Creating...");
-    setCookie("save",gold.toString(),365);  
+    setCookie("save",gold.toString(),365);
+    goldRes = new Resource("Gold",0,true,true,true,0);
+    addResource(goldRes);
+    Log(resourceList);
     SaveGame();
   }
   adjustLabel("ManualGoldButton", "Gold: " + save.gold);
@@ -36,10 +41,13 @@ function recieveGold() {
   if(save.gold === undefined) {
     Log("Undefined?");
   }
+  Log(resourceList[0].name);
+  save.resourcesOwned = resourceList;
   gold = save.gold;
   save.gold++;
   gold++;
 }
+
 /**
  * The loop of this game. This runs via requestAnimationFrame(), 
  * and a tick counter is kept for timekeeping purposes. It should run at 60 ticks per second

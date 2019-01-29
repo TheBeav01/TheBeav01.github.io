@@ -161,3 +161,9 @@ function displayStoryMessage(message,headerMsg) {
     header.innerHTML = headerMsg;
     createPopup();
 }
+
+function adjustUpgradeTooltips() {
+    editTooltip("T2_1B","This increases the gold that workers give per second. Workers working: " + save.workersInField);
+    editTooltip("T2_2B","This increases the chance of workers appearing. Workers working: " + save.workersRecruiting);
+
+}

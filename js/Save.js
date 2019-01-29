@@ -13,6 +13,7 @@ var save = {
     realmNum : 0,
     realmsCompleted : 0,
     storyPos : 0,
+    resourcesOwned : resourceList,
     //Encoding ends here
     workersUnlocked : false,
     genChance : 0.5*workers,
@@ -36,6 +37,7 @@ function decodeSave(stringToDecode) {
     var loadString = stringToDecode;
     Log(atob(stringToDecode));
     save = JSON.parse(atob(stringToDecode));
+    createResObjs(save);
     Log(save.availableWorkers + " Available workers (after iteration)");
     if(save.workers > 0) {
         unlockWorker(1);
@@ -106,4 +108,8 @@ function SaveGame() {
       var save = textField.textContent;
       Log(save);
     }
+  }
+
+  function printSS() {
+    encodeSave();
   }

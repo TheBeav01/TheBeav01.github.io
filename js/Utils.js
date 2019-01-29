@@ -66,8 +66,11 @@ function initGame() {
   }
   adjustLabel("ManualGoldButton",save.gold);
   gold = save.gold;
+  var Res = new Resource();
+  resourceList.push(save.resourcesOwned);
   adjustLabel("TS2", "Current Time: " + getDate());
   adjustLabel("UL1_label", "Workers: " + save.workers);
+  adjustUpgradeTooltips();
   unlockHandler();
 }
 
@@ -149,4 +152,8 @@ function adjustButtons() {
     workerButton.disabled = false;
    // Log("Workers lol");
   }
+}
+
+function applyEffect() {
+  
 }
