@@ -66,7 +66,6 @@ function initGame() {
   }
   adjustLabel("ManualGoldButton",save.gold);
   gold = save.gold;
-  var Res = new Resource();
   resourceList.push(save.resourcesOwned);
   adjustLabel("TS2", "Current Time: " + getDate());
   adjustLabel("UL1_label", "Workers: " + save.workers);
@@ -99,7 +98,6 @@ function getGenChance(worker) {
  var adjMod = Number.parseFloat(chanceMod);
  chance = (adjChance+adjMod).toPrecision(3);
  if(chance === NaN) {
-   Log("Chance is nan");
    chance = 0;
  }
   return chance;
@@ -137,7 +135,7 @@ function genWorker(number) {
       return save.workers;
     }
     else {
-      return (Math.pow(goldGenMultiplier,save.workersInField)*save.workers).toPrecision(4);
+      return (Math.pow(goldGenMultiplier,save.workersInField)*save.workers).toPrecision(3);
     }
 }
 
@@ -150,10 +148,5 @@ function adjustButtons() {
   else {
     var workerButton = document.getElementById("UL1");
     workerButton.disabled = false;
-   // Log("Workers lol");
   }
-}
-
-function applyEffect() {
-  
 }

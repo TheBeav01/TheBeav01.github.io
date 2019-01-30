@@ -15,7 +15,6 @@ function unlockHandler() {
 
     }
     else if((gold >= 25 || save.gold >= 25) && worker_button.style.visibility != "visible") {
-        console.log("AA");
         unlockWorker(save);
     }
     // else if(gold > 25 && save.workersUnlocked) {
@@ -29,12 +28,9 @@ function unlockHandler() {
  * @param {*} resourceGiven The resource that is used up in the process
  * @param {*} amOwned The amount of resources owned
  */
-function CalculateCost(resourceToCalculate, resourceGiven, amOwned) {
+function CalculateCost(resourceToCalculate, amOwned) {
     var am = 0;
     if(resourceToCalculate === "worker") {
-        // am = 25 + Math.floor(4.5*amOwned);
-        //TODO: Fix this.
-        //NOTE: These numbers are experimental!
         am = Math.floor(25 * Math.pow(1.10,amOwned));
     }
     return am;
@@ -46,8 +42,7 @@ function CalculateCost(resourceToCalculate, resourceGiven, amOwned) {
  */
 function checkCosts(costToCheck) {
     var button = document.getElementById("UL1");
-    var cost = CalculateCost("worker", save.gold, save.workersRecieved);
-    // Log("AMOWNED: " + costToCheck +" C: " + cost);
+    var cost = CalculateCost("worker", save.workersRecieved);
     if(costToCheck < cost) {
         button.disabled = true;
     }
@@ -63,7 +58,7 @@ function unlockWorker(fromSave) {
     if(fromSave === 0) {
         Log("Unlocking from natural play");
         GPS = save.workers;
-    
+        addResource(new Resource("Worker",0,false,false,true,0));        
         save.availableWorkers = 10;
         save.maxWorkers = 10;
 
@@ -87,7 +82,6 @@ function handleStoryMessagesAndUnlocks() {
         + " flutters through the window, displacing your royal robe. You feel... poor and pennnyless, though"
         + " you have a whole kingdom to run. Something will get you out of this state..."
         ,"Story");
-        Log("Blocking for story");
         }
     if(gold == 1 && !save.workersUnlocked && story == 1) {
         displayStoryMessage("You extend your hand out and concentrate for a moment. A gold coin"

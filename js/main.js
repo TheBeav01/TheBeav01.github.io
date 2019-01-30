@@ -20,8 +20,11 @@ function load() {
   if(cookieExists("save") != "") {
     Log("Save file exists");
     decodeSave(cookieSaveString);
+    Log(save.resourcesOwned);
+
     initGame(); //This is in Utils.js
-    
+    initResources();
+
   }
   else {
     Log("Save file does not exist. Creating...");
@@ -41,11 +44,12 @@ function recieveGold() {
   if(save.gold === undefined) {
     Log("Undefined?");
   }
-  Log(resourceList[0].name);
-  save.resourcesOwned = resourceList;
-  gold = save.gold;
-  save.gold++;
-  gold++;
+  if(findResource("Gold") == -1) {
+    resourceList.push(new Resource("Gold",gold,true,true,true,0,true));
+    save.resourcesOwned = resourceList;
+  }
+  incrementResource("Gold",1);
+  gold = getResourceAmt("Gold");
 }
 
 /**
@@ -55,7 +59,6 @@ function recieveGold() {
  */
 function gameLoop(timeStamp) {
   ticks++;
-  var dt = timeStamp - lastTime;
   update(ticks);
   requestAnimationFrame(gameLoop)
   }
@@ -64,7 +67,6 @@ function gameLoop(timeStamp) {
    */
 function update(ticks) {
   
-  //Just in case anything needs to fire once a second
   if(gold === NaN || gold === undefined) {
     Log("Setting gold to 0");
     gold = 0;
@@ -82,15 +84,11 @@ function update(ticks) {
     wGPS = getWorkerGoldPerSecond();
     GPS = wGPS; //Plus anything else!
     GPT = GPS/60;
-    var parsedFloatSG = Number.parseFloat(save.gold);
-    parsedFloatSG += GPT;
-    save.gold = parsedFloatSG;
-    var displayGold = Number.parseInt(save.gold);
-    gold = displayGold; 
-    var nextString = displayGold + "/" + CalculateCost("worker", save.gold, save.workersRecieved);
-
+    gold += GPT;
+    var displayGold = Number.parseInt(gold);
+    var nextString = displayGold + "/" + CalculateCost("worker",save.workersRecieved);
+    setResource("Gold",displayGold);
     checkCosts(displayGold);
-
     adjustLabel("ManualGoldButton", "Gold: " + displayGold);
     adjustLabel("UL1_label", "Workers: " + save.workers + " (" + GPS + " GPS) " + nextString);
     adjustLabel("T1_2", "Percentage chance of generation: " + getGenChance(save.availableWorkers));
@@ -104,7 +102,7 @@ function update(ticks) {
     }
     }
   else {
-    adjustLabel("ManualGoldButton", "Gold: " + save.gold);
+    adjustLabel("ManualGoldButton", "Gold: " + gold);
     document.getElementById("T2_1B").disabled = true;
     document.getElementById("T2_2B").disabled = true;
 
@@ -120,23 +118,25 @@ function update(ticks) {
  * Calculates the cost, then hires a worker if you have enough gold. Workers give a flat +1 GPS bonus.
  */
 function hireWorker() {
-  var cost = CalculateCost("worker", save.gold, save.workersRecieved);
-  if(cost > save.gold) {
-    Log("Too expensive!");
+  Log("G: " + Number.parseInt(gold) + " resource " + getResourceAmt("Gold"));
+  var cost = CalculateCost("worker", save.workersRecieved);
+  if(cost > gold) {
     return;
   }
   else if(save.availableWorkers === 0) {
     return;
   }
   else {
-    save.gold -= cost;
+    gold -= cost;
+    setResource("Gold",Number.parseInt(gold));
     workers++;
     save.workersRecieved++;
+    incrementResource("Worker",1);
     GPS = Number.parseInt(workers)*wGPS;
     GPT = GPS/60;
     save.workers = workers;
     save.availableWorkers--;
-    adjustLabel("UL1_label", "Workers: " + save.workers + " (" + GPS + " gold per second)");
+    adjustLabel("UL1_label", "Workers: " + getResourceAmt("Worker") + " (" + GPS + " gold per second)");
     adjustLabel("T1_1","Town info: " + save.availableWorkers + " available workers (Max: " + save.maxWorkers + ")")
   }
 }
@@ -145,12 +145,9 @@ function deductWorkers(opCode) {
     Log("Returning");
     return;
   }
-  var Field = document.getElementById("T2_1B");
-  var Recruit = document.getElementById("T2_2B");
- 
   save.workers--;
   GPS--;
-  var nextString = Number.parseInt(save.gold) + "/" + CalculateCost("worker", save.gold, save.workersRecieved);
+  var nextString = Number.parseInt(gold) + "/" + CalculateCost("worker", save.workersRecieved);
   if(save.workers === 0) {
     adjustLabel("UL1_label", "Workers: " + save.workers + " (" + GPS + " gold per second) " + nextString);
     save.gold = Number.parseInt(save.gold);

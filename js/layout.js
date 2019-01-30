@@ -133,7 +133,6 @@ function resizeTabs() {
 function createPopup() {
     var popup = document.getElementById("Popup");
     if(popup.style.display == "block") {
-        Log("Already displayed");
         return;
     }
     popup.style.display = "block"
@@ -166,4 +165,29 @@ function adjustUpgradeTooltips() {
     editTooltip("T2_1B","This increases the gold that workers give per second. Workers working: " + save.workersInField);
     editTooltip("T2_2B","This increases the chance of workers appearing. Workers working: " + save.workersRecruiting);
 
+}
+
+
+function option_ClickTest(test) {
+    var agent = navigator.userAgent.toLowerCase();
+    if(agent.indexOf("chrome") > -1) {
+        let selected = test.options[test.selectedIndex];
+        let index = selected.index;
+        switch(index) {
+            case 1:
+                SaveGame();
+                break;
+            case 2:
+                Import();
+                break;
+            case 3:
+                Export();
+                break;
+            case 4:
+                LoadChangelog();
+                break;
+            default:
+                Log("Invalid option");
+        }
+    }
 }

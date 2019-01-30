@@ -35,9 +35,7 @@ function getSave() {
  */
 function decodeSave(stringToDecode) {
     var loadString = stringToDecode;
-    Log(atob(stringToDecode));
     save = JSON.parse(atob(stringToDecode));
-    createResObjs(save);
     Log(save.availableWorkers + " Available workers (after iteration)");
     if(save.workers > 0) {
         unlockWorker(1);
@@ -52,11 +50,9 @@ function decodeSave(stringToDecode) {
    * Translates a variety of game features into a save string that will likely grow over time.
    */
 function encodeSave() {
-    console.log(JSON.stringify(save));
     save.gold = Number.parseInt(gold);
     var encString = JSON.stringify(save);
     var ret = btoa(encString);
-    Log("Test: " + ret);
     return ret;
   }
 /**
@@ -64,7 +60,6 @@ function encodeSave() {
  */
 function SaveGame() {
     saveString = encodeSave();
-    Log("SS: " + saveString);
     save.gold = gold;
     setCookie("save",saveString,365);
     LayoutCloseOverflowDropdown();
@@ -106,7 +101,6 @@ function SaveGame() {
     div.style.visibility = "hidden";
     if(isImporting === true) {
       var save = textField.textContent;
-      Log(save);
     }
   }
 
