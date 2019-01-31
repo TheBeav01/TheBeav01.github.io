@@ -45,14 +45,18 @@
       <div id="Tab_2">
         <div id="Tab2_Label">
         <h5 class="T2_L">Repeatable Upgrades</h5>
-        <h5 class="T2_R">One-time upgrades</h5>
+        <h5 class="T2_RL">One-time upgrades</h5>
+
         </div>
         <div id="Tab2_Buttons">
         <button class="T2_L" id="T2_1B" onclick="deductWorkers(0)" title="This increases the gold that workers give per second. Workers working: ">Motivate workers</button>
         <button class="T2_L" id="T2_2B" onclick="deductWorkers(1)" title="This increases the chance of workers appearing. Workers working: ">Run recruitment campaign</button>
-        <span id="RightSide" onclick="spanbuttonTest(this)">
-        <button class="T2_R" id="T2_WorkerEff_1">Worker efficiency++</button>
-        </span>
+
+        </div>
+        <div id="RightSide" onclick="getButton(event)">
+            <span></span>
+            <!-- <button class="T2_R" id="T2_WorkerEff_1">Worker efficiency++</button>
+            <button class="T2_R" id="T2_WorkerEff_2">Worker efficiency++</button> -->
         </div>
       </div>
       <div id="Tab_3">

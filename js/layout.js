@@ -32,6 +32,7 @@ function LoadChangelog() {
 }
 
 function showTab(tabNum) {
+    selectedTab = tabNum;
     var elements = document.getElementById("Right_Panel").children;
     var counter = 1;
     var traverse = 0;
@@ -195,6 +196,26 @@ function option_ClickTest(test) {
     }
 }
 
-function spanbuttonTest(span) {
-    Log("Hi");
+function getButton(event) {
+    if(event.target.id.indexOf("WorkerEff",0) != -1) {
+        Log("Double worker eff");
+    }
+    Log("Clicked");
+}
+
+function createUpgrade(title, tooltip, id) {
+    // var hidden = document.getElementById()
+
+    let button = document.createElement("button");
+    button.append(document.createTextNode(title));
+    button.setAttribute("class","T2_R");
+    button.setAttribute("id",id);
+    button.setAttribute("title",tooltip);
+    if(selectedTab != 2) {
+        Log("None");
+        button.style.display = "none";
+    }
+    Log(button.style.color);
+    let element = document.getElementById("RightSide");
+    element.append(button);
 }
