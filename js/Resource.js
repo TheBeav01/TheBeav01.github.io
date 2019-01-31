@@ -30,7 +30,7 @@ function findResource(toFind) {
             Log("Undef at " + i);
             resourceList.splice(i,1);
         }
-        if(name === toFind) {
+        if(name.toLowerCase() === toFind.toLowerCase()) {
             return i;
         }
     }
@@ -68,14 +68,20 @@ function getResourceAmt(name) {
 }
 
 function initResources() {
-    var arr = save.resourcesOwned;
     resourceList = save.resourcesOwned;
-    // for(let i = 0; i < resourceList.length; i++) {
-    // }
     if(findResource("Gold") == -1) {
         resourceList.push(new Resource("Gold",gold,true,true,true,0,true));
         save.resourcesOwned = resourceList;
       }
+}
+
+function res_GetIndexOfResFromSave(res) {
+    for(let i=0;i<save.resourcesOwned.length;i++) {
+        if(res.toLowerCase() === save.resourcesOwned[i].name.toLowerCase()) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 // function createResObjs(save) {

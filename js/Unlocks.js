@@ -7,14 +7,12 @@ var UL1 = false;
 function unlockHandler() {
     var worker_button = document.getElementById("UL1");
     handleStoryMessagesAndUnlocks();
-    if((gold >= 25 || save.gold >= 25) && !save.workersUnlocked)  {
+    if((gold >= 25) && save.storyPos < 3)  {
         workers = 0;
         UL1 = true;
         Log("Unlocking workers");
-        unlockWorker(0);
-
     }
-    else if((gold >= 25 || save.gold >= 25) && worker_button.style.visibility != "visible") {
+    else if((gold >= 25) && worker_button.style.visibility != "visible") {
         unlockWorker(save);
     }
     // else if(gold > 25 && save.workersUnlocked) {
@@ -54,10 +52,8 @@ function checkCosts(costToCheck) {
  * Unlocks the worker
  */
 function unlockWorker(fromSave) {
-    Log("Unlocking workers: " + save.workers + " workers");
     if(fromSave === 0) {
         Log("Unlocking from natural play");
-        GPS = save.workers;
         addResource(new Resource("Worker",0,false,false,true,0));        
         save.availableWorkers = 10;
         save.maxWorkers = 10;
@@ -68,8 +64,11 @@ function unlockWorker(fromSave) {
         save.maxWorkers = 10;
 
     }
-    save.workersUnlocked = true;
-    save.workersRecieved = save.workers;
+    if(fromSave > 0) {
+        let index = res_GetIndexOfResFromSave("Worker");
+        workers = save.resourcesOwned[index].amt;
+    }
+    save.workersRecieved = workers;
 
     lay_init(0);
 }
@@ -83,19 +82,20 @@ function handleStoryMessagesAndUnlocks() {
         + " you have a whole kingdom to run. Something will get you out of this state..."
         ,"Story");
         }
-    if(gold == 1 && !save.workersUnlocked && story == 1) {
+    if(gold == 1  && story == 1) {
         displayStoryMessage("You extend your hand out and concentrate for a moment. A gold coin"
         + " appears in the palm of your hand. Though plain, the coin's size and shape make it suitable"
         + " to use for purchasing things."
         ,"Story");
         story++;
     }
-    if(save.workersUnlocked && story == 2) {
+    if(gold == 25 && story == 2) {
         displayStoryMessage("You call for one of your aides. A mere moment passes before they head into your room."
         + " You place the gold coins in their hand and tell them to get more. They do your bidding. They always do your bidding."
         + "\nWorkers unlocked!"
         ,"Story");
         story++;
+        unlockWorker(0);
     }
     save.storyPos = story;
 }

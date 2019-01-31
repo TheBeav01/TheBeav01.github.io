@@ -5,7 +5,7 @@ function lay_init(segment) {
         var worker_button = document.getElementById("UL1");
         var worker_label = document.getElementById("UL1_label");
         var T2 = document.getElementById("Right_Panel");
-        adjustLabel("UL1_label", "Workers: " + save.workers);
+        adjustLabel("UL1_label", "Workers: " + workers);
         adjustLabel("T1_1","Town info: " + save.availableWorkers + 
         " available workers (Max: " + save.maxWorkers + ")")
         worker_button.style.visibility = "visible";

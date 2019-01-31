@@ -1,8 +1,6 @@
 //Represents a save someone might have.
 var save = {
     gameVersion : "0.01.01",
-    gold : gold,
-    workers : workers,
     maxWorkers : workers,
     availableWorkers : 0,
     workersRecieved : 0,
@@ -36,12 +34,16 @@ function getSave() {
 function decodeSave(stringToDecode) {
     var loadString = stringToDecode;
     save = JSON.parse(atob(stringToDecode));
-    Log(save.availableWorkers + " Available workers (after iteration)");
-    if(save.workers > 0) {
+    if(save.storyPos == 3) {
         unlockWorker(1);
-        
     }
-    GPS = Number.parseInt(save.workers);
+    let index = res_GetIndexOfResFromSave("Worker");
+    if(save.resourcesOwned[index] == undefined) {
+      GPS = 0;
+    }
+    else {
+    GPS = Number.parseInt(save.resourcesOwned[index].amt);
+    }
     adjustLabel("T1_1", "Town info: " + save.availableWorkers + " available workers (Max: " + save.maxWorkers + ")")
     return loadString;
   }
@@ -50,7 +52,7 @@ function decodeSave(stringToDecode) {
    * Translates a variety of game features into a save string that will likely grow over time.
    */
 function encodeSave() {
-    save.gold = Number.parseInt(gold);
+    gold = Number.parseInt(gold);
     var encString = JSON.stringify(save);
     var ret = btoa(encString);
     return ret;
@@ -60,7 +62,6 @@ function encodeSave() {
  */
 function SaveGame() {
     saveString = encodeSave();
-    save.gold = gold;
     setCookie("save",saveString,365);
     LayoutCloseOverflowDropdown();
   }

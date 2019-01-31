@@ -17,6 +17,7 @@ var resourceList = [];
 function load() {
   var cookieSaveString = cookieExists("save");
   setVersion();
+
   if(cookieExists("save") != "") {
     Log("Save file exists");
     decodeSave(cookieSaveString);
@@ -34,14 +35,14 @@ function load() {
     Log(resourceList);
     SaveGame();
   }
-  adjustLabel("ManualGoldButton", "Gold: " + save.gold);
+  adjustLabel("ManualGoldButton", "Gold: " + gold);
   gameLoop(lastTime);
 }
 /**
  * Adds 1 gold per click.
  */
 function recieveGold() {
-  if(save.gold === undefined) {
+  if(gold === undefined) {
     Log("Undefined?");
   }
   if(findResource("Gold") == -1) {
@@ -72,7 +73,7 @@ function update(ticks) {
     gold = 0;
   }
   if(save.workersRecieved > 0) {
-    if(save.workers > 0) {
+    if(workers > 0) {
       document.getElementById("T2_1B").disabled = false;
       document.getElementById("T2_2B").disabled = false;
     }
@@ -80,7 +81,6 @@ function update(ticks) {
       document.getElementById("T2_1B").disabled = true;
       document.getElementById("T2_2B").disabled = true;
     }
-    workers = save.workers;
     wGPS = getWorkerGoldPerSecond();
     GPS = wGPS; //Plus anything else!
     GPT = GPS/60;
@@ -90,7 +90,7 @@ function update(ticks) {
     setResource("Gold",displayGold);
     checkCosts(displayGold);
     adjustLabel("ManualGoldButton", "Gold: " + displayGold);
-    adjustLabel("UL1_label", "Workers: " + save.workers + " (" + GPS + " GPS) " + nextString);
+    adjustLabel("UL1_label", "Workers: " + workers + " (" + GPS + " GPS) " + nextString);
     adjustLabel("T1_2", "Percentage chance of generation: " + getGenChance(save.availableWorkers));
     if(ticks%60 === 0) {
       var ranNumber = Math.random();
@@ -134,23 +134,23 @@ function hireWorker() {
     incrementResource("Worker",1);
     GPS = Number.parseInt(workers)*wGPS;
     GPT = GPS/60;
-    save.workers = workers;
+    workers = getResourceAmt("Worker");
     save.availableWorkers--;
     adjustLabel("UL1_label", "Workers: " + getResourceAmt("Worker") + " (" + GPS + " gold per second)");
     adjustLabel("T1_1","Town info: " + save.availableWorkers + " available workers (Max: " + save.maxWorkers + ")")
   }
 }
 function deductWorkers(opCode) {
-  if(save.workers === 0 ) {
+  if(getResourceAmt("Worker") === 0 ) {
     Log("Returning");
     return;
   }
-  save.workers--;
   GPS--;
+  incrementResource("Worker",-1);
   var nextString = Number.parseInt(gold) + "/" + CalculateCost("worker", save.workersRecieved);
-  if(save.workers === 0) {
-    adjustLabel("UL1_label", "Workers: " + save.workers + " (" + GPS + " gold per second) " + nextString);
-    save.gold = Number.parseInt(save.gold);
+  if(workers === 0) {
+    adjustLabel("UL1_label", "Workers: " + workers + " (" + GPS + " gold per second) " + nextString);
+    gold = Number.parseInt(gold);
   }
   switch(opCode) {
     case 0:
@@ -164,6 +164,7 @@ function deductWorkers(opCode) {
       break;
     case 1:
       save.workersRecruiting++;
+      workers--;
       var cm = getChanceMod() + 0.01;
       setChanceMod(cm);
 

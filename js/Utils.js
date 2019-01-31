@@ -60,15 +60,18 @@ function initGame() {
   var date = new Date();
   showTab(1);
   resizeTabs();
-  if(save.gold === undefined) {
-    save.gold = 0;
+  var index = res_GetIndexOfResFromSave("Gold");
+  if(save.resourcesOwned[index].amt === undefined) {
     gold = 0;
+    save.resourcesOwned[index].amt = 0;
   }
-  adjustLabel("ManualGoldButton",save.gold);
-  gold = save.gold;
-  resourceList.push(save.resourcesOwned);
+  adjustLabel("ManualGoldButton",save.resourcesOwned[index].amt);
+  gold = save.resourcesOwned[index].amt;
+  pushResourcesToLive();
+  workers = getResourceAmt("Worker");
+  // resourceList.push(save.resourcesOwned);
   adjustLabel("TS2", "Current Time: " + getDate());
-  adjustLabel("UL1_label", "Workers: " + save.workers);
+  adjustLabel("UL1_label", "Workers: " + getResourceAmt("Worker"));
   adjustUpgradeTooltips();
   unlockHandler();
 }
@@ -132,10 +135,10 @@ function genWorker(number) {
 }
   function getWorkerGoldPerSecond() {
     if(save.workersInField === 0) {
-      return save.workers;
+      return workers;
     }
     else {
-      return (Math.pow(goldGenMultiplier,save.workersInField)*save.workers).toPrecision(3);
+      return (Math.pow(goldGenMultiplier,save.workersInField)*workers).toPrecision(3);
     }
 }
 
@@ -148,5 +151,11 @@ function adjustButtons() {
   else {
     var workerButton = document.getElementById("UL1");
     workerButton.disabled = false;
+  }
+}
+
+function pushResourcesToLive() {
+  for(let i=0;i<save.resourcesOwned.length;i++) {
+    resourceList.push(save.resourcesOwned[i]);
   }
 }
