@@ -1,6 +1,6 @@
 
 class Resource {
-    constructor(name, amt, isGeneratable, isFindable, removeOnAscent, genPerSecond, isPrimary = false) {
+    constructor(name, amt, isGeneratable, isFindable, removeOnAscent, genPerSecond = -1, isPrimary = false) {
     this.name = name;
     this.amt = amt;
     this.isGeneratable = isGeneratable;
@@ -62,7 +62,6 @@ function getResourceAmt(name) {
         return undefined;
     }
     else {
-        Log(resourceList[index].amt);
         return resourceList[index].amt;
     }
 }

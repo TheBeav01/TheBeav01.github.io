@@ -13,7 +13,6 @@ var save = {
     storyPos : 0,
     resourcesOwned : resourceList,
     //Encoding ends here
-    workersUnlocked : false,
     genChance : 0.5*workers,
 
 }

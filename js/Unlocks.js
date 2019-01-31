@@ -1,6 +1,6 @@
 var story = 0;
 var UL1 = false;
-
+let TRIGGER_THRESHOLD = 500;
 /**
  * Handles unlocks at load or update.
  */
@@ -15,10 +15,6 @@ function unlockHandler() {
     else if((gold >= 25) && worker_button.style.visibility != "visible") {
         unlockWorker(save);
     }
-    // else if(gold > 25 && save.workersUnlocked) {
-    //     save.workersUnlocked = true;
-    //     unlockWorker(save);
-    // }
 }
 /**
  * calculates the cost of a specific resource given how many of that you already own.
@@ -57,7 +53,7 @@ function unlockWorker(fromSave) {
         addResource(new Resource("Worker",0,false,false,true,0));        
         save.availableWorkers = 10;
         save.maxWorkers = 10;
-
+        workers = 0;
     }
     if(save.maxWorkers === 0) {
         Log("max workers at 0");
@@ -92,14 +88,25 @@ function handleStoryMessagesAndUnlocks() {
     if(gold == 25 && story == 2) {
         displayStoryMessage("You call for one of your aides. A mere moment passes before they head into your room."
         + " You place the gold coins in their hand and tell them to get more. They do your bidding. They always do your bidding."
-        + "\nWorkers unlocked!"
+        + "\n\rWorkers unlocked!"
         ,"Story");
         story++;
         unlockWorker(0);
     }
-    save.storyPos = story;
-}
+    if(gold >= TRIGGER_THRESHOLD && story == 3) {
+        story++;
+        //TODO: create these as items.
 
-function unlockUpgrade(name, tooltip, resourceReq, resourceAmt, effect) {
-    
+        Log("Create the leather bag, the mysterious sphere, and the chronometer as resources");
+        displayStoryMessage("You curse under your breath as the golden coins tumble to the floor."
+        + " One of your workers produces a leather bag, your own, in fact. Before you could ask"
+        + " where they found it, they head out of your room. At least they found it!\n\n"
+        + "Obtained:\n1x Bag of holding\n1x Chronometer (Inside)\n1x Mysterious red sphere"
+        ,"Story");
+        addResource(new Resource("Bag of Holding",1,false,false,false,0));
+        addResource(new Resource("The Chronometer",1,false,false,false,0));
+        addResource(new Resource("Mysterious Sphere",1,false,false,false));
+
+    }
+    save.storyPos = story;
 }

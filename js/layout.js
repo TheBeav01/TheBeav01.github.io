@@ -5,6 +5,9 @@ function lay_init(segment) {
         var worker_button = document.getElementById("UL1");
         var worker_label = document.getElementById("UL1_label");
         var T2 = document.getElementById("Right_Panel");
+        if(workers == undefined) {
+            workers = 0;   
+        }
         adjustLabel("UL1_label", "Workers: " + workers);
         adjustLabel("T1_1","Town info: " + save.availableWorkers + 
         " available workers (Max: " + save.maxWorkers + ")")
@@ -190,4 +193,8 @@ function option_ClickTest(test) {
                 Log("Invalid option");
         }
     }
+}
+
+function spanbuttonTest(span) {
+    Log("Hi");
 }

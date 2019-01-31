@@ -21,7 +21,6 @@ function load() {
   if(cookieExists("save") != "") {
     Log("Save file exists");
     decodeSave(cookieSaveString);
-    Log(save.resourcesOwned);
 
     initGame(); //This is in Utils.js
     initResources();
@@ -118,7 +117,6 @@ function update(ticks) {
  * Calculates the cost, then hires a worker if you have enough gold. Workers give a flat +1 GPS bonus.
  */
 function hireWorker() {
-  Log("G: " + Number.parseInt(gold) + " resource " + getResourceAmt("Gold"));
   var cost = CalculateCost("worker", save.workersRecieved);
   if(cost > gold) {
     return;
