@@ -49,8 +49,9 @@ function setCookie(cookieName, cookieValue, expiresAt) {
   var date = new Date();
   date.setTime(date.getTime() + (expiresAt*1000*60*60*24));
   var expires = "expires=" + date.toUTCString();
+  Log(cookieName + "=" + cookieValue + "; " + expires + "; path=/");
   Log("Cookie expires at: " + expires);
-  document.cookie = cookieName + "=" + cookieValue + "=" + expires + ";path=/";
+  document.cookie = cookieName + "=" + cookieValue + "; " + expires + "; path=/";
 }
 
 /**
@@ -138,13 +139,28 @@ function genWorker(number) {
       return workers;
     }
     else {
-      var multiplier = Number.parseFloat(getResourceParam("Worker","genMult"));
+      var multiplier = Number.parseFloat(getResourceParam("Worker","effectMult"));
       return (Math.pow(goldGenMultiplier,save.workersInField)*workers*multiplier).toPrecision(3);
     }
 }
 
 function adjustButtons() {
-  
+  var div = document.getElementById("RightSide");
+  var divChildren = div.children;
+  for(let i = 0; i < div.childElementCount; i++) {
+    if(divChildren[i].tagName === "BUTTON") {
+      var costArr = JSON.parse(divChildren[i].getAttribute("cost"));
+      for(let j = 0; j < costArr.length; j++) {
+        if(costArr[j].amt >= resourceList[findResource(costArr[j].name)]) {
+          divChildren[i].style.disabled = true;
+
+        }
+        else {
+          divChildren[i].style.disabled = false;
+        }
+      }
+    }
+  }
   if(save.availableWorkers == 0) {
     var workerButton = document.getElementById("UL1");
     workerButton.disabled = true;
@@ -159,4 +175,8 @@ function pushResourcesToLive() {
   for(let i=0;i<save.resourcesOwned.length;i++) {
     resourceList.push(save.resourcesOwned[i]);
   }
+}
+
+function printCookie() {
+  Log(cookie);
 }

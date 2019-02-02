@@ -198,34 +198,50 @@ function option_ClickTest(test) {
 }
 
 function getButtonAndExecute(event) {
-    let button = event.target;
-    if(button.id.indexOf(WORK_EFF_ID,0) != -1) {
-        Log("Inc worker eff");
-        var res = resourceList[findResource("Worker")];
-        res.genMult = res.genMult * 1.5;
-        var amtProcced = Math.round(Math.log(res.genMult)/Math.log(1.5));
-        Log(amtProcced);
-        writeResourceParam("Gold","amt",0);
-        Log(res.genMult);
+    let resourceArr = JSON.parse(event.target.getAttribute("cost"));
+    deductResources(resourceArr);
+    if(event.target.tagName !== "DIV") {
+        let button = event.target;
+        if(button.id.indexOf(WORK_EFF_ID,0) != -1) {
+            Log("Inc worker eff");
+            var work = resourceList[findResource("Worker")];
+            work.effectMult *= 1.5; 
+            Log(work.effectMult);
+        }
+        removeElement(event.target);
     }
-    Log("Clicked");
-    removeElement(event.target);
 }
 
-function createUpgrade(title, tooltip, id) {
+function createUpgrade(title, id, costArr = []) {
     let button = document.createElement("button");
+    var Att = document.createAttribute("cost");
+    let tooltip = "";
+    Att.value = JSON.stringify(costArr);
+    button.setAttribute("cost",Att.value);
     button.append(document.createTextNode(title));
     button.setAttribute("class","T2_R");
     button.setAttribute("id",id);
     button.setAttribute("title",tooltip);
-    button.setAttribute("style","display: inline-block;width: 100%;")
+    button.setAttribute("style","display: inline-block;width: 100%;");
     if(selectedTab != 2) {
-        Log("None");
         button.style.display = "none";
     }
     Log(button.style.color);
     let element = document.getElementById("RightSide");
     element.append(button);
+}
+
+function createResourceLabel(text, id) {
+    let label = document.createElement("label");
+    label.append(document.createTextNode(text));
+    label.setAttribute("class","T1");
+    label.setAttribute("id",id);
+    label.style.display = "inherit";
+    if(selectedTab != 1) {
+        label.style.display = "none";
+    }
+    let element = document.getElementById("Tab_1");
+    element.append(label);
 }
 
 function removeElement(element) {

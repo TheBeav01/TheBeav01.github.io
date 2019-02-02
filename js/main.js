@@ -94,7 +94,8 @@ function update(ticks) {
     wGPS = getWorkerGoldPerSecond();
     GPS = wGPS; //Plus anything else!
     GPT = GPS/60;
-    gold += GPT;
+    resourceList[findResource("Gold")].amt += GPT;
+    gold = resourceList[findResource("Gold")].amt;
     var displayGold = Number.parseInt(gold);
     var nextString = displayGold + "/" + CalculateCost("worker",save.workersRecieved);
     setResource("Gold",displayGold);

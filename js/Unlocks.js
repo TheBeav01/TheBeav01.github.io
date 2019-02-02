@@ -1,6 +1,12 @@
 var story = 0;
 var UL1 = false;
 
+class Upgrade {
+    constructor(name, amt) {
+        this.name = name;
+        this.amt = amt;
+    }
+}
 /**
  * Handles unlocks at load or update.
  */
@@ -79,6 +85,7 @@ function handleStoryMessagesAndUnlocks() {
     else {
         document.getElementById("T3_1").style.display = "none";
         document.getElementById("T3_2").style.display = "none";
+
     }
     if(gold == 0 && story == 0) {
         story++;
@@ -112,7 +119,7 @@ function handleStoryMessagesAndUnlocks() {
         + "Obtained: 1x Bag of holding, 1x Chronometer, and 1x Mysterious red sphere"
         ,"Story");
          //TODO: create these as items.
-
+        // document.getElementById("UL2").style.display = "block";
         addResource(new Resource("Bag of Holding",1,false,0));
         addResource(new Resource("The Chronometer",1,false,0));
         addResource(new Resource("Mysterious Sphere",1,false,0));
@@ -126,11 +133,27 @@ function handleStoryMessagesAndUnlocks() {
 }
 
 function handleOneTimeUnlocks() {
-    if(save.worldNum === 0) {
-        if(gold > 500 && save.upgradesPos === 0) {
-            Log("Unlock stuff");
-            createUpgrade(WORK_EFF,WORK_EFF_TT,WORK_EFF_ID);
-            save.upgradesPos++;
-        }
+        if(save.worldNum === 0) {
+            if(gold > 500 && save.upgradesPos === 0) {
+                let costArr = new Array();
+                costArr.push(new Upgrade("Gold",500));
+                createUpgrade(WORK_EFF,WORK_EFF_ID,costArr);
+                costArr.pop;
+                save.upgradesPos++;
+            }
+            if(gold > 1500 && save.upgradesPos === 1) {
+                var costArr = new Array();
+                costArr.push(new Upgrade("Gold",2000));
+                createUpgrade(WORK_EFF,WORK_EFF_ID,costArr);
+                save.upgradesPos++;
+            }
+    }
+}
+
+function deductResources(array) {
+    for(let i = 0; i < array.length; i++) {
+        let listElem = resourceList[findResource(array[i].name)];
+        let amount = array[i].amt;
+        setResource(listElem.name,listElem.amt-amount);
     }
 }

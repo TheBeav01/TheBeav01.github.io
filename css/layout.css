@@ -56,6 +56,10 @@
   visibility: hidden;
 }
 
+#UL2 {
+  display: none;
+}
+
 #Top_Panel {
   text-align: center;
   border-bottom: black 2px solid;
@@ -112,8 +116,8 @@
   width: 32%;
   padding: 0px;
   margin: 0px;
-  height: 26px;
   border: none;
+  height: 35px;
 } 
 
 .Tab:hover {
