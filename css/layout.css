@@ -102,10 +102,6 @@
   border-left: 1px #ff00ff solid;
 }
 
-.T2_RL {
-  float: right;
-  padding-right: 25%;
-}
 .PAN_LAB {
   color: #57626d;
   font-size: 15pt;
@@ -125,39 +121,50 @@
 }
 
 
-#Tab_2, #Tab2_Buttons {
+
+
+#Tab_2 {
   /* border: black 1px solid; */
   position: relative;
   min-width: 50%;
-  display: inline;
+  display: inline-table;
   /* border: 2px #00ffff solid; */
 
 }
+#Tab2_Label {
+  display: table-caption;
+  width: 100%;
+}
+#Tab2_Buttons {
+  display: table-cell;
+  min-width: 50%;
+  max-width: 50%;
 
+}
 #RightSide {
-  display: inline-block;
-  width: 30%;
+  display: table-cell;
+  min-width: 50%;
+  max-width: 50%;
 }
 
-.T2_R {
+.T2_RL {
+  display: inline-block;
+  width: 40%;
+  float: right;
+}
+
+.T2_R, .T2_L, .other_Button {
   position: relative;
   padding: 10px 20px;
   margin-top: 10px;
-  width:100%;
-  border:none;
-  /* float: right; */
-  /* border: 1px #00ffff solid; */
-  animation-duration: 0ms;
-}
-#T2_1B, #T2_2B {
-  padding: 10px 20px;
-  margin-bottom: 10px;
-  width:50%;
+  width:99%;
   display: block;
   border:none;
-  /* border: 1px #00ffff solid; */
   animation-duration: 0ms;
 }
+ #T2_1B, #T2_2B {
+   animation-duration: 0ms; 
+} 
 #T2_1B:hover, #T2_2B:hover, .T2_R:hover {
   background-color: #16b8b8;
 }

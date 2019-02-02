@@ -55,7 +55,7 @@ function showTab(tabNum) {
                                 foundDoc.style.display = "block";
                             }
                             else {
-                                foundDoc.style.display = "inline-block";
+                                    foundDoc.style.display = "inline-block";
 
                             }
                         }
@@ -108,6 +108,7 @@ function showTab(tabNum) {
             // }
         }
     }
+    document.getElementById("RightSide").style.display = "table-cell"
 }
 function tabRec(start) {
     if(!start.children.hasChildNodes) {
@@ -196,21 +197,22 @@ function option_ClickTest(test) {
     }
 }
 
-function getButton(event) {
-    if(event.target.id.indexOf("WorkerEff",0) != -1) {
+function getButtonAndExecute(event) {
+    let button = event.target;
+    if(button.id.indexOf("WorkerEff",0) != -1) {
         Log("Double worker eff");
     }
     Log("Clicked");
+    removeElement(event.target);
 }
 
 function createUpgrade(title, tooltip, id) {
-    // var hidden = document.getElementById()
-
     let button = document.createElement("button");
     button.append(document.createTextNode(title));
     button.setAttribute("class","T2_R");
     button.setAttribute("id",id);
     button.setAttribute("title",tooltip);
+    button.setAttribute("style","display: inline-block;width: 100%;")
     if(selectedTab != 2) {
         Log("None");
         button.style.display = "none";
@@ -218,4 +220,8 @@ function createUpgrade(title, tooltip, id) {
     Log(button.style.color);
     let element = document.getElementById("RightSide");
     element.append(button);
+}
+
+function removeElement(element) {
+    element.parentNode.removeChild(element);
 }
