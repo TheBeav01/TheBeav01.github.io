@@ -11,6 +11,7 @@ var save = {
     realmNum : 0,
     realmsCompleted : 0,
     storyPos : 0,
+    upgradesPos : 0,
     resourcesOwned : resourceList,
     //Encoding ends here
     genChance : 0.5*workers,

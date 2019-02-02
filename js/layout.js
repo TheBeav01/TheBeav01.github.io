@@ -199,8 +199,14 @@ function option_ClickTest(test) {
 
 function getButtonAndExecute(event) {
     let button = event.target;
-    if(button.id.indexOf("WorkerEff",0) != -1) {
-        Log("Double worker eff");
+    if(button.id.indexOf(WORK_EFF_ID,0) != -1) {
+        Log("Inc worker eff");
+        var res = resourceList[findResource("Worker")];
+        res.genMult = res.genMult * 1.5;
+        var amtProcced = Math.round(Math.log(res.genMult)/Math.log(1.5));
+        Log(amtProcced);
+        writeResourceParam("Gold","amt",0);
+        Log(res.genMult);
     }
     Log("Clicked");
     removeElement(event.target);

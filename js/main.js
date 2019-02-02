@@ -1,3 +1,5 @@
+//DECLARE GLOBAL VARS
+
 var lastTime = 0;
 var gold = 0;
 var goldRes = undefined;
@@ -12,6 +14,14 @@ var wGPS = 0; //Worker gold per second
 var segment = -1;
 var resourceList = [];
 var selectedTab = -1;
+
+//DECLARE GLOBAL CONSTS
+
+const KR1_TRIGGER_THRESHOLD = 500;
+const T2_THRESHOLD = 2500;
+const WORK_EFF = "Worker efficiency++";
+const WORK_EFF_TT = "Increases the gold workers gather by 150%";
+const WORK_EFF_ID = "WorkEff";
 /**
  * Loads the game. Is the first function called.
  */
@@ -30,7 +40,7 @@ function load() {
   else {
     Log("Save file does not exist. Creating...");
     setCookie("save",gold.toString(),365);
-    goldRes = new Resource("Gold",0,true,true,true,0);
+    goldRes = new Resource("Gold",0,false,1,0,1,1,true);
     addResource(goldRes);
     Log(resourceList);
     SaveGame();
@@ -46,7 +56,7 @@ function recieveGold() {
     Log("Undefined?");
   }
   if(findResource("Gold") == -1) {
-    resourceList.push(new Resource("Gold",gold,true,true,true,0,true));
+    resourceList.push(new Resource("Gold",gold,true,1,0,1,1,true));
     save.resourcesOwned = resourceList;
   }
   incrementResource("Gold",1);

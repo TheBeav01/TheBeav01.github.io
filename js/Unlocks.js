@@ -1,12 +1,13 @@
 var story = 0;
 var UL1 = false;
-let TRIGGER_THRESHOLD = 500;
+
 /**
  * Handles unlocks at load or update.
  */
 function unlockHandler() {
     var worker_button = document.getElementById("UL1");
     handleStoryMessagesAndUnlocks();
+    handleOneTimeUnlocks();
     if((gold >= 25) && save.storyPos < 3)  {
         workers = 0;
         UL1 = true;
@@ -50,7 +51,7 @@ function checkCosts(costToCheck) {
 function unlockWorker(fromSave) {
     if(fromSave === 0) {
         Log("Unlocking from natural play");
-        addResource(new Resource("Worker",0,false,false,true,0));        
+        addResource(new Resource("Worker",0,true,1));        
         save.availableWorkers = 10;
         save.maxWorkers = 10;
         workers = 0;
@@ -71,6 +72,14 @@ function unlockWorker(fromSave) {
 
 function handleStoryMessagesAndUnlocks() {
     story = save.storyPos;
+    if(story >= 6) {
+        document.getElementById("T3_1").style.display = "inline-block";
+        document.getElementById("T3_2").style.display = "inline-block";
+    }
+    else {
+        document.getElementById("T3_1").style.display = "none";
+        document.getElementById("T3_2").style.display = "none";
+    }
     if(gold == 0 && story == 0) {
         story++;
         displayStoryMessage("You gaze outside of the tower you call home. A gentle breeze"
@@ -93,20 +102,35 @@ function handleStoryMessagesAndUnlocks() {
         story++;
         unlockWorker(0);
     }
-    if(gold >= TRIGGER_THRESHOLD && story == 3) {
+    if(gold >= KR1_TRIGGER_THRESHOLD && story == 3) {
         story++;
-        //TODO: create these as items.
 
         Log("Create the leather bag, the mysterious sphere, and the chronometer as resources");
         displayStoryMessage("You curse under your breath as the golden coins tumble to the floor."
         + " One of your workers produces a leather bag, your own, in fact. Before you could ask"
         + " where they found it, they head out of your room. At least they found it!\n\n"
-        + "Obtained:\n1x Bag of holding\n1x Chronometer (Inside)\n1x Mysterious red sphere"
+        + "Obtained: 1x Bag of holding, 1x Chronometer, and 1x Mysterious red sphere"
         ,"Story");
-        addResource(new Resource("Bag of Holding",1,false,false,false,0));
-        addResource(new Resource("The Chronometer",1,false,false,false,0));
-        addResource(new Resource("Mysterious Sphere",1,false,false,false));
+         //TODO: create these as items.
 
+        addResource(new Resource("Bag of Holding",1,false,0));
+        addResource(new Resource("The Chronometer",1,false,0));
+        addResource(new Resource("Mysterious Sphere",1,false,0));
+    }
+    if(gold >= T2_THRESHOLD && story == 4) {
+        displayStoryMessage("Here you are, gathering all this wealth. You gathered so much, you forget to address the"
+        + " strange feeling entering your mind");
+        story++;
     }
     save.storyPos = story;
+}
+
+function handleOneTimeUnlocks() {
+    if(save.worldNum === 0) {
+        if(gold > 500 && save.upgradesPos === 0) {
+            Log("Unlock stuff");
+            createUpgrade(WORK_EFF,WORK_EFF_TT,WORK_EFF_ID);
+            save.upgradesPos++;
+        }
+    }
 }

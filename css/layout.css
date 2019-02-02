@@ -120,9 +120,6 @@
   background-color: #16b8b8;
 }
 
-
-
-
 #Tab_2 {
   /* border: black 1px solid; */
   position: relative;
@@ -148,12 +145,11 @@
 }
 
 .T2_RL {
-  display: inline-block;
   width: 40%;
   float: right;
 }
 
-.T2_R, .T2_L, .other_Button {
+.T2_R, .T2_L, .T3, .other_Button {
   position: relative;
   padding: 10px 20px;
   margin-top: 10px;
@@ -165,7 +161,7 @@
  #T2_1B, #T2_2B {
    animation-duration: 0ms; 
 } 
-#T2_1B:hover, #T2_2B:hover, .T2_R:hover {
+#T2_1B:hover, #T2_2B:hover, .T2_R:hover, .T3:hover {
   background-color: #16b8b8;
 }
 #T2_1B:disabled, #T2_2B:disabled {
@@ -175,6 +171,10 @@
 .T2_OT {
   float:right;
   position: relative;
+}
+
+#T3_1, #T3_2 {
+  display: none;
 }
 
 .export {

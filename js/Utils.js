@@ -138,7 +138,8 @@ function genWorker(number) {
       return workers;
     }
     else {
-      return (Math.pow(goldGenMultiplier,save.workersInField)*workers).toPrecision(3);
+      var multiplier = Number.parseFloat(getResourceParam("Worker","genMult"));
+      return (Math.pow(goldGenMultiplier,save.workersInField)*workers*multiplier).toPrecision(3);
     }
 }
 

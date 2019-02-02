@@ -1,13 +1,34 @@
 
 class Resource {
-    constructor(name, amt, isGeneratable, isFindable, removeOnAscent, genPerSecond = -1, isPrimary = false) {
-    this.name = name;
-    this.amt = amt;
-    this.isGeneratable = isGeneratable;
-    this.isFindable = isFindable;
-    this.removeOnAscent = removeOnAscent;
-    this.genPerSecond = genPerSecond;
-    this.isPrimary = isPrimary;
+
+    /**
+     * Any resource is some material good the player comes across, wether it be gold or some key item.
+     * @param {String} name The name of the resource
+     * @param {Number} amt The amount currently owned
+     * @param {Boolean} removeOnAscent Whether
+     * @param {Number} shardAffinity How receptive this resource is to the prestige currency.
+     * Range: .0 to 1. Any numbers outside of this range will snap to the nearest extreme.
+     * @param {Number} genPerSecond The resource initially generates x resources per second. -1 to disable generation
+     * @param {Number} genMult A multiplier to the amount generated per second. Default: 1
+     * @param {Number} effectMult A multiplier to whatever effect this resource gives. Default: 1
+     * @param {Boolean} isPrimary Whether or not the resource is a major one.
+     */
+    constructor(name, amt, removeOnAscent, shardAffinity, genPerSecond = -1,
+        genMult = 1, effectMult = 1,  isPrimary = false) {
+
+        //CW: Really bad code
+        if(name.hasOwnProperty("name")) {
+            Object.assign(this,name);
+            return;
+        }
+        this.name = name;
+        this.amt = amt;
+        this.removeOnAscent = removeOnAscent;
+        this.genPerSecond = genPerSecond;
+        this.isPrimary = isPrimary;
+        this.genMult = genMult;
+        this.effectMult = effectMult;
+        this.shardAffinity = shardAffinity;
     }
 
 }
@@ -35,6 +56,10 @@ function findResource(toFind) {
         }
     }
     return -1;
+}
+
+function getResourceAsObj(toFind) {
+    return new Resource(resourceList[findResource(toFind)]);
 }
 
 function incrementResource(name, amt) {
@@ -66,10 +91,26 @@ function getResourceAmt(name) {
     }
 }
 
+function getResourceParam(name, param) {
+    let obj = getResourceAsObj(name);
+
+    return obj[param];
+}
+
+function writeResourceParam(name,param,value) {
+    let obj = getResourceAsObj(name);
+    let index = findResource(name);
+    Log(obj[param]);
+    obj[param] = value;
+    Log(obj[param]);
+    resourceList[index] = obj;
+    return resourceList;
+}
+
 function initResources() {
     resourceList = save.resourcesOwned;
     if(findResource("Gold") == -1) {
-        resourceList.push(new Resource("Gold",gold,true,true,true,0,true));
+        resourceList.push(new Resource("Gold",gold,true,1,0,1,1,true));
         save.resourcesOwned = resourceList;
       }
 }
@@ -82,33 +123,3 @@ function res_GetIndexOfResFromSave(res) {
     }
     return -1;
 }
-
-// function createResObjs(save) {
-//     var objectArray;
-//     var slicedObj;
-//     Log("Creating resource objects from save...");
-//     for(props in save) {
-//         if(props==="resourcesOwned") {
-//             var str = JSON.stringify(save[props]);
-//             Log("JSON string: " + str);
-//             if(str[1] !== '[') {
-//                 Log("No more parsing?");
-//                 slicedObj = str;
-//             }
-//             else {
-//                 slicedObj = str.slice(str.indexOf('[')+1,str.lastIndexOf(']'));
-//             }
-//             objectArray = JSON.parse(slicedObj);
-//             Log("Found the right property. Sliced: " + slicedObj);
-//             Log("Array size: " + objectArray.length);
-
-//          }
-//     }
-
-//     for(var i=0;i<objectArray.length;i++) {
-//         Log(resourceList);
-//         addResource(objectArray[i]);
-//         Log("Index " + i + " " + JSON.stringify(resourceList[i]));
-//     }
-
-// }
