@@ -8,7 +8,7 @@ var isNewPlayer = true;
 var GPT = 0;
 var GPS = 0;
 var ticks = 0;
-var version = "0.01.06";
+var version = "0.02.00";
 var goldGenMultiplier = 1.05;
 var wGPS = 0; //Worker gold per second
 var segment = -1;
@@ -234,10 +234,14 @@ function prepMainAscend() {
   Log("Ascending...");
   pause();
   document.getElementById("InnerAscent").style.display = "block";
+  var T2 = document.getElementById("Right_Panel");
 
+  T2.style.visibility = "hidden";
 }
 
+
 function confirmAscend() {
+  document.getElementById("InnerAscent").style.display = "none";
   var indexesToRemove = new Array();
   for(let i = 0; i<resourceList.length;i++) {
     if(resourceList[i].removeOnAscent === true) {
@@ -245,8 +249,10 @@ function confirmAscend() {
     }
   }
   for(let j=indexesToRemove.length-1;j>=0;j--) {
+    setResource("Worker",0);
     resourceList.splice(indexesToRemove[j],1);
     Log("Removed " + j);
   }
   cleanSave();
+  start();
 }

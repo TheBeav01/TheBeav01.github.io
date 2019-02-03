@@ -14,7 +14,7 @@ function unlockHandler() {
     var worker_button = document.getElementById("UL1");
     handleStoryMessagesAndUnlocks();
     handleOneTimeUnlocks();
-    if((gold >= 25) && save.storyPos < 3)  {
+    if((gold >= 25) && save.upgradesPos == 0)  {
         workers = 0;
         UL1 = true;
         Log("Unlocking workers");
@@ -55,6 +55,7 @@ function checkCosts(costToCheck) {
  * Unlocks the worker
  */
 function unlockWorker(fromSave) {
+    Log("UL worker");
     if(fromSave === 0) {
         Log("Unlocking from natural play");
         addResource(new Resource("Worker",0,true,1));        
@@ -154,6 +155,7 @@ function handleStoryMessagesAndUnlocks() {
         + " You pull it out. It appears to be a golden pocketwatch, at least from the outside. When you open it up, a bright glow fills your vision."
         + " Everything stops around you.");
         pause();
+        showTab(3);
         canAscend = true;
         story++;
     }
@@ -162,14 +164,32 @@ function handleStoryMessagesAndUnlocks() {
 
 function handleOneTimeUnlocks() {
         if(save.worldNum === 0) {
-            if(gold > 500 && save.upgradesPos === 0) {
+
+            if(save.upgradesPos === 0) {
+                if(gold<25) {
+                    var T2 = document.getElementById("Right_Panel");
+                    document.getElementById("UL1").style.visibility = "hidden";
+                    document.getElementById("UL1_label").style.visibility = "hidden";
+
+                    T2.visibility = "hidden";
+                    UL1 = false;
+                }
+                else {
+                    UL1 = true;
+                    unlockWorker(0);
+                    lay_init(0);
+                    save.upgradesPos++;
+                }
+
+            }
+            if(gold > 500 && save.upgradesPos === 1) {
                 let costArr = new Array();
                 costArr.push(new Upgrade("Gold",500));
                 createUpgrade(WORK_EFF,WORK_EFF_ID,costArr);
                 costArr.pop;
                 save.upgradesPos++;
             }
-            if(gold > 1500 && save.upgradesPos === 1) {
+            if(gold > 1500 && save.upgradesPos === 2) {
                 var costArr = new Array();
                 costArr.push(new Upgrade("Gold",2000));
                 createUpgrade(WORK_EFF,WORK_EFF_ID,costArr);

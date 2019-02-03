@@ -139,6 +139,7 @@
   display: table-cell;
   min-width: 50%;
   max-width: 50%;
+  /* visibility: hidden; */
 }
 
 .T2_RL {

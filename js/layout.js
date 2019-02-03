@@ -5,6 +5,7 @@ function lay_init(segment) {
         var worker_button = document.getElementById("UL1");
         var worker_label = document.getElementById("UL1_label");
         var T2 = document.getElementById("Right_Panel");
+        adjustUpgradeTooltips();
         if(workers == undefined) {
             workers = 0;   
         }
@@ -198,9 +199,10 @@ function option_ClickTest(test) {
 }
 
 function getButtonAndExecute(event) {
-    let resourceArr = JSON.parse(event.target.getAttribute("cost"));
-    deductResources(resourceArr);
+
     if(event.target.tagName !== "DIV") {
+        let resourceArr = JSON.parse(event.target.getAttribute("cost"));
+        deductResources(resourceArr);
         let button = event.target;
         if(button.id.indexOf(WORK_EFF_ID,0) != -1) {
             Log("Inc worker eff");
