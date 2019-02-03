@@ -108,3 +108,20 @@ function SaveGame() {
   function printSS() {
     encodeSave();
   }
+
+  function cleanSave() {
+    if(save.worldNum == 0) {
+      save.maxWorkers = 0;
+      save.availableWorkers = 0;
+      save.workersRecieved = 0;
+      save.workersInField = 0;
+      save.workersRecruiting = 0;
+    }
+    save.upgradesPos = 0;
+    setResource("Gold",0);
+    save.resourcesOwned = resourceList;
+    
+    // for(let i = 0; i < resourceList.length) {
+      
+    // }
+  }

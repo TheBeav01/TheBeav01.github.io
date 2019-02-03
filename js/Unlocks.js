@@ -1,6 +1,6 @@
 var story = 0;
 var UL1 = false;
-
+var canAscend;
 class Upgrade {
     constructor(name, amt) {
         this.name = name;
@@ -78,7 +78,7 @@ function unlockWorker(fromSave) {
 
 function handleStoryMessagesAndUnlocks() {
     story = save.storyPos;
-    if(story >= 6) {
+    if(story >= 6 && selectedTab == 3) {
         document.getElementById("T3_1").style.display = "inline-block";
         document.getElementById("T3_2").style.display = "inline-block";
     }
@@ -86,6 +86,9 @@ function handleStoryMessagesAndUnlocks() {
         document.getElementById("T3_1").style.display = "none";
         document.getElementById("T3_2").style.display = "none";
 
+    }
+    if(story >= 8 && !canAscend) {
+        canAscend = true;
     }
     if(gold == 0 && story == 0) {
         story++;
@@ -119,14 +122,39 @@ function handleStoryMessagesAndUnlocks() {
         + "Obtained: 1x Bag of holding, 1x Chronometer, and 1x Mysterious red sphere"
         ,"Story");
          //TODO: create these as items.
-        // document.getElementById("UL2").style.display = "block";
         addResource(new Resource("Bag of Holding",1,false,0));
         addResource(new Resource("The Chronometer",1,false,0));
         addResource(new Resource("Mysterious Sphere",1,false,0));
     }
     if(gold >= T2_THRESHOLD && story == 4) {
         displayStoryMessage("Here you are, gathering all this wealth. You gathered so much, you forget to address the"
-        + " strange feeling entering your mind");
+        + " strange feeling entering your mind. Something seems to be stirring.");
+        story++;
+    }
+    if(gold >= T3_THRESHOLD && story == 5) {
+        displayStoryMessage("By this point, something is seriously wrong. Your gaze turns to the walls bordering"
+        + " your city. The wall guards seem to be readying their weapons. Not good.")
+        story++;
+    }
+    if(gold >= T4_THRESHOLD && story == 6) {
+        displayStoryMessage("From the distance, you see your wall guards fall. You bark at one of your workers to"
+        + " investigate. From here, you can see that arrows pepper their bodies. From the arrowtip, they seem to be of"
+        + " human origin. You extend your hand out to get more gold, but a loud boom from the gates reverberates through the city.")
+        story++;
+    }
+    if(gold >= T5_THRESHOLD && story == 7) {
+        displayStoryMessage("The invaders enter the city. Instinctively, you turn toward the only source of comfort, only to see"
+        + " a fireball tear through the side of the tower you called home. Though the stained glass toward the top was preserved,"
+        + " the normal purple glow behind it appears stronger.")
+        story++;
+    }
+    if(gold >= FIRST_ASC_THRESHOLD && story == 8) {
+        displayStoryMessage("Two explosions tear through the top of the towers. Two pulses rocket out from the source, moving past the horizon."
+        + " You look toward your bag and open it, sticking your hand in. It brushes past something cold that gives you pause"
+        + " You pull it out. It appears to be a golden pocketwatch, at least from the outside. When you open it up, a bright glow fills your vision."
+        + " Everything stops around you.");
+        pause();
+        canAscend = true;
         story++;
     }
     save.storyPos = story;

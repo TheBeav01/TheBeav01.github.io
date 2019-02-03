@@ -14,11 +14,16 @@ var wGPS = 0; //Worker gold per second
 var segment = -1;
 var resourceList = [];
 var selectedTab = -1;
-
+var frameID;
+var isPaused;
 //DECLARE GLOBAL CONSTS
 
 const KR1_TRIGGER_THRESHOLD = 500;
 const T2_THRESHOLD = 2500;
+const T3_THRESHOLD = 5000;
+const T4_THRESHOLD = 7500;
+const T5_THRESHOLD = 10000;
+const FIRST_ASC_THRESHOLD = 20000;
 const WORK_EFF = "Worker efficiency++";
 const WORK_EFF_TT = "Increases the gold workers gather by 150%";
 const WORK_EFF_ID = "WorkEff";
@@ -48,6 +53,31 @@ function load() {
   adjustLabel("ManualGoldButton", "Gold: " + gold);
   gameLoop(lastTime);
 }
+
+function pause() {
+  var pause1 = document.getElementsByClassName("T2_L");
+  var pause2 = document.getElementsByClassName("T2_R");
+  for(let i = 0; i<Math.max(pause1.length,pause2.length);i++) {
+    Log("AA");
+    if(pause1[i] == undefined) {
+      if(pause2[i]==undefined) {
+        break;
+      }
+      pause2[i].disabled = true;
+
+    }
+    else {
+      pause1[i].disabled = true;
+      Log("BB");
+    }
+}
+isPaused = true;
+}
+
+function start() {
+  isPaused = false;
+  gameLoop(frameID);
+}
 /**
  * Adds 1 gold per click.
  */
@@ -60,7 +90,7 @@ function recieveGold() {
     save.resourcesOwned = resourceList;
   }
   incrementResource("Gold",1);
-  gold = getResourceAmt("Gold");
+  // gold = getResourceAmt("Gold");
 }
 
 /**
@@ -71,7 +101,13 @@ function recieveGold() {
 function gameLoop(timeStamp) {
   ticks++;
   update(ticks);
-  requestAnimationFrame(gameLoop)
+  if(isPaused == true) {
+
+    cancelAnimationFrame(frameID);
+  }
+  else {
+    frameID = requestAnimationFrame(gameLoop);
+  }
   }
   /**
    * Updates what is on the screen and what is in the backend. 
@@ -94,11 +130,10 @@ function update(ticks) {
     wGPS = getWorkerGoldPerSecond();
     GPS = wGPS; //Plus anything else!
     GPT = GPS/60;
-    resourceList[findResource("Gold")].amt += GPT;
-    gold = resourceList[findResource("Gold")].amt;
-    var displayGold = Number.parseInt(gold);
+    setResource("Gold",Number.parseFloat(getResourceAmt("Gold"))+Number.parseFloat(GPT));
+    gold = getResourceAmt("Gold");
+    var displayGold = Number.parseInt(getResourceAmt("Gold"));
     var nextString = displayGold + "/" + CalculateCost("worker",save.workersRecieved);
-    setResource("Gold",displayGold);
     checkCosts(displayGold);
     adjustLabel("ManualGoldButton", "Gold: " + displayGold);
     adjustLabel("UL1_label", "Workers: " + workers + " (" + GPS + " GPS) " + nextString);
@@ -113,7 +148,9 @@ function update(ticks) {
     }
     }
   else {
-    adjustLabel("ManualGoldButton", "Gold: " + gold);
+    adjustLabel("ManualGoldButton", "Gold: " + Number.parseInt(getResourceAmt("Gold")));
+    gold = getResourceAmt("Gold");
+
     document.getElementById("T2_1B").disabled = true;
     document.getElementById("T2_2B").disabled = true;
 
@@ -130,15 +167,16 @@ function update(ticks) {
  */
 function hireWorker() {
   var cost = CalculateCost("worker", save.workersRecieved);
-  if(cost > gold) {
+  let g = Number.parseInt(getResourceAmt("Gold"));
+  Log("Cost: " + cost + " Amt: " + g + " gold: " + gold);
+  if(cost > g) {
     return;
   }
   else if(save.availableWorkers === 0) {
     return;
   }
   else {
-    gold -= cost;
-    setResource("Gold",Number.parseInt(gold));
+    setResource("Gold",Number.parseInt(g-cost));
     workers++;
     save.workersRecieved++;
     incrementResource("Worker",1);
@@ -148,9 +186,14 @@ function hireWorker() {
     save.availableWorkers--;
     adjustLabel("UL1_label", "Workers: " + getResourceAmt("Worker") + " (" + GPS + " gold per second)");
     adjustLabel("T1_1","Town info: " + save.availableWorkers + " available workers (Max: " + save.maxWorkers + ")")
+    save.workersRecieved = save.workersInField + save.workersRecruiting + Number.parseInt(getResourceAmt("Worker"));
+
   }
 }
 function deductWorkers(opCode) {
+  if(isPaused) {
+    return;
+  }
   if(getResourceAmt("Worker") === 0 ) {
     Log("Returning");
     return;
@@ -184,4 +227,26 @@ function deductWorkers(opCode) {
       Log("Something went wrong?");
       break;
   }
+  save.workersRecieved = save.workersInField + save.workersRecruiting + Number.parseInt(getResourceAmt("Worker"));
+}
+
+function prepMainAscend() {
+  Log("Ascending...");
+  pause();
+  document.getElementById("InnerAscent").style.display = "block";
+
+}
+
+function confirmAscend() {
+  var indexesToRemove = new Array();
+  for(let i = 0; i<resourceList.length;i++) {
+    if(resourceList[i].removeOnAscent === true) {
+      indexesToRemove.push(i);
+    }
+  }
+  for(let j=indexesToRemove.length-1;j>=0;j--) {
+    resourceList.splice(indexesToRemove[j],1);
+    Log("Removed " + j);
+  }
+  cleanSave();
 }

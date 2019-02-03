@@ -10,13 +10,14 @@ class Resource {
      * @param {Number} genPerSecond The resource initially generates x resources per second. -1 to disable generation
      * @param {Number} genMult A multiplier to the amount generated per second. Default: 1
      * @param {Number} effectMult A multiplier to whatever effect this resource gives. Default: 1
-     * @param {Boolean} isPrimary Whether or not the resource is a major one.
+     * @param {Boolean} isPrimary Whether or not the resource is a key one.
      */
+    //TODO: KEy items
     constructor(name, amt, removeOnAscent, shardAffinity, genPerSecond = -1,
         genMult = 1, effectMult = 1,  isPrimary = false) {
 
         //CW: Really bad code
-        if(name.hasOwnProperty("name")) {
+        if(name !== undefined && name.hasOwnProperty("name")) {
             Object.assign(this,name);
             return;
         }
@@ -77,6 +78,7 @@ function setResource(name, amt) {
         resourceList[index].amt = amt; 
     }
     else {
+        Log("NF");
     }
 }
 

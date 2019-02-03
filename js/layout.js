@@ -247,3 +247,9 @@ function createResourceLabel(text, id) {
 function removeElement(element) {
     element.parentNode.removeChild(element);
 }
+
+function hideAscendDiv() {
+    document.getElementById("InnerAscent").style.display = "none";
+    start();
+    isPaused = false;
+}

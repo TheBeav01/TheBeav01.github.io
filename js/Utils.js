@@ -145,6 +145,9 @@ function genWorker(number) {
 }
 
 function adjustButtons() {
+  if(isPaused) {
+    return;
+  }
   var div = document.getElementById("RightSide");
   var divChildren = div.children;
   for(let i = 0; i < div.childElementCount; i++) {

@@ -59,7 +59,7 @@
         </div>
       </div>
       <div id="Tab_3">
-        <button class="T3" id="T3_1">Turn back time</button>
+        <button class="T3" id="T3_1" onclick="prepMainAscend()">Turn back time</button>
         <button class="T3" id="T3_2">???</button>
       </div>
       <div id="Tab_4">
@@ -72,6 +72,44 @@
       <button class="export" onclick="closeExportField()">Submit</button>
 
     </div>
+
+    <div id="InnerAscent">
+      <div id="IA_Container">
+        <div id="IA_Header">
+          <h2>Ascent information</h2>
+        </div>
+        <div id="IA_Stats_L">
+          <div id="IA_C1L">
+            <h5>Global data title</h5>
+            <p>A</p>
+            <p>C</p>
+          </div>
+        </div>
+        <div id="IA_C1R">
+            <h5>Global data stat</h5>
+            <p>B</p>
+            <p>D</p>
+        </div>
+        <div id="IA_Stats_R">
+            <h5>Run data title</h5>
+            <p>A</p>
+        </div>
+        <div id="IA_C2R">
+            <h5>Run data stat</h5>
+            <p>A</p>
+        </div>
+        <div id="IA_Footer">
+          <h3>Make your choice. Will you stay, or go?</h3>
+        </div>
+        <div id="IA_ButtonDiv">
+            <button class="IA_Button" id="IA_Decline" onclick="hideAscendDiv()">No</button>
+            <button class="IA_Button" onclick="confirmAscend()">Yes</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
     <div id="Popup" onclick="destroyPopup()">
       <div class="Header">
         <span id="Header_Text">TEST</span>
@@ -82,7 +120,7 @@
 
       </div>
     </div> 
-  </div>
+
 
   <script type="text/javascript" src="js/Utils.js"></script>
 
