@@ -13,6 +13,7 @@ var goldGenMultiplier = 1.05;
 var wGPS = 0; //Worker gold per second
 var segment = -1;
 var resourceList = [];
+var upgradesList = [];
 var selectedTab = -1;
 var frameID;
 var isPaused;

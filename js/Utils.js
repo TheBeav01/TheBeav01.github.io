@@ -152,7 +152,7 @@ function adjustButtons() {
   var divChildren = div.children;
   for(let i = 0; i < div.childElementCount; i++) {
     if(divChildren[i].tagName === "BUTTON") {
-      var costArr = JSON.parse(divChildren[i].getAttribute("cost"));
+      var costArr = JSON.parse(divChildren[i].getAttribute("upg"));
       for(let j = 0; j < costArr.length; j++) {
         if(costArr[j].amt >= resourceList[findResource(costArr[j].name)]) {
           divChildren[i].style.disabled = true;

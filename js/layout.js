@@ -201,10 +201,12 @@ function option_ClickTest(test) {
 function getButtonAndExecute(event) {
 
     if(event.target.tagName !== "DIV") {
-        let resourceArr = JSON.parse(event.target.getAttribute("cost"));
+        let resourceArr = JSON.parse(event.target.getAttribute("upg"));
+        Log("Buffer");
         deductResources(resourceArr);
         let button = event.target;
-        if(button.id.indexOf(WORK_EFF_ID,0) != -1) {
+        let effect = resourceArr.B_ID;
+        if(effect.indexOf(WORK_EFF_ID,0) != -1) {
             Log("Inc worker eff");
             var work = resourceList[findResource("Worker")];
             work.effectMult *= 1.5; 
@@ -214,12 +216,19 @@ function getButtonAndExecute(event) {
     }
 }
 
-function createUpgrade(title, id, costArr = []) {
+function createUpgrade(title, id, upgTag) {
+    for(let i = 0; i < upgradesList.length; i++) {
+        if(upgradesList[i].ID === upgTag.ID) {
+            return;
+        }
+    }
+    upgradesList.push(upgTag);
+    save.unlockedUpgrades = upgradesList;
     let button = document.createElement("button");
-    var Att = document.createAttribute("cost");
+    var Att = document.createAttribute("upg");
     let tooltip = "";
-    Att.value = JSON.stringify(costArr);
-    button.setAttribute("cost",Att.value);
+    Att.value = JSON.stringify(upgTag);
+    button.setAttribute("upg",Att.value);
     button.append(document.createTextNode(title));
     button.setAttribute("class","T2_R");
     button.setAttribute("id",id);

@@ -13,6 +13,7 @@ var save = {
     storyPos : 0,
     upgradesPos : 0,
     resourcesOwned : resourceList,
+    unlockedUpgrades : upgradesList,
     //Encoding ends here
     genChance : 0.5*workers,
 
