@@ -36,7 +36,7 @@ function decodeSave(stringToDecode) {
     var loadString = stringToDecode;
     save = JSON.parse(atob(stringToDecode));
     if(save.storyPos == 3) {
-        unlockWorker(1);
+        unlockWorker(false);
     }
     let index = res_GetIndexOfResFromSave("Worker");
     if(save.resourcesOwned[index] == undefined) {

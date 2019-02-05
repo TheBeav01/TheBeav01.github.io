@@ -34,7 +34,7 @@ function unlockHandler() {
         Log("Unlocking workers");
     }
     else if((gold >= 25) && worker_button.style.visibility != "visible") {
-        unlockWorker(save);
+        unlockWorker(true);
     }
 }
 /**
@@ -70,22 +70,23 @@ function checkCosts(costToCheck) {
  */
 function unlockWorker(fromSave) {
     Log("UL worker");
-    if(fromSave === 0) {
+    if(fromSave == false) {
         Log("Unlocking from natural play");
         addResource(new Resource("Worker",0,true,1));        
         save.availableWorkers = 10;
         save.maxWorkers = 10;
         workers = 0;
     }
+    else{
+        let index = res_GetIndexOfResFromSave("Worker");
+        workers = save.resourcesOwned[index].amt;
+    }
     if(save.maxWorkers === 0) {
         Log("max workers at 0");
         save.maxWorkers = 10;
 
     }
-    if(fromSave > 0) {
-        let index = res_GetIndexOfResFromSave("Worker");
-        workers = save.resourcesOwned[index].amt;
-    }
+
     save.workersRecieved = workers;
 
     lay_init(0);
@@ -102,15 +103,21 @@ function handleOneTimeUnlocks() {
                     document.getElementById("UL1_label").style.visibility = "hidden";
 
                     T2.visibility = "hidden";
-                    UL1 = false;
                 }
                 else {
                     UL1 = true;
-                    unlockWorker(0);
+                    unlockWorker(true);
                     lay_init(0);
                     save.upgradesPos++;
                 }
 
+            }
+            else {
+                if(UL1 == false) {
+                    UL1 = true;
+                    unlockWorker(true);
+                    lay_init(0);
+                }
             }
             if(gold > 500) {
                 let costArr = new Array();
@@ -165,7 +172,7 @@ function handleStoryMessagesAndUnlocks() {
     if(gold == 25 && story == 2) {
         displayStoryMessage(getStory(3) ,"Story");
         story++;
-        unlockWorker(0);
+        unlockWorker(false);
     }
     if(gold >= KR1_TRIGGER_THRESHOLD && story == 3) {
         story++;

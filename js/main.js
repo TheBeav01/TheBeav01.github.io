@@ -1,35 +1,30 @@
-//DECLARE GLOBAL VARS
-
-var lastTime = 0;
-var gold = 0;
-var goldRes = undefined;
-var workers = 0;
-var isNewPlayer = true;
-var GPT = 0;
-var GPS = 0;
-var ticks = 0;
-var version = "0.02.00";
-var goldGenMultiplier = 1.05;
+//DECLARE GLOBAL VARS. STRINGS ARE IN STRINGS.JS
+var gold = 0; //Global gold value
+var workers = 0; //Global worker value. Soon to be obsolete.
+var GPT = 0; //Global gold per tick value. 
+var GPS = 0; //Global gold per second value, though this is just literally 60*GPT
+var ticks = 0; //Global tick counter. Could have issues for really long games without closing window.
 var wGPS = 0; //Worker gold per second
-var segment = -1;
-var resourceList = [];
-var upgradesList = [];
-var selectedTab = -1;
-var frameID;
-var isPaused;
-//DECLARE GLOBAL CONSTS
+var resourceList = []; //Global list of resources. Should be redundant w.r.t save already tracking it.
+var upgradesList = []; //Global upgrades list. Should also be redundant w.r.t save already tracking it.
+var selectedTab = -1; //Global flag for what tab we have selected on the right side. Could... just not be global
+var frameID; //Required global to hold the ID of the requested frame. This is used with pausing and unpausing.
+var isPaused; //Are we paused or not? Could hold this somewhere else completely along with other gamestate vars.
 
-const KR1_TRIGGER_THRESHOLD = 500;
+//DECLARE GLOBAL CONSTS
+const goldGenMultiplier = 1.05; //Global base gold gen multiplier.
+const version = "0.02.00"; //Version number.
+const KR1_TRIGGER_THRESHOLD = 500; //First key resource threshold
 const T2_THRESHOLD = 2500;
 const T3_THRESHOLD = 5000;
 const T4_THRESHOLD = 7500;
 const T5_THRESHOLD = 10000;
 const FIRST_ASC_THRESHOLD = 20000;
-const WORK_EFF = "Worker efficiency++";
-const WORK_EFF_TT = "Increases the gold workers gather by 150%";
-const WORK_EFF_ID = "WorkEff";
+
 /**
- * Loads the game. Is the first function called.
+ * 
+ * Loads the game. Is the first function called when you load the page. This loads the save from the save string
+ * and applies the string to the game. [MAIN.JS]
  */
 function load() {
   var cookieSaveString = cookieExists("save");
@@ -46,15 +41,18 @@ function load() {
   else {
     Log("Save file does not exist. Creating...");
     setCookie("save",gold.toString(),365);
-    goldRes = new Resource("Gold",0,false,1,0,1,1,true);
+    var goldRes = new Resource("Gold",0,false,1,0,1,1,true);
     addResource(goldRes);
     Log(resourceList);
     SaveGame();
   }
   adjustLabel("ManualGoldButton", "Gold: " + gold);
-  gameLoop(lastTime);
+  gameLoop();
 }
 
+/**
+ * This pauses the game. Any clickable buttons that interact with resources should be disabled. [MAIN.JS]
+ */
 function pause() {
   var pause1 = document.getElementsByClassName("T2_L");
   var pause2 = document.getElementsByClassName("T2_R");
@@ -75,6 +73,9 @@ function pause() {
 isPaused = true;
 }
 
+/**
+ * Unpauses the game.
+ */
 function start() {
   isPaused = false;
   gameLoop(frameID);
@@ -91,15 +92,13 @@ function recieveGold() {
     save.resourcesOwned = resourceList;
   }
   incrementResource("Gold",1);
-  // gold = getResourceAmt("Gold");
 }
 
 /**
  * The loop of this game. This runs via requestAnimationFrame(), 
  * and a tick counter is kept for timekeeping purposes. It should run at 60 ticks per second
- * @param {*} timeStamp Is the time that the frame was requested (in ms.)
  */
-function gameLoop(timeStamp) {
+function gameLoop() {
   ticks++;
   update(ticks);
   if(isPaused == true) {
@@ -164,7 +163,7 @@ function update(ticks) {
 
 }
 /**
- * Calculates the cost, then hires a worker if you have enough gold. Workers give a flat +1 GPS bonus.
+ * Calculates the cost, then hires a worker if you have enough gold. Could eventually become obsolete.
  */
 function hireWorker() {
   var cost = CalculateCost("worker", save.workersRecieved);
@@ -191,6 +190,12 @@ function hireWorker() {
 
   }
 }
+/**
+ * This removes one worker. Depending on the button clicked, this does one of two things:
+ * 1. Gives a bonus to GPS per worker
+ * 2. Gives a bonus to the percentage of workers generated.
+ * @param {Number} opCode What button you would like to operate on.
+ */
 function deductWorkers(opCode) {
   if(isPaused) {
     return;

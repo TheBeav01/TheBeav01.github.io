@@ -1,3 +1,7 @@
+const WORK_EFF = "Worker efficiency++";
+const WORK_EFF_TT = "Increases the gold workers gather by 150%";
+const WORK_EFF_ID = "WorkEff";
+
 function getStory(msg) {
 
     switch(msg) {
