@@ -90,17 +90,18 @@ function SaveGame() {
       adjustLabel("export_field", saveString);
       var tb_div = document.getElementById("Export_div");
       tb_div.style.visibility="visible";
-      document.getElementById("export_field").select();
-      document.execCommand("copy");
       LayoutCloseOverflowDropdown();
   }
   /**
    * Closes the export div so you can keep playing
    */
   function closeExportField() {
+    document.getElementById("export_field").select();
+    document.execCommand("copy");
     var div = document.getElementById("Export_div");
     var textField = document.getElementById("export_field");
     div.style.visibility = "hidden";
+
     if(isImporting === true) {
       var save = textField.textContent;
     }

@@ -81,7 +81,7 @@
 
 #Export_div {
   visibility: hidden;
-  background-color: #747373;
+  background-color: #57626dcb;
   border: 1px #00AAAA solid;
   text-align: center;
   z-index: 1;
@@ -159,7 +159,7 @@
  #T2_1B, #T2_2B {
    animation-duration: 0ms; 
 } 
-#T2_1B:hover, #T2_2B:hover, .T2_R:hover, .T3:hover, .IA_Button:hover {
+#T2_1B:hover, #T2_2B:hover, .T2_R:hover, .T3:hover, .IA_Button:hover, #export_button:hover {
   background-color: #16b8b8;
 }
 #T2_1B:disabled, #T2_2B:disabled {
@@ -177,10 +177,14 @@
 
 .export {
   opacity: 1;
-  border: 1px #00ffff solid;
-
+}
+#export_button {
+  border: none;
 }
 
+#exP {
+  margin-top: 20%;
+}
 .Bottom_Panel {
   display: table-row;
   vertical-align: bottom;
