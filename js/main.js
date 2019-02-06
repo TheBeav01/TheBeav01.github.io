@@ -30,7 +30,7 @@ function load() {
   var cookieSaveString = cookieExists("save");
   setVersion();
 
-  if(cookieExists("save") != "") {
+  if (cookieExists("save") != "") {
     Log("Save file exists");
     decodeSave(cookieSaveString);
 
@@ -40,10 +40,9 @@ function load() {
   }
   else {
     Log("Save file does not exist. Creating...");
-    setCookie("save",gold.toString(),365);
-    var goldRes = new Resource("Gold",0,false,1,0,1,1,true);
+    setCookie("save", gold.toString(), 365);
+    var goldRes = new Resource("Gold", 0, false, 1, 0, 1, 1, true);
     addResource(goldRes);
-    Log(resourceList);
     SaveGame();
   }
   adjustLabel("ManualGoldButton", "Gold: " + gold);
@@ -56,10 +55,9 @@ function load() {
 function pause() {
   var pause1 = document.getElementsByClassName("T2_L");
   var pause2 = document.getElementsByClassName("T2_R");
-  for(let i = 0; i<Math.max(pause1.length,pause2.length);i++) {
-    Log("AA");
-    if(pause1[i] == undefined) {
-      if(pause2[i]==undefined) {
+  for (let i = 0; i < Math.max(pause1.length, pause2.length); i++) {
+    if (pause1[i] == undefined) {
+      if (pause2[i] == undefined) {
         break;
       }
       pause2[i].disabled = true;
@@ -67,10 +65,9 @@ function pause() {
     }
     else {
       pause1[i].disabled = true;
-      Log("BB");
     }
-}
-isPaused = true;
+  }
+  isPaused = true;
 }
 
 /**
@@ -84,14 +81,14 @@ function start() {
  * Adds 1 gold per click.
  */
 function recieveGold() {
-  if(gold === undefined) {
+  if (gold === undefined) {
     Log("Undefined?");
   }
-  if(findResource("Gold") == -1) {
-    resourceList.push(new Resource("Gold",gold,true,1,0,1,1,true));
+  if (findResource("Gold") == -1) {
+    resourceList.push(new Resource("Gold", gold, true, 1, 0, 1, 1, true));
     save.resourcesOwned = resourceList;
   }
-  incrementResource("Gold",1);
+  incrementResource("Gold", 1);
 }
 
 /**
@@ -101,25 +98,25 @@ function recieveGold() {
 function gameLoop() {
   ticks++;
   update(ticks);
-  if(isPaused == true) {
+  if (isPaused == true) {
 
     cancelAnimationFrame(frameID);
   }
   else {
     frameID = requestAnimationFrame(gameLoop);
   }
-  }
-  /**
-   * Updates what is on the screen and what is in the backend. 
-   */
+}
+/**
+ * Updates what is on the screen and what is in the backend. 
+ */
 function update(ticks) {
-  
-  if(gold === NaN || gold === undefined) {
+
+  if (gold === NaN || gold === undefined) {
     Log("Setting gold to 0");
     gold = 0;
   }
-  if(save.workersRecieved > 0) {
-    if(workers > 0) {
+  if (save.workersRecieved > 0) {
+    if (workers > 0) {
       document.getElementById("T2_1B").disabled = false;
       document.getElementById("T2_2B").disabled = false;
     }
@@ -127,26 +124,32 @@ function update(ticks) {
       document.getElementById("T2_1B").disabled = true;
       document.getElementById("T2_2B").disabled = true;
     }
+    if (save.availableWorkers == 0) {
+      document.getElementById("UL1").disabled = true;
+    }
+    else {
+      document.getElementById("UL1").disabled = false;
+    }
     wGPS = getWorkerGoldPerSecond();
     GPS = wGPS; //Plus anything else!
-    GPT = GPS/60;
-    setResource("Gold",Number.parseFloat(getResourceAmt("Gold"))+Number.parseFloat(GPT));
+    GPT = GPS / 60;
+    setResource("Gold", Number.parseFloat(getResourceAmt("Gold")) + Number.parseFloat(GPT));
     gold = getResourceAmt("Gold");
     var displayGold = Number.parseInt(getResourceAmt("Gold"));
-    var nextString = displayGold + "/" + CalculateCost("worker",save.workersRecieved);
+    var nextString = displayGold + "/" + CalculateCost("worker", save.workersRecieved);
     checkCosts(displayGold);
     adjustLabel("ManualGoldButton", "Gold: " + displayGold);
     adjustLabel("UL1_label", "Workers: " + workers + " (" + GPS + " GPS) " + nextString);
     adjustLabel("T1_2", "Percentage chance of generation: " + getGenChance(save.availableWorkers));
-    if(ticks%60 === 0) {
+    if (ticks % 60 === 0) {
       var ranNumber = Math.random();
       genWorker(ranNumber);
     }
-    if(ticks%3600 == 0) {
+    if (ticks % 3600 == 0) {
       SaveGame();
       Log("Game saved!");
     }
-    }
+  }
   else {
     adjustLabel("ManualGoldButton", "Gold: " + Number.parseInt(getResourceAmt("Gold")));
     gold = getResourceAmt("Gold");
@@ -155,7 +158,7 @@ function update(ticks) {
     document.getElementById("T2_2B").disabled = true;
 
   }
-  adjustLabel("TS2","Current time: " + getDate());
+  adjustLabel("TS2", "Current time: " + getDate());
 
   unlockHandler();
   adjustButtons();
@@ -168,24 +171,23 @@ function update(ticks) {
 function hireWorker() {
   var cost = CalculateCost("worker", save.workersRecieved);
   let g = Number.parseInt(getResourceAmt("Gold"));
-  Log("Cost: " + cost + " Amt: " + g + " gold: " + gold);
-  if(cost > g) {
+  if (cost > g) {
     return;
   }
-  else if(save.availableWorkers === 0) {
+  else if (save.availableWorkers === 0) {
     return;
   }
   else {
-    setResource("Gold",Number.parseInt(g-cost));
+    setResource("Gold", Number.parseInt(g - cost));
     workers++;
     save.workersRecieved++;
-    incrementResource("Worker",1);
-    GPS = Number.parseInt(workers)*wGPS;
-    GPT = GPS/60;
+    incrementResource("Worker", 1);
+    GPS = Number.parseInt(workers) * wGPS;
+    GPT = GPS / 60;
     workers = getResourceAmt("Worker");
     save.availableWorkers--;
     adjustLabel("UL1_label", "Workers: " + getResourceAmt("Worker") + " (" + GPS + " gold per second)");
-    adjustLabel("T1_1","Town info: " + save.availableWorkers + " available workers (Max: " + save.maxWorkers + ")")
+    adjustLabel("T1_1", "Town info: " + save.availableWorkers + " available workers (Max: " + save.maxWorkers + ")")
     save.workersRecieved = save.workersInField + save.workersRecruiting + Number.parseInt(getResourceAmt("Worker"));
 
   }
@@ -197,29 +199,28 @@ function hireWorker() {
  * @param {Number} opCode What button you would like to operate on.
  */
 function deductWorkers(opCode) {
-  if(isPaused) {
+  if (isPaused) {
     return;
   }
-  if(getResourceAmt("Worker") === 0 ) {
-    Log("Returning");
+  if (getResourceAmt("Worker") === 0) {
     return;
   }
   GPS--;
-  incrementResource("Worker",-1);
+  incrementResource("Worker", -1);
   var nextString = Number.parseInt(gold) + "/" + CalculateCost("worker", save.workersRecieved);
-  if(workers === 0) {
+  if (workers === 0) {
     adjustLabel("UL1_label", "Workers: " + workers + " (" + GPS + " gold per second) " + nextString);
     gold = Number.parseInt(gold);
   }
-  switch(opCode) {
+  switch (opCode) {
     case 0:
       save.workersInField++;
       workers--;
-      var finGoldGenMultiplier = Math.pow(goldGenMultiplier,save.workersInField).toPrecision(5);
+      var finGoldGenMultiplier = Math.pow(goldGenMultiplier, save.workersInField).toPrecision(5);
       wGPS = finGoldGenMultiplier;
-      GPS = Number.parseInt(workers)*wGPS;
+      GPS = Number.parseInt(workers) * wGPS;
 
-      editTooltip("T2_1B","This increases the gold that workers give per second. Workers working: " + save.workersInField);
+      editTooltip("T2_1B", "This increases the gold that workers give per second. Workers working: " + save.workersInField);
       break;
     case 1:
       save.workersRecruiting++;
@@ -227,7 +228,7 @@ function deductWorkers(opCode) {
       var cm = getChanceMod() + 0.01;
       setChanceMod(cm);
 
-      editTooltip("T2_2B","This increases the chance of workers appearing. Workers working: " + save.workersRecruiting);
+      editTooltip("T2_2B", "This increases the chance of workers appearing. Workers working: " + save.workersRecruiting);
       break;
     default:
       Log("Something went wrong?");
@@ -240,25 +241,25 @@ function prepMainAscend() {
   Log("Ascending...");
   pause();
   document.getElementById("InnerAscent").style.display = "block";
-  var T2 = document.getElementById("Right_Panel");
 
-  T2.style.visibility = "hidden";
 }
 
 
 function confirmAscend() {
   document.getElementById("InnerAscent").style.display = "none";
   var indexesToRemove = new Array();
-  for(let i = 0; i<resourceList.length;i++) {
-    if(resourceList[i].removeOnAscent === true) {
+  for (let i = 0; i < resourceList.length; i++) {
+    if (resourceList[i].removeOnAscent === true) {
       indexesToRemove.push(i);
     }
   }
-  for(let j=indexesToRemove.length-1;j>=0;j--) {
-    setResource("Worker",0);
-    resourceList.splice(indexesToRemove[j],1);
-    Log("Removed " + j);
+  for (let j = indexesToRemove.length - 1; j >= 0; j--) {
+    setResource("Worker", 0);
+    resourceList.splice(indexesToRemove[j], 1);
   }
+  var T2 = document.getElementById("Right_Panel");
+
+  T2.style.visibility = "hidden";
   cleanSave();
   start();
 }

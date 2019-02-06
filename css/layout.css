@@ -181,9 +181,15 @@
 #export_button {
   border: none;
 }
-
+#export_container {
+  background: white;
+  width:50%;
+  margin-left: 25%;
+}
 #exP {
   margin-top: 20%;
+  width:auto;
+  background: white;
 }
 .Bottom_Panel {
   display: table-row;

@@ -14,11 +14,11 @@ class Resource {
      */
     //TODO: KEy items
     constructor(name, amt, removeOnAscent, shardAffinity, genPerSecond = -1,
-        genMult = 1, effectMult = 1,  isPrimary = false) {
+        genMult = 1, effectMult = 1, isPrimary = false) {
 
         //CW: Really bad code
-        if(name !== undefined && name.hasOwnProperty("name")) {
-            Object.assign(this,name);
+        if (name !== undefined && name.hasOwnProperty("name")) {
+            Object.assign(this, name);
             return;
         }
         this.name = name;
@@ -34,7 +34,7 @@ class Resource {
 }
 function addResource(resource) {
     Log("Finding resource " + resource.name);
-    if(findResource(resource.name) == -1) {
+    if (findResource(resource.name) == -1) {
         resourceList.push(resource);
         Log("Added resource");
     }
@@ -42,16 +42,16 @@ function addResource(resource) {
 }
 
 function findResource(toFind) {
-    if(resourceList.length == 0) {
+    if (resourceList.length == 0) {
         return -1;
     }
-    for(var i = 0; i<resourceList.length;i++) {
+    for (var i = 0; i < resourceList.length; i++) {
         var name = resourceList[i].name;
-        if(name == undefined) {
+        if (name == undefined) {
             Log("Undef at " + i);
-            resourceList.splice(i,1);
+            resourceList.splice(i, 1);
         }
-        if(name.toLowerCase() === toFind.toLowerCase()) {
+        if (name.toLowerCase() === toFind.toLowerCase()) {
             return i;
         }
     }
@@ -64,8 +64,8 @@ function getResourceAsObj(toFind) {
 
 function incrementResource(name, amt) {
     let index = findResource(name);
-    if(index == -1) {
-        
+    if (index == -1) {
+
     }
     else {
         resourceList[index].amt += amt;
@@ -74,8 +74,8 @@ function incrementResource(name, amt) {
 
 function setResource(name, amt) {
     let index = findResource(name);
-    if(index != -1) {
-        resourceList[index].amt = amt; 
+    if (index != -1) {
+        resourceList[index].amt = amt;
     }
     else {
         Log("NF");
@@ -84,7 +84,7 @@ function setResource(name, amt) {
 
 function getResourceAmt(name) {
     let index = findResource(name);
-    if(index == -1) {
+    if (index == -1) {
         return undefined;
     }
     else {
@@ -98,27 +98,25 @@ function getResourceParam(name, param) {
     return obj[param];
 }
 
-function writeResourceParam(name,param,value) {
+function writeResourceParam(name, param, value) {
     let obj = getResourceAsObj(name);
     let index = findResource(name);
-    Log(obj[param]);
     obj[param] = value;
-    Log(obj[param]);
     resourceList[index] = obj;
     return resourceList;
 }
 
 function initResources() {
     resourceList = save.resourcesOwned;
-    if(findResource("Gold") == -1) {
-        resourceList.push(new Resource("Gold",gold,true,1,0,1,1,true));
+    if (findResource("Gold") == -1) {
+        resourceList.push(new Resource("Gold", gold, true, 1, 0, 1, 1, true));
         save.resourcesOwned = resourceList;
-      }
+    }
 }
 
 function res_GetIndexOfResFromSave(res) {
-    for(let i=0;i<save.resourcesOwned.length;i++) {
-        if(res.toLowerCase() === save.resourcesOwned[i].name.toLowerCase()) {
+    for (let i = 0; i < save.resourcesOwned.length; i++) {
+        if (res.toLowerCase() === save.resourcesOwned[i].name.toLowerCase()) {
             return i;
         }
     }

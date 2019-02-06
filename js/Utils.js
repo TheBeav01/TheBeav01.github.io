@@ -5,11 +5,11 @@ var chanceMod = 0.0;
  * @param {*} ID The HTML ID
  * @param {*} newLabel What label you want to assign it.
  */
-function adjustLabel(ID,newLabel) {
+function adjustLabel(ID, newLabel) {
   document.getElementById(ID).innerHTML = newLabel;
 }
 
-function editTooltip(ID,newTooltip) {
+function editTooltip(ID, newTooltip) {
   document.getElementById(ID).title = newTooltip;
 }
 
@@ -22,20 +22,20 @@ function Log(string) {
  * @param {*} cookieName 
  */
 function cookieExists(cookieName) {
-  var cookieN = cookieName+"=";
-  var cookieList=decodeURIComponent(document.cookie);
+  var cookieN = cookieName + "=";
+  var cookieList = decodeURIComponent(document.cookie);
   var cookieArr = cookieList.split(";");
-  for(var x = 0; x < cookieArr.length; x++) {
+  for (var x = 0; x < cookieArr.length; x++) {
     var particularC = cookieArr[x];
     var nameArr = particularC.split("=");
     var name = nameArr[0];
-    if(name.charAt(0) == " ") {
+    if (name.charAt(0) == " ") {
       name = name.substring(1);
     }
-    if(name.indexOf(cookieName) == 0) {
+    if (name.indexOf(cookieName) == 0) {
       return nameArr[1];
     }
-    
+
   }
   return "";
 }
@@ -47,9 +47,8 @@ function cookieExists(cookieName) {
  */
 function setCookie(cookieName, cookieValue, expiresAt) {
   var date = new Date();
-  date.setTime(date.getTime() + (expiresAt*1000*60*60*24));
+  date.setTime(date.getTime() + (expiresAt * 1000 * 60 * 60 * 24));
   var expires = "expires=" + date.toUTCString();
-  Log(cookieName + "=" + cookieValue + "; " + expires + "; path=/");
   Log("Cookie expires at: " + expires);
   document.cookie = cookieName + "=" + cookieValue + "; " + expires + "; path=/";
 }
@@ -57,20 +56,19 @@ function setCookie(cookieName, cookieValue, expiresAt) {
 /**
  * Initializes the game
  */
-function initGame() { 
+function initGame() {
   var date = new Date();
   showTab(1);
   resizeTabs();
   var index = res_GetIndexOfResFromSave("Gold");
-  if(save.resourcesOwned[index].amt === undefined) {
+  if (save.resourcesOwned[index].amt === undefined) {
     gold = 0;
     save.resourcesOwned[index].amt = 0;
   }
-  adjustLabel("ManualGoldButton",save.resourcesOwned[index].amt);
+  adjustLabel("ManualGoldButton", save.resourcesOwned[index].amt);
   gold = save.resourcesOwned[index].amt;
   pushResourcesToLive();
   workers = getResourceAmt("Worker");
-  // resourceList.push(save.resourcesOwned);
   adjustLabel("TS2", "Current Time: " + getDate());
   adjustLabel("UL1_label", "Workers: " + getResourceAmt("Worker"));
   adjustUpgradeTooltips();
@@ -82,7 +80,7 @@ function initGame() {
  */
 function getDate() {
   var date = new Date();
-  var dateStr = date.toTimeString().substring(0,9);
+  var dateStr = date.toTimeString().substring(0, 9);
   return dateStr;
 }
 
@@ -97,18 +95,18 @@ function setVersion() {
  * @param {*} worker 
  */
 function getGenChance(worker) {
- var chance = Math.pow(save.maxWorkers-save.availableWorkers,1/2)/2;
- var adjChance = Number.parseFloat(chance);
- var adjMod = Number.parseFloat(chanceMod);
- chance = (adjChance+adjMod).toPrecision(3);
- if(chance === NaN) {
-   chance = 0;
- }
+  var chance = Math.pow(save.maxWorkers - save.availableWorkers, 1 / 2) / 2;
+  var adjChance = Number.parseFloat(chance);
+  var adjMod = Number.parseFloat(chanceMod);
+  chance = (adjChance + adjMod).toPrecision(3);
+  if (chance === NaN) {
+    chance = 0;
+  }
   return chance;
 }
 
 function setChanceMod(newMod) {
-  if(newMod >= 1 || newMod < 0) {
+  if (newMod >= 1 || newMod < 0) {
     return;
   }
   chanceMod = newMod;
@@ -121,42 +119,42 @@ function getChanceMod() {
  * @param {*} number NOTE: This number needs to be between 0 and 1. Random numbers are used.
  */
 function genWorker(number) {
-  if(save.availableWorkers === save.maxWorkers) {
+  if (save.availableWorkers === save.maxWorkers) {
     return;
   }
   var chance = getGenChance(save.availableWorkers) / 10;
-  if(number > chance) {
+  if (number > chance) {
   }
   else {
     Log("Worker generated");
     save.availableWorkers++;
-    adjustLabel("T1_1","Town info: " + save.availableWorkers + " available workers (Max: " + save.maxWorkers + ")")
+    adjustLabel("T1_1", "Town info: " + save.availableWorkers + " available workers (Max: " + save.maxWorkers + ")")
 
   }
 }
-  function getWorkerGoldPerSecond() {
-    if(save.workersInField === 0) {
-      return workers;
-    }
-    else {
-      var multiplier = Number.parseFloat(getResourceParam("Worker","effectMult"));
-      return (Math.pow(goldGenMultiplier,save.workersInField)*workers*multiplier).toPrecision(3);
-    }
+function getWorkerGoldPerSecond() {
+  if (save.workersInField === 0) {
+    return workers;
+  }
+  else {
+    var multiplier = Number.parseFloat(getResourceParam("Worker", "effectMult"));
+    return (Math.pow(goldGenMultiplier, save.workersInField) * workers * multiplier).toPrecision(3);
+  }
 }
 
 function adjustButtons() {
-  if(isPaused) {
+  if (isPaused) {
     return;
   }
   var div = document.getElementById("RightSide");
   var divChildren = div.children;
-  for(let i = 0; i < div.childElementCount; i++) {
-    if(divChildren[i].tagName === "BUTTON") {
+  for (let i = 0; i < div.childElementCount; i++) {
+    if (divChildren[i].tagName === "BUTTON") {
       var costArr = JSON.parse(divChildren[i].getAttribute("upg"));
-      for(let j = 0; j < costArr.length; j++) {
-        if(costArr[j].amt >= resourceList[findResource(costArr[j].name)]) {
+      for (let j = 0; j < costArr.length; j++) {
+        if (costArr[j].amt >= resourceList[findResource(costArr[j].name)]) {
           divChildren[i].style.disabled = true;
-
+          Log("Dis");
         }
         else {
           divChildren[i].style.disabled = false;
@@ -164,7 +162,7 @@ function adjustButtons() {
       }
     }
   }
-  if(save.availableWorkers == 0) {
+  if (save.availableWorkers == 0) {
     var workerButton = document.getElementById("UL1");
     workerButton.disabled = true;
   }
@@ -175,7 +173,7 @@ function adjustButtons() {
 }
 
 function pushResourcesToLive() {
-  for(let i=0;i<save.resourcesOwned.length;i++) {
+  for (let i = 0; i < save.resourcesOwned.length; i++) {
     resourceList.push(save.resourcesOwned[i]);
   }
 }

@@ -1,23 +1,23 @@
 function lay_init(segment) {
     Log("Initializing layout...");
-    switch(segment) {
-    case 0:
-        var worker_button = document.getElementById("UL1");
-        var worker_label = document.getElementById("UL1_label");
-        var T2 = document.getElementById("Right_Panel");
-        adjustUpgradeTooltips();
-        if(workers == undefined) {
-            workers = 0;   
-        }
-        adjustLabel("UL1_label", "Workers: " + workers);
-        adjustLabel("T1_1","Town info: " + save.availableWorkers + 
-        " available workers (Max: " + save.maxWorkers + ")")
-        worker_button.style.visibility = "visible";
-        worker_label.style.visibility = "visible";
-        T2.style.visibility = "visible";
-        showTab(1);
-        resizeTabs();
-        break;
+    switch (segment) {
+        case 0:
+            var worker_button = document.getElementById("UL1");
+            var worker_label = document.getElementById("UL1_label");
+            var T2 = document.getElementById("Right_Panel");
+            adjustUpgradeTooltips();
+            if (workers == undefined) {
+                workers = 0;
+            }
+            adjustLabel("UL1_label", "Workers: " + workers);
+            adjustLabel("T1_1", "Town info: " + save.availableWorkers +
+                " available workers (Max: " + save.maxWorkers + ")")
+            worker_button.style.visibility = "visible";
+            worker_label.style.visibility = "visible";
+            T2.style.visibility = "visible";
+            showTab(1);
+            resizeTabs();
+            break;
     }
 
 }
@@ -28,7 +28,7 @@ function LayoutCloseOverflowDropdown() {
 }
 
 function LoadChangelog() {
-    window.open('/Changelog.html','_blank');
+    window.open('/Changelog.html', '_blank');
     LayoutCloseOverflowDropdown();
 }
 
@@ -37,26 +37,26 @@ function showTab(tabNum) {
     var elements = document.getElementById("Right_Panel").children;
     var counter = 1;
     var traverse = 0;
-    for(i=0;i<elements.length;i++) {
-        if(elements[i].className != "Tab" && elements[i].id != "") {
+    for (i = 0; i < elements.length; i++) {
+        if (elements[i].className != "Tab" && elements[i].id != "") {
             traverse = 0;
             var id = elements[i].id;
-            var newid = Number.parseInt(id.replace("Tab_",""));
+            var newid = Number.parseInt(id.replace("Tab_", ""));
             var childNodes = elements[i].children;
-            for(var j = 0; j < childNodes.length; j++) {
-                if(childNodes[j].hasChildNodes) {
-    
+            for (var j = 0; j < childNodes.length; j++) {
+                if (childNodes[j].hasChildNodes) {
+
                     var cNode = tabRec(childNodes[j]);
                     traverse = 1;
                     var foundDoc = document.getElementById(cNode.id);
                     var elementList = document.getElementById(cNode.id).getElementsByTagName('*');
-                    if(elementList.length == 0) {
-                        if(counter == tabNum) {
-                            if(counter != 2) {
+                    if (elementList.length == 0) {
+                        if (counter == tabNum) {
+                            if (counter != 2) {
                                 foundDoc.style.display = "block";
                             }
                             else {
-                                    foundDoc.style.display = "inline-block";
+                                foundDoc.style.display = "inline-block";
 
                             }
                         }
@@ -65,9 +65,9 @@ function showTab(tabNum) {
 
                         }
                     }
-                    for(var elem = 0; elem < elementList.length;elem++) {
-                        if(counter == tabNum) {
-                            if(counter != 2) {
+                    for (var elem = 0; elem < elementList.length; elem++) {
+                        if (counter == tabNum) {
+                            if (counter != 2) {
                                 elementList[elem].style.display = "block";
                             }
                             else {
@@ -112,13 +112,13 @@ function showTab(tabNum) {
     document.getElementById("RightSide").style.display = "table-cell"
 }
 function tabRec(start) {
-    if(!start.children.hasChildNodes) {
+    if (!start.children.hasChildNodes) {
         return start;
 
     }
     var childList = start.children;
     var count = 0;
-    while(childList.hasChildNodes) {
+    while (childList.hasChildNodes) {
         childList = childList.children;
         count++;
     }
@@ -130,15 +130,15 @@ function getTabs() {
 }
 function resizeTabs() {
     var tabs = getTabs();
-    for(var i=0; i<tabs.length; i++) {
-        var w = (100/tabs.length) - 1;
+    for (var i = 0; i < tabs.length; i++) {
+        var w = (100 / tabs.length) - 1;
         tabs[i].style.width = w + "%";
     }
 }
 
 function createPopup() {
     var popup = document.getElementById("Popup");
-    if(popup.style.display == "block") {
+    if (popup.style.display == "block") {
         return;
     }
     popup.style.display = "block"
@@ -159,7 +159,7 @@ function displayStoryMessage(message) {
 
 }
 
-function displayStoryMessage(message,headerMsg) {
+function displayStoryMessage(message, headerMsg) {
     var popupText = document.getElementById("Popup_Text");
     var header = document.getElementById("Header_Text");
     popupText.innerHTML = message;
@@ -168,18 +168,18 @@ function displayStoryMessage(message,headerMsg) {
 }
 
 function adjustUpgradeTooltips() {
-    editTooltip("T2_1B","This increases the gold that workers give per second. Workers working: " + save.workersInField);
-    editTooltip("T2_2B","This increases the chance of workers appearing. Workers working: " + save.workersRecruiting);
+    editTooltip("T2_1B", "This increases the gold that workers give per second. Workers working: " + save.workersInField);
+    editTooltip("T2_2B", "This increases the chance of workers appearing. Workers working: " + save.workersRecruiting);
 
 }
 
 
 function option_ClickTest(test) {
     var agent = navigator.userAgent.toLowerCase();
-    if(agent.indexOf("chrome") > -1) {
+    if (agent.indexOf("chrome") > -1) {
         let selected = test.options[test.selectedIndex];
         let index = selected.index;
-        switch(index) {
+        switch (index) {
             case 1:
                 SaveGame();
                 break;
@@ -200,25 +200,24 @@ function option_ClickTest(test) {
 
 function getButtonAndExecute(event) {
 
-    if(event.target.tagName !== "DIV") {
+    if (event.target.tagName !== "DIV") {
         let resourceArr = JSON.parse(event.target.getAttribute("upg"));
         Log("Buffer");
         deductResources(resourceArr);
         let button = event.target;
         let effect = resourceArr.B_ID;
-        if(effect.indexOf(WORK_EFF_ID,0) != -1) {
+        if (effect.indexOf(WORK_EFF_ID, 0) != -1) {
             Log("Inc worker eff");
             var work = resourceList[findResource("Worker")];
-            work.effectMult *= 1.5; 
-            Log(work.effectMult);
+            work.effectMult *= 1.5;
         }
         removeElement(event.target);
     }
 }
 
 function createUpgrade(title, id, upgTag) {
-    for(let i = 0; i < upgradesList.length; i++) {
-        if(upgradesList[i].ID === upgTag.ID) {
+    for (let i = 0; i < save.unlockedUpgrades.length; i++) {
+        if (save.unlockedUpgrades[i].ID === upgTag.ID) {
             return;
         }
     }
@@ -228,16 +227,15 @@ function createUpgrade(title, id, upgTag) {
     var Att = document.createAttribute("upg");
     let tooltip = "";
     Att.value = JSON.stringify(upgTag);
-    button.setAttribute("upg",Att.value);
+    button.setAttribute("upg", Att.value);
     button.append(document.createTextNode(title));
-    button.setAttribute("class","T2_R");
-    button.setAttribute("id",id);
-    button.setAttribute("title",tooltip);
-    button.setAttribute("style","display: inline-block;width: 100%;");
-    if(selectedTab != 2) {
+    button.setAttribute("class", "T2_R");
+    button.setAttribute("id", id);
+    button.setAttribute("title", tooltip);
+    button.setAttribute("style", "display: inline-block;width: 100%;");
+    if (selectedTab != 2) {
         button.style.display = "none";
     }
-    Log(button.style.color);
     let element = document.getElementById("RightSide");
     element.append(button);
 }
@@ -245,10 +243,10 @@ function createUpgrade(title, id, upgTag) {
 function createResourceLabel(text, id) {
     let label = document.createElement("label");
     label.append(document.createTextNode(text));
-    label.setAttribute("class","T1");
-    label.setAttribute("id",id);
+    label.setAttribute("class", "T1");
+    label.setAttribute("id", id);
     label.style.display = "inherit";
-    if(selectedTab != 1) {
+    if (selectedTab != 1) {
         label.style.display = "none";
     }
     let element = document.getElementById("Tab_1");
