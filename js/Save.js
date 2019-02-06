@@ -12,8 +12,9 @@ var save = {
   realmsCompleted: 0,
   storyPos: 0,
   upgradesPos: 0,
-  resourcesOwned: resourceList,
-  unlockedUpgrades: upgradesList,
+  resourcesOwned: [],
+  unlockedUpgrades: [],
+  darkShardEffectiveness : 1.1,
   //Encoding ends here
   genChance: 0.5 * workers,
 
@@ -35,6 +36,7 @@ function getSave() {
 function decodeSave(stringToDecode) {
   var loadString = stringToDecode;
   save = JSON.parse(atob(stringToDecode));
+  resourceList = save.resourcesOwned;
   if (save.storyPos == 3) {
     unlockWorker(false);
   }
@@ -119,9 +121,11 @@ function cleanSave() {
     save.workersInField = 0;
     save.workersRecruiting = 0;
     save.workersRecieved = 0;
+    workers = 0;
   }
   save.upgradesPos = 0;
   setResource("Gold", 0);
   save.resourcesOwned = resourceList;
+  save.unlockedUpgrades = [];
   UL1 = false;
 }

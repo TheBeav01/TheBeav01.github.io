@@ -122,6 +122,13 @@ function handleOneTimeUnlocks() {
                 lay_init(0);
             }
         }
+        if(gold > 250) {
+            let costArr = new Array();
+            costArr.push(new Upgrade("Gold", 300));
+            var upg = new UpgradeProto(WORK_EFF, costArr, 2, WORK_EFF_ID, false);
+            createUpgrade(WORK_EFF, WORK_EFF_ID, upg);
+            costArr.pop;
+        }
         if (gold > 500) {
             let costArr = new Array();
             costArr.push(new Upgrade("Gold", 500));
@@ -134,6 +141,20 @@ function handleOneTimeUnlocks() {
             var costArr = new Array();
             costArr.push(new Upgrade("Gold", 2000));
             var upg = new UpgradeProto(WORK_EFF, costArr, 1, WORK_EFF_ID, false);
+            createUpgrade(WORK_EFF, WORK_EFF_ID, upg);
+            costArr.pop;
+        }
+        if(gold > 3000) {
+            var costArr = new Array();
+            costArr.push(new Upgrade("Gold", 3500));
+            var upg = new UpgradeProto(WORK_EFF, costArr, 2, WORK_EFF_ID, false);
+            createUpgrade(WORK_EFF, WORK_EFF_ID, upg);
+            costArr.pop;
+        }
+        if(gold > 5000) {
+            var costArr = new Array();
+            costArr.push(new Upgrade("Gold", 6000));
+            var upg = new UpgradeProto(WORK_EFF, costArr, 3, WORK_EFF_ID, false);
             createUpgrade(WORK_EFF, WORK_EFF_ID, upg);
             costArr.pop;
         }
@@ -206,6 +227,10 @@ function handleStoryMessagesAndUnlocks() {
         pause();
         showTab(3);
         canAscend = true;
+        story = FIRST_ASC; //9
+    }
+    if(story == 10) {
+        displayStoryMessage(getStory(10));
         story++;
     }
     save.storyPos = story;

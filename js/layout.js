@@ -48,6 +48,9 @@ function showTab(tabNum) {
 
                     var cNode = tabRec(childNodes[j]);
                     traverse = 1;
+                    if(cNode.id == "") {
+
+                    }
                     var foundDoc = document.getElementById(cNode.id);
                     var elementList = document.getElementById(cNode.id).getElementsByTagName('*');
                     if (elementList.length == 0) {
@@ -253,6 +256,14 @@ function createResourceLabel(text, id) {
     element.append(label);
 }
 
+function createResourceInfoLabel(text, id) {
+    let label = document.createElement("label");
+    label.append(document.createTextNode(text));
+    label.setAttribute("id",id);
+    label.setAttribute("class","T1");
+    let element = document.getElementById("Tab_1");
+    element.append(label);
+}
 function removeElement(element) {
     element.parentNode.removeChild(element);
 }

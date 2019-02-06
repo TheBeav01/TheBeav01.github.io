@@ -58,6 +58,22 @@ function findResource(toFind) {
     return -1;
 }
 
+function findResourceInSave(toFind) {
+    if (save.resourcesOwned.length == 0) {
+        return -1;
+    }
+    for (var i = 0; i < save.resourcesOwned.length; i++) {
+        var name = save.resourcesOwned[i].name;
+        if (name == undefined) {
+            Log("Undef at " + i);
+            save.resourcesOwned.splice(i, 1);
+        }
+        if (name.toLowerCase() === toFind.toLowerCase()) {
+            return i;
+        }
+    }
+    return -1;
+}
 function getResourceAsObj(toFind) {
     return new Resource(resourceList[findResource(toFind)]);
 }
@@ -107,7 +123,6 @@ function writeResourceParam(name, param, value) {
 }
 
 function initResources() {
-    resourceList = save.resourcesOwned;
     if (findResource("Gold") == -1) {
         resourceList.push(new Resource("Gold", gold, true, 1, 0, 1, 1, true));
         save.resourcesOwned = resourceList;
@@ -121,4 +136,30 @@ function res_GetIndexOfResFromSave(res) {
         }
     }
     return -1;
+}
+
+//SHARDS
+
+function getSimpleShardBonusStr() {
+    let bonusAmt = getShardAmt() * GOLD_SHD_AFF * save.darkShardEffectiveness;
+    return bonusAmt + "";
+}
+function getShardAmt() {
+    var amt = Number.parseInt(getResourceAmt("Dark Shard"));
+    if(findResourceInSave("Dark Shard") === -1) {
+        return 0;
+    }
+    Log("Shard: " + amt);
+    if(amt == undefined || amt === NaN) {
+        Log("Ret 0")
+        return 0;
+    }
+    return Number.parseInt(getResourceAmt("Dark Shard"));
+}
+
+function getShardGoldBonus() {
+    if(getShardAmt() == 0) {
+        return 1;
+    }
+    return getShardAmt() * GOLD_SHD_AFF * 1.1;
 }

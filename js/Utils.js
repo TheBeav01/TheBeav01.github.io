@@ -61,13 +61,16 @@ function initGame() {
   showTab(1);
   resizeTabs();
   var index = res_GetIndexOfResFromSave("Gold");
+  if(index == -1) {
+    Log("AA");
+  }
   if (save.resourcesOwned[index].amt === undefined) {
     gold = 0;
     save.resourcesOwned[index].amt = 0;
   }
   adjustLabel("ManualGoldButton", save.resourcesOwned[index].amt);
   gold = save.resourcesOwned[index].amt;
-  pushResourcesToLive();
+  // pushResourcesToLive();
   workers = getResourceAmt("Worker");
   adjustLabel("TS2", "Current Time: " + getDate());
   adjustLabel("UL1_label", "Workers: " + getResourceAmt("Worker"));
@@ -138,7 +141,9 @@ function getWorkerGoldPerSecond() {
   }
   else {
     var multiplier = Number.parseFloat(getResourceParam("Worker", "effectMult"));
-    return (Math.pow(goldGenMultiplier, save.workersInField) * workers * multiplier).toPrecision(3);
+    var shardEff = Number.parseFloat(getResourceParam("Worker","shardAffinity"));
+    return (Math.pow(goldGenMultiplier, save.workersInField) * workers * multiplier
+    + (getShardAmt() * save.darkShardEffectiveness * shardEff)).toPrecision(3);
   }
 }
 
@@ -151,8 +156,10 @@ function adjustButtons() {
   for (let i = 0; i < div.childElementCount; i++) {
     if (divChildren[i].tagName === "BUTTON") {
       var costArr = JSON.parse(divChildren[i].getAttribute("upg"));
-      for (let j = 0; j < costArr.length; j++) {
-        if (costArr[j].amt >= resourceList[findResource(costArr[j].name)]) {
+      for (let j = 0; j < costArr.cost.length; j++) {
+        var cost = costArr.cost[j].amt;
+
+        if (cost >= resourceList[findResource(costArr.cost[j].name)].amt) {
           divChildren[i].style.disabled = true;
           Log("Dis");
         }
@@ -172,11 +179,11 @@ function adjustButtons() {
   }
 }
 
-function pushResourcesToLive() {
-  for (let i = 0; i < save.resourcesOwned.length; i++) {
-    resourceList.push(save.resourcesOwned[i]);
-  }
-}
+// function pushResourcesToLive() {
+//   for (let i = 0; i < save.resourcesOwned.length; i++) {
+//     resourceList.push(save.resourcesOwned[i]);
+//   }
+// }
 
 function printCookie() {
   Log(cookie);

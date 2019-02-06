@@ -47,6 +47,20 @@ function getStory(msg) {
                 + " You look toward your bag and open it, sticking your hand in. It brushes past something cold that gives you pause"
                 + " You pull it out. It appears to be a golden pocketwatch, at least from the outside. When you open it up, a bright glow fills your vision."
                 + " Everything stops around you.";
+        
+        case 10:
+            return "You find yourself in the bed of your tower room. A quick glance out of the window confirms your suspicion "
+            + "that the clock was somehow magical. You re-open your bag and peer into it. You lost your gold, but kept the sphere and the "
+            + "chronometer. As you reach past the clock, however, your fingers brush agaainst something cold. You pull it out. "
+            + "It appears to be a black shard, but where did you get it? Just being near it makes you feel more powerful."
+        
+        case 11:
+
+        case 12:
+
+        case 13:
+
+        case 14:
         default:
             return "";
     }

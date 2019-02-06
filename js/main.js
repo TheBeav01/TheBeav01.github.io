@@ -11,6 +11,9 @@ var selectedTab = -1; //Global flag for what tab we have selected on the right s
 var frameID; //Required global to hold the ID of the requested frame. This is used with pausing and unpausing.
 var isPaused; //Are we paused or not? Could hold this somewhere else completely along with other gamestate vars.
 
+//FLAGS
+
+var FL_DSTEXT = 0;
 //DECLARE GLOBAL CONSTS
 const goldGenMultiplier = 1.05; //Global base gold gen multiplier.
 const version = "0.02.00"; //Version number.
@@ -20,7 +23,8 @@ const T3_THRESHOLD = 5000;
 const T4_THRESHOLD = 7500;
 const T5_THRESHOLD = 10000;
 const FIRST_ASC_THRESHOLD = 20000;
-
+const FIRST_ASC = 9; //Story threshold for first ascent.
+const GOLD_SHD_AFF = 1;
 /**
  * 
  * Loads the game. Is the first function called when you load the page. This loads the save from the save string
@@ -88,7 +92,7 @@ function recieveGold() {
     resourceList.push(new Resource("Gold", gold, true, 1, 0, 1, 1, true));
     save.resourcesOwned = resourceList;
   }
-  incrementResource("Gold", 1);
+  incrementResource("Gold", getShardGoldBonus());
 }
 
 /**
@@ -247,6 +251,12 @@ function prepMainAscend() {
 
 function confirmAscend() {
   document.getElementById("InnerAscent").style.display = "none";
+  if(save.storyPos == FIRST_ASC) {
+    resourceList.push(new Resource("Dark Shard",1,false));
+    FL_DSTEXT = true;
+    save.storyPos++;
+  }
+
   var indexesToRemove = new Array();
   for (let i = 0; i < resourceList.length; i++) {
     if (resourceList[i].removeOnAscent === true) {
@@ -260,6 +270,11 @@ function confirmAscend() {
   var T2 = document.getElementById("Right_Panel");
 
   T2.style.visibility = "hidden";
+
   cleanSave();
   start();
+  if(FL_DSTEXT = true) {
+    createResourceInfoLabel("You have: " + getShardAmt() + " shards. This gives you a " + getSimpleShardBonusStr() 
+    + "x increase in gold","T1_3");
+  }
 }
