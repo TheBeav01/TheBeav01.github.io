@@ -70,7 +70,6 @@ function initGame() {
   }
   adjustLabel("ManualGoldButton", save.resourcesOwned[index].amt);
   gold = save.resourcesOwned[index].amt;
-  // pushResourcesToLive();
   workers = getResourceAmt("Worker");
   adjustLabel("TS2", "Current Time: " + getDate());
   adjustLabel("UL1_label", "Workers: " + getResourceAmt("Worker"));
@@ -178,13 +177,6 @@ function adjustButtons() {
     workerButton.disabled = false;
   }
 }
-
-// function pushResourcesToLive() {
-//   for (let i = 0; i < save.resourcesOwned.length; i++) {
-//     resourceList.push(save.resourcesOwned[i]);
-//   }
-// }
-
 function printCookie() {
   Log(cookie);
 }
