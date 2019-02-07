@@ -39,7 +39,7 @@
   background-color: #16b8b8;
 }
 
-.Main_Button:disabled {
+.Main_Button:disabled, .T2_R:disabled  {
   background-color: #b81616;
   color: black; 
 }
@@ -122,6 +122,7 @@
   position: relative;
   min-width: 50%;
   display: inline-table;
+  table-layout: fixed;
   /* border: 2px #00ffff solid; */
 
 }

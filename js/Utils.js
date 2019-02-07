@@ -159,11 +159,11 @@ function adjustButtons() {
         var cost = costArr.cost[j].amt;
 
         if (cost >= resourceList[findResource(costArr.cost[j].name)].amt) {
-          divChildren[i].style.disabled = true;
+          divChildren[i].disabled = true;
           Log("Dis");
         }
         else {
-          divChildren[i].style.disabled = false;
+          divChildren[i].disabled = false;
         }
       }
     }

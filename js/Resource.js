@@ -149,7 +149,6 @@ function getShardAmt() {
     if(findResourceInSave("Dark Shard") === -1) {
         return 0;
     }
-    Log("Shard: " + amt);
     if(amt == undefined || amt === NaN) {
         Log("Ret 0")
         return 0;

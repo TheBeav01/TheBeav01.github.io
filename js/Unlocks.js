@@ -135,7 +135,6 @@ function handleOneTimeUnlocks() {
             var upg = new UpgradeProto(WORK_EFF, costArr, 0, WORK_EFF_ID, false);
             createUpgrade(WORK_EFF, WORK_EFF_ID, upg);
             costArr.pop;
-            // save.upgradesPos++;
         }
         if (gold > 1500) {
             var costArr = new Array();
