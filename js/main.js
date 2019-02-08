@@ -14,6 +14,9 @@ var isPaused; //Are we paused or not? Could hold this somewhere else completely 
 //FLAGS
 
 var FL_DSTEXT = 0;
+var WK_GEN_FLG = 0;
+var WK_BUY_FLG = 0;
+var WK_UL = 0;
 //DECLARE GLOBAL CONSTS
 const goldGenMultiplier = 1.05; //Global base gold gen multiplier.
 const version = "0.02.00"; //Version number.
@@ -25,6 +28,7 @@ const T5_THRESHOLD = 10000;
 const FIRST_ASC_THRESHOLD = 20000;
 const FIRST_ASC = 9; //Story threshold for first ascent.
 const GOLD_SHD_AFF = 1;
+const BASE_GLD_AMT = 25000;
 /**
  * 
  * Loads the game. Is the first function called when you load the page. This loads the save from the save string
@@ -93,6 +97,9 @@ function recieveGold() {
     save.resourcesOwned = resourceList;
   }
   incrementResource("Gold", getShardGoldBonus());
+  adjustLabel("ManualGoldButton", "Gold: " + getResourceAmt("Gold").toPrecision(2));
+
+
 }
 
 /**
@@ -140,11 +147,9 @@ function update(ticks) {
     setResource("Gold", Number.parseFloat(getResourceAmt("Gold")) + Number.parseFloat(GPT));
     gold = getResourceAmt("Gold");
     var displayGold = Number.parseInt(getResourceAmt("Gold"));
-    var nextString = displayGold + "/" + CalculateCost("worker", save.workersRecieved);
     checkCosts(displayGold);
-    adjustLabel("ManualGoldButton", "Gold: " + displayGold);
-    adjustLabel("UL1_label", "Workers: " + workers + " (" + GPS + " GPS) " + nextString);
-    adjustLabel("T1_2", "Percentage chance of generation: " + getGenChance(save.availableWorkers));
+    adjustLabelsOnScreen(displayGold);
+
     if (ticks % 60 === 0) {
       var ranNumber = Math.random();
       genWorker(ranNumber);
@@ -155,15 +160,15 @@ function update(ticks) {
     }
   }
   else {
-    adjustLabel("ManualGoldButton", "Gold: " + Number.parseInt(getResourceAmt("Gold")));
-    gold = getResourceAmt("Gold");
-
-    document.getElementById("T2_1B").disabled = true;
-    document.getElementById("T2_2B").disabled = true;
-
+    gold = Number.parseInt(getResourceAmt("Gold"));
+    if(document.getElementById("T2_1B").disabled == false) {
+      document.getElementById("T2_1B").disabled = true;
+      document.getElementById("T2_2B").disabled = true;
+    }
   }
-  adjustLabel("TS2", "Current time: " + getDate());
-
+  if(ticks % 60 == 0) {
+    adjustLabel("TS2", "Current time: " + getDate());
+  }
   unlockHandler();
   adjustButtons();
   checkCosts(displayGold);
@@ -190,8 +195,8 @@ function hireWorker() {
     GPT = GPS / 60;
     workers = getResourceAmt("Worker");
     save.availableWorkers--;
+    WK_BUY_FLG = 1;
     adjustLabel("UL1_label", "Workers: " + getResourceAmt("Worker") + " (" + GPS + " gold per second)");
-    adjustLabel("T1_1", "Town info: " + save.availableWorkers + " available workers (Max: " + save.maxWorkers + ")")
     save.workersRecieved = save.workersInField + save.workersRecruiting + Number.parseInt(getResourceAmt("Worker"));
 
   }
@@ -272,9 +277,12 @@ function confirmAscend() {
   T2.style.visibility = "hidden";
 
   cleanSave();
+  adjustLabel("ManualGoldButton", "Gold: " + 0);
+
   start();
   if(FL_DSTEXT = true) {
     createResourceInfoLabel("You have: " + getShardAmt() + " shards. This gives you a " + getSimpleShardBonusStr() 
     + "x increase in gold","T1_3");
+    createResourceInfoLabel(goldToShardString(), "T1_3_AMT");
   }
 }

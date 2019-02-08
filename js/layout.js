@@ -176,6 +176,24 @@ function adjustUpgradeTooltips() {
 
 }
 
+function adjustLabelsOnScreen(displayGold) {
+    var nextString = displayGold + "/" + CalculateCost("worker", save.workersRecieved);
+    adjustLabel("ManualGoldButton", "Gold: " + displayGold);
+    adjustLabel("UL1_label", "Workers: " + workers + " (" + GPS + " GPS) " + nextString);
+    if(getShardAmt() > 0) {
+        adjustLabel("T1_3_AMT", goldToShardString());
+    }
+    if(selectedTab == 1) {
+        if(WK_GEN_FLG == 1 || WK_BUY_FLG == 1) {
+            adjustLabel("T1_2", "Percentage chance of generation: " + getGenChance(save.availableWorkers));
+            adjustLabel("T1_1", "Town info: " + save.availableWorkers + " available workers (Max: " + save.maxWorkers + ")")
+            WK_GEN_FLG = 0;
+            WK_BUY_FLG = 0;
+        }
+
+    }
+}
+
 
 function option_ClickTest(test) {
     var agent = navigator.userAgent.toLowerCase();
@@ -205,7 +223,6 @@ function getButtonAndExecute(event) {
 
     if (event.target.tagName !== "DIV") {
         let resourceArr = JSON.parse(event.target.getAttribute("upg"));
-        Log("Buffer");
         deductResources(resourceArr);
         let button = event.target;
         let effect = resourceArr.B_ID;
@@ -213,6 +230,11 @@ function getButtonAndExecute(event) {
             Log("Inc worker eff");
             var work = resourceList[findResource("Worker")];
             work.effectMult *= 1.5;
+        }
+        if(effect.indexOf(DBL_WORK_EFF,0) != -1) {
+            Log("DBL");
+            var work = resourceList[findResource("Worker")];
+            work.effectMult *= 3;
         }
         removeElement(event.target);
     }

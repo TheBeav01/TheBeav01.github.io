@@ -156,9 +156,19 @@ function getShardAmt() {
     return Number.parseInt(getResourceAmt("Dark Shard"));
 }
 
+function giveShard() {
+    save.resourcesOwned[findResource("Dark Shard")].amt += 1;
+    adjustLabelsOnScreen();
+}
+
 function getShardGoldBonus() {
     if(getShardAmt() == 0) {
         return 1;
     }
     return getShardAmt() * GOLD_SHD_AFF * 1.1;
+}
+
+function getGoldToNextShard() {
+    var shards = getShardAmt();
+    return Math.floor((Math.pow(1+shards,1.25)*BASE_GLD_AMT) - getResourceAmt("Gold"));
 }

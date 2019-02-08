@@ -1,7 +1,7 @@
 const WORK_EFF = "Worker efficiency++";
 const WORK_EFF_TT = "Increases the gold workers gather by 150%";
 const WORK_EFF_ID = "WorkEff";
-
+const DBL_WORK_EFF = "DBL_WORK_EFF";
 function getStory(msg) {
 
     switch (msg) {
@@ -64,4 +64,8 @@ function getStory(msg) {
         default:
             return "";
     }
+}
+
+function goldToShardString() {
+    return getGoldToNextShard() + " Gold to " + Number.parseInt(getShardAmt()+1) + " shards on ascension";
 }

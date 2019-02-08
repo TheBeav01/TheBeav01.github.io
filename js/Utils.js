@@ -61,15 +61,20 @@ function initGame() {
   showTab(1);
   resizeTabs();
   var index = res_GetIndexOfResFromSave("Gold");
-  if(index == -1) {
-    Log("AA");
-  }
   if (save.resourcesOwned[index].amt === undefined) {
     gold = 0;
     save.resourcesOwned[index].amt = 0;
   }
-  adjustLabel("ManualGoldButton", save.resourcesOwned[index].amt);
+  if(getShardAmt() > 0) {
+    Log("Shards!");
+    createResourceInfoLabel("You have: " + getShardAmt() + " shards. This gives you a " + getSimpleShardBonusStr() 
+    + "x increase in gold","T1_3");
+    createResourceInfoLabel(goldToShardString(), "T1_3_AMT")
+    FL_DSTEXT = true;
+  }
   gold = save.resourcesOwned[index].amt;
+
+  adjustLabel("ManualGoldButton", Math.floor(gold));
   workers = getResourceAmt("Worker");
   adjustLabel("TS2", "Current Time: " + getDate());
   adjustLabel("UL1_label", "Workers: " + getResourceAmt("Worker"));
@@ -129,18 +134,19 @@ function genWorker(number) {
   }
   else {
     Log("Worker generated");
+    WK_GEN_FLG = 1;
     save.availableWorkers++;
-    adjustLabel("T1_1", "Town info: " + save.availableWorkers + " available workers (Max: " + save.maxWorkers + ")")
 
   }
 }
 function getWorkerGoldPerSecond() {
+  var multiplier = Number.parseFloat(getResourceParam("Worker", "effectMult"));
+  var shardEff = Number.parseFloat(getResourceParam("Worker","shardAffinity"));
   if (save.workersInField === 0) {
-    return workers;
+    return workers * multiplier + (getShardAmt() * save.darkShardEffectiveness * shardEff);
   }
   else {
-    var multiplier = Number.parseFloat(getResourceParam("Worker", "effectMult"));
-    var shardEff = Number.parseFloat(getResourceParam("Worker","shardAffinity"));
+
     return (Math.pow(goldGenMultiplier, save.workersInField) * workers * multiplier
     + (getShardAmt() * save.darkShardEffectiveness * shardEff)).toPrecision(3);
   }
@@ -160,7 +166,6 @@ function adjustButtons() {
 
         if (cost >= resourceList[findResource(costArr.cost[j].name)].amt) {
           divChildren[i].disabled = true;
-          Log("Dis");
         }
         else {
           divChildren[i].disabled = false;

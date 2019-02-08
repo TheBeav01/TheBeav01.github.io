@@ -63,6 +63,10 @@ function checkCosts(costToCheck) {
     else {
         button.disabled = save.availableWorkers === 0;
     }
+    if(getGoldToNextShard() <= 0) {
+        Log("Cost: " + costToCheck + " GTNS: " + getGoldToNextShard());
+        giveShard();
+    }
 }
 /**
  * Unlocks the worker
@@ -156,6 +160,14 @@ function handleOneTimeUnlocks() {
             var upg = new UpgradeProto(WORK_EFF, costArr, 3, WORK_EFF_ID, false);
             createUpgrade(WORK_EFF, WORK_EFF_ID, upg);
             costArr.pop;
+        }
+        if(gold > 10000) {
+            var upg1 = new UpgradeProto(DBL_WORK_EFF, new Upgrade("Gold",30000),5,"DBL_WORK_EFF",false)
+            createUpgrade(DBL_WORK_EFF, "DBL_WORK_EFF", upg1);
+        }
+        if(gold > 25000) {
+            var upg1 = new UpgradeProto(DBL_WORK_EFF, new Upgrade("Gold",30000),4,"DBL_WORK_EFF",false)
+            createUpgrade(DBL_WORK_EFF, "DBL_WORK_EFF", upg1);
         }
     }
 }
