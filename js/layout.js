@@ -1,3 +1,8 @@
+/**
+ * Initializes the layout on the right side of the screen.
+ * @param {Number} segment What section of the game the player is in. Currently only handles zero.
+ */
+
 function lay_init(segment) {
     Log("Initializing layout...");
     switch (segment) {
@@ -22,16 +27,26 @@ function lay_init(segment) {
 
 }
 
+/**
+ * Resets the select bar on the top of the screen.
+ */
 function LayoutCloseOverflowDropdown() {
     var dd = document.getElementById("OverflowMenu");
     dd.selectedIndex = 0;
 }
-
+/**
+ * Opens the changelog.
+ */
 function LoadChangelog() {
-    window.open('/Changelog.html', '_blank');
+    window.open('/changelog.html', '_blank');
     LayoutCloseOverflowDropdown();
 }
 
+/**
+ * Starts from the top of the right side document tree. From there, the function iterates through and
+ * displays or hides elements depends on what the tab number is.
+ * @param {Number} tabNum The tab number to show.
+ */
 function showTab(tabNum) {
     selectedTab = tabNum;
     var elements = document.getElementById("Right_Panel").children;
@@ -114,6 +129,11 @@ function showTab(tabNum) {
     }
     document.getElementById("RightSide").style.display = "table-cell"
 }
+/**
+ * Iterates through the start node until there is no child list to be found. Returns the child list, or the parameter
+ * if a child list does not exist.
+ * @param {*} start The HTML parent node to start from.
+ */
 function tabRec(start) {
     if (!start.children.hasChildNodes) {
         return start;
@@ -128,9 +148,16 @@ function tabRec(start) {
     return childList;
 }
 
+/**
+ * Simple getter for the tab class.
+ */
 function getTabs() {
     return document.getElementsByClassName('Tab');
 }
+/**
+ * On launch, the game gets the number of tabs and sets the width of them so they'll more or less
+ * fill the container they are in.
+ */
 function resizeTabs() {
     var tabs = getTabs();
     for (var i = 0; i < tabs.length; i++) {
@@ -139,6 +166,9 @@ function resizeTabs() {
     }
 }
 
+/**
+ * Shows a story popup created earlier.
+ */
 function createPopup() {
     var popup = document.getElementById("Popup");
     if (popup.style.display == "block") {
@@ -146,11 +176,17 @@ function createPopup() {
     }
     popup.style.display = "block"
 }
-
+/**
+ * Destroys the story popup created earlier.
+ */
 function destroyPopup() {
     var popup = document.getElementById("Popup");
     popup.style.display = "none";
 }
+/**
+ * Sets and displays a popup in the center of the screen with the specified message.
+ * @param {String} message The message to display
+ */
 function displayStoryMessage(message) {
     var popupText = document.getElementById("Popup_Text");
     popupText.innerHTML = message;
@@ -162,6 +198,11 @@ function displayStoryMessage(message) {
 
 }
 
+/**
+ * Sets and displays a popup in the center of the screen with the specified message and header message.
+ * @param {String} message The message to display.
+ * @param {String} headerMsg The header message.
+ */
 function displayStoryMessage(message, headerMsg) {
     var popupText = document.getElementById("Popup_Text");
     var header = document.getElementById("Header_Text");
@@ -169,13 +210,19 @@ function displayStoryMessage(message, headerMsg) {
     header.innerHTML = headerMsg;
     createPopup();
 }
-
+/**
+ * Adjusts the two main upgrade tooltips (for now)
+ */
 function adjustUpgradeTooltips() {
     editTooltip("T2_1B", "This increases the gold that workers give per second. Workers working: " + save.workersInField);
     editTooltip("T2_2B", "This increases the chance of workers appearing. Workers working: " + save.workersRecruiting);
 
 }
 
+/**
+ * Figures out what labels or text is on the screen, then adjusts them accordingly. Fires per tick.
+ * @param {Number} displayGold The gold to show.
+ */
 function adjustLabelsOnScreen(displayGold) {
     var nextString = displayGold + "/" + CalculateCost("worker", save.workersRecieved);
     adjustLabel("ManualGoldButton", "Gold: " + displayGold);
@@ -194,7 +241,10 @@ function adjustLabelsOnScreen(displayGold) {
     }
 }
 
-
+/**
+ * Checks the browser used and pretends to "click" on the selected item.
+ * @param {*} test The dropdown
+ */
 function option_ClickTest(test) {
     var agent = navigator.userAgent.toLowerCase();
     if (agent.indexOf("chrome") > -1) {
@@ -219,6 +269,11 @@ function option_ClickTest(test) {
     }
 }
 
+/**
+ * Gets the click event from the upgrade button and applies the correct upgrade depending on the
+ * button ID.
+ * @param {} event The click event fired
+ */
 function getButtonAndExecute(event) {
 
     if (event.target.tagName !== "DIV") {

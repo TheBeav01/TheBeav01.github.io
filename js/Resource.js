@@ -32,6 +32,10 @@ class Resource {
     }
 
 }
+/**
+ * Adds a resource to the save list. Ensures that there are no duplicates.
+ * @param {Resource} resource The resource to add to the save list
+ */
 function addResource(resource) {
     Log("Finding resource " + resource.name);
     if (findResource(resource.name) == -1) {
@@ -41,6 +45,10 @@ function addResource(resource) {
     save.resourcesOwned = resourceList;
 }
 
+/**
+ * Finds a specified resource in the save file by name. Returns the index. -1 if not found
+ * @param {Resource} toFind The resource to look for
+ */
 function findResource(toFind) {
     if (resourceList.length == 0) {
         return -1;
@@ -58,6 +66,11 @@ function findResource(toFind) {
     return -1;
 }
 
+/**
+ * Looks for a specified resource in the save file. Returns -1 if not found. Otherwise, it returns the index
+ * the resource was found in.
+ * @param {Resource} toFind The reosurce to find.
+ */
 function findResourceInSave(toFind) {
     if (save.resourcesOwned.length == 0) {
         return -1;
@@ -74,10 +87,19 @@ function findResourceInSave(toFind) {
     }
     return -1;
 }
+/**
+ * Looks through the local resource list and returns a new resource object.
+ * @param {Resource} toFind Resource to look for
+ */
 function getResourceAsObj(toFind) {
     return new Resource(resourceList[findResource(toFind)]);
 }
 
+/**
+ * Adds or subtracts a specified number from a specified resource name. This uses the local resource list.
+ * @param {String} name The name of the resource to look for.
+ * @param {Number} amt The amount of resource you want to add or subtract.
+ */
 function incrementResource(name, amt) {
     let index = findResource(name);
     if (index == -1) {
@@ -88,16 +110,25 @@ function incrementResource(name, amt) {
     }
 }
 
+/**
+ * Searches for a resource by name and sets the amount to what's specified.
+ * @param {String} name The name of the resource.
+ * @param {Number} amt The non-zero amount to set the resource to.
+ */
 function setResource(name, amt) {
+    if(typeof(amt) != "Number" || amt < 1) {
+        return;
+    } 
     let index = findResource(name);
     if (index != -1) {
         resourceList[index].amt = amt;
     }
-    else {
-        Log("NF");
-    }
 }
 
+/**
+ * Searches through the local resource list and returns the amount of a specified resource.
+ * @param {String} name Name to search for
+ */
 function getResourceAmt(name) {
     let index = findResource(name);
     if (index == -1) {
@@ -108,12 +139,25 @@ function getResourceAmt(name) {
     }
 }
 
+/**
+ * Searches for the resource within the local resource list and returns the specified parameter. 
+ * Returns undefined if not found
+ * @param {String} name The name to search for.
+ * @param {String} param The parameter to find within the resource itself
+ */
 function getResourceParam(name, param) {
     let obj = getResourceAsObj(name);
 
     return obj[param];
 }
 
+/**
+ * Searches through the local resource list, finds the specifed parameter, 
+ * and writes the value to the parameter.
+ * @param {String} name The name to search for.
+ * @param {String} param The parameter to write to.
+ * @param {*} value The value to write to the resource parameter.
+ */
 function writeResourceParam(name, param, value) {
     let obj = getResourceAsObj(name);
     let index = findResource(name);
@@ -122,6 +166,9 @@ function writeResourceParam(name, param, value) {
     return resourceList;
 }
 
+/**
+ * The main entry point for the game's resources. Currently just adds gold to the list if not found.
+ */
 function initResources() {
     if (findResource("Gold") == -1) {
         resourceList.push(new Resource("Gold", gold, true, 1, 0, 1, 1, true));
@@ -129,6 +176,10 @@ function initResources() {
     }
 }
 
+/**
+ * Looks through the save's resource list and returns the index. -1 if not found.
+ * @param {String} res The name of the resource to find.
+ */
 function res_GetIndexOfResFromSave(res) {
     for (let i = 0; i < save.resourcesOwned.length; i++) {
         if (res.toLowerCase() === save.resourcesOwned[i].name.toLowerCase()) {
@@ -140,10 +191,17 @@ function res_GetIndexOfResFromSave(res) {
 
 //SHARDS
 
+/**
+ * Returns a simplied form of the shard bonus string used in the first tab.
+ */
 function getSimpleShardBonusStr() {
     let bonusAmt = getShardAmt() * GOLD_SHD_AFF * save.darkShardEffectiveness;
     return bonusAmt + "";
 }
+
+/**
+ * Pulls the shard amount from the save. Returns 0 if not found.
+ */
 function getShardAmt() {
     var amt = Number.parseInt(getResourceAmt("Dark Shard"));
     if(findResourceInSave("Dark Shard") === -1) {
@@ -156,11 +214,17 @@ function getShardAmt() {
     return Number.parseInt(getResourceAmt("Dark Shard"));
 }
 
+/**
+ * Gives a shard to the player. Adjusts both the save file and the labels on the screen.
+ */
 function giveShard() {
     save.resourcesOwned[findResource("Dark Shard")].amt += 1;
     adjustLabelsOnScreen();
 }
 
+/**
+ * Returns the gold bonus the shards give.
+ */
 function getShardGoldBonus() {
     if(getShardAmt() == 0) {
         return 1;
@@ -168,6 +232,9 @@ function getShardGoldBonus() {
     return getShardAmt() * GOLD_SHD_AFF * 1.1;
 }
 
+/**
+ * Returns the amount of gold to the next shard.
+ */
 function getGoldToNextShard() {
     var shards = getShardAmt();
     return Math.floor((Math.pow(1+shards,1.25)*BASE_GLD_AMT) - getResourceAmt("Gold"));

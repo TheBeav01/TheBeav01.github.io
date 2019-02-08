@@ -69,7 +69,8 @@ function checkCosts(costToCheck) {
     }
 }
 /**
- * Unlocks the worker
+ * Unlocks the worker.
+ * @param {Boolean} fromSave Whether or not the unlock is extrapolated from the save. True is natural play.
  */
 function unlockWorker(fromSave) {
     Log("UL worker");
@@ -100,7 +101,9 @@ function unlockWorker(fromSave) {
     lay_init(0);
 }
 
-
+/**
+ * Constanly monitors resource counts and handles any once-per-ascension upgrades that occurr.
+ */
 function handleOneTimeUnlocks() {
     if (save.worldNum === 0) {
 
@@ -172,6 +175,10 @@ function handleOneTimeUnlocks() {
     }
 }
 
+/**
+ * Iterates through a cost array and deducts the resources from the list.
+ * @param {Array} array The cost array to operate on.
+ */
 function deductResources(array) {
     let cost = array.cost;
     for (let i = 0; i < cost.length; i++) {
@@ -181,6 +188,9 @@ function deductResources(array) {
     }
 }
 
+/**
+ * Main function that handles story messages and the unlocks that result from them.
+ */
 function handleStoryMessagesAndUnlocks() {
     story = save.storyPos;
     if (story >= 6 && selectedTab == 3) {
