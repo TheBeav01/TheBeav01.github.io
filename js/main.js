@@ -6,7 +6,6 @@ var GPS = 0; //Global gold per second value, though this is just literally 60*GP
 var ticks = 0; //Global tick counter. Could have issues for really long games without closing window.
 var wGPS = 0; //Worker gold per second
 var resourceList = []; //Global list of resources. Should be redundant w.r.t save already tracking it.
-var upgradesList = []; //Global upgrades list. Should also be redundant w.r.t save already tracking it.
 var selectedTab = -1; //Global flag for what tab we have selected on the right side. Could... just not be global
 var frameID; //Required global to hold the ID of the requested frame. This is used with pausing and unpausing.
 var isPaused; //Are we paused or not? Could hold this somewhere else completely along with other gamestate vars.
@@ -62,7 +61,7 @@ function load() {
  */
 function pause() {
   var pause1 = document.getElementsByClassName("T2_L");
-  var pause2 = document.getElementsByClassName("T2_R");
+  var pause2 = document.getElementsByClassName(UPG_TAG);
   for (let i = 0; i < Math.max(pause1.length, pause2.length); i++) {
     if (pause1[i] == undefined) {
       if (pause2[i] == undefined) {
@@ -97,7 +96,7 @@ function recieveGold() {
     save.resourcesOwned = resourceList;
   }
   incrementResource("Gold", getShardGoldBonus());
-  adjustLabel("ManualGoldButton", "Gold: " + getResourceAmt("Gold").toPrecision(2));
+  adjustLabel("ManualGoldButton", "Gold: " + getResourceAmt("Gold"));
 
 
 }
@@ -141,10 +140,8 @@ function update(ticks) {
     else {
       document.getElementById("UL1").disabled = false;
     }
-    wGPS = getWorkerGoldPerSecond();
-    GPS = wGPS; //Plus anything else!
-    GPT = GPS / 60;
-    setResource("Gold", Number.parseFloat(getResourceAmt("Gold")) + Number.parseFloat(GPT));
+    let x = Number.parseFloat(getResourceAmt("Gold") + GPT);
+    setResource("Gold", Number.parseFloat(getResourceAmt("Gold") + GPT));
     gold = getResourceAmt("Gold");
     var displayGold = Number.parseInt(getResourceAmt("Gold"));
     checkCosts(displayGold);
@@ -191,8 +188,6 @@ function hireWorker() {
     workers++;
     save.workersRecieved++;
     incrementResource("Worker", 1);
-    GPS = Number.parseInt(workers) * wGPS;
-    GPT = GPS / 60;
     workers = getResourceAmt("Worker");
     save.availableWorkers--;
     WK_BUY_FLG = 1;
@@ -200,6 +195,8 @@ function hireWorker() {
     save.workersRecieved = save.workersInField + save.workersRecruiting + Number.parseInt(getResourceAmt("Worker"));
 
   }
+  setWGPS();
+
 }
 /**
  * This removes one worker. Depending on the button clicked, this does one of two things:
@@ -214,7 +211,6 @@ function deductWorkers(opCode) {
   if (getResourceAmt("Worker") === 0) {
     return;
   }
-  GPS--;
   incrementResource("Worker", -1);
   var nextString = Number.parseInt(gold) + "/" + CalculateCost("worker", save.workersRecieved);
   if (workers === 0) {
@@ -225,9 +221,10 @@ function deductWorkers(opCode) {
     case 0:
       save.workersInField++;
       workers--;
-      var finGoldGenMultiplier = Math.pow(goldGenMultiplier, save.workersInField).toPrecision(5);
-      wGPS = finGoldGenMultiplier;
-      GPS = Number.parseInt(workers) * wGPS;
+      //TODO: Add in if there's an issue
+      // var finGoldGenMultiplier = Math.pow(goldGenMultiplier, save.workersInField).toPrecision(5);
+      // wGPS = finGoldGenMultiplier;
+      // GPS = Number.parseInt(workers) * wGPS;
 
       editTooltip("T2_1B", "This increases the gold that workers give per second. Workers working: " + save.workersInField);
       break;
@@ -244,6 +241,8 @@ function deductWorkers(opCode) {
       break;
   }
   save.workersRecieved = save.workersInField + save.workersRecruiting + Number.parseInt(getResourceAmt("Worker"));
+  setWGPS();
+
 }
 
 function prepMainAscend() {
@@ -285,4 +284,10 @@ function confirmAscend() {
     + "x increase in gold","T1_3");
     createResourceInfoLabel(goldToShardString(), "T1_3_AMT");
   }
+}
+
+function setWGPS() {
+  wGPS = getWorkerGoldPerSecond();
+  GPS = wGPS; //Plus anything else!
+  GPT = GPS / 60;
 }

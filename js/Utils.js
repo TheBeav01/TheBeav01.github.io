@@ -143,6 +143,7 @@ function getWorkerGoldPerSecond() {
   var multiplier = Number.parseFloat(getResourceParam("Worker", "effectMult"));
   var shardEff = Number.parseFloat(getResourceParam("Worker","shardAffinity"));
   if (save.workersInField === 0) {
+    let x = workers * multiplier + (getShardAmt() * save.darkShardEffectiveness * shardEff);
     return workers * multiplier + (getShardAmt() * save.darkShardEffectiveness * shardEff);
   }
   else {

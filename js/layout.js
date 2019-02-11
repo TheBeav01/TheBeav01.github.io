@@ -2,7 +2,7 @@
  * Initializes the layout on the right side of the screen.
  * @param {Number} segment What section of the game the player is in. Currently only handles zero.
  */
-
+let upgAmt = 0;
 function lay_init(segment) {
     Log("Initializing layout...");
     switch (segment) {
@@ -194,8 +194,6 @@ function displayStoryMessage(message) {
     header.innerHTML = "Story";
     Log(header.innerHTML);
     createPopup();
-
-
 }
 
 /**
@@ -275,12 +273,12 @@ function option_ClickTest(test) {
  * @param {} event The click event fired
  */
 function getButtonAndExecute(event) {
-
     if (event.target.tagName !== "DIV") {
         let resourceArr = JSON.parse(event.target.getAttribute("upg"));
         deductResources(resourceArr);
         let button = event.target;
         let effect = resourceArr.B_ID;
+        setUpgradeFlag(resourceArr);
         if (effect.indexOf(WORK_EFF_ID, 0) != -1) {
             Log("Inc worker eff");
             var work = resourceList[findResource("Worker")];
@@ -292,24 +290,30 @@ function getButtonAndExecute(event) {
             work.effectMult *= 3;
         }
         removeElement(event.target);
+        upgAmt--;
+    }
+    setWGPS();
+    SaveGame();
+    if(upgAmt == 0) {
+        document.getElementById("UPG_TAB").innerHTML = "Upgrades";
     }
 }
 
 function createUpgrade(title, id, upgTag) {
     for (let i = 0; i < save.unlockedUpgrades.length; i++) {
-        if (save.unlockedUpgrades[i].ID === upgTag.ID) {
+        if (save.unlockedUpgrades[i].ID === upgTag.ID || save.unlockedUpgrades[i].isPicked == true) {
             return;
         }
     }
-    upgradesList.push(upgTag);
-    save.unlockedUpgrades = upgradesList;
+    upgAmt++;
+    save.unlockedUpgrades.push(upgTag);
     let button = document.createElement("button");
     var Att = document.createAttribute("upg");
     let tooltip = "";
     Att.value = JSON.stringify(upgTag);
     button.setAttribute("upg", Att.value);
     button.append(document.createTextNode(title));
-    button.setAttribute("class", "T2_R");
+    button.setAttribute("class", UPG_TAG);
     button.setAttribute("id", id);
     button.setAttribute("title", tooltip);
     button.setAttribute("style", "display: inline-block;width: 100%;");
@@ -318,6 +322,7 @@ function createUpgrade(title, id, upgTag) {
     }
     let element = document.getElementById("RightSide");
     element.append(button);
+    document.getElementById("UPG_TAB").innerHTML = "Upgrades (!)";
 }
 
 function createResourceLabel(text, id) {
@@ -349,4 +354,8 @@ function hideAscendDiv() {
     document.getElementById("InnerAscent").style.display = "none";
     start();
     isPaused = false;
+}
+
+function getAvailUpgrades() {
+    return upgAmt;
 }

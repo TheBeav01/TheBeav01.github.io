@@ -132,7 +132,7 @@ function handleOneTimeUnlocks() {
         if(gold > 250) {
             let costArr = new Array();
             costArr.push(new Upgrade("Gold", 300));
-            var upg = new UpgradeProto(WORK_EFF, costArr, 2, WORK_EFF_ID, false);
+            var upg = new UpgradeProto(WORK_EFF, costArr, -1, WORK_EFF_ID, false);
             createUpgrade(WORK_EFF, WORK_EFF_ID, upg);
             costArr.pop;
         }

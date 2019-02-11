@@ -116,7 +116,7 @@ function incrementResource(name, amt) {
  * @param {Number} amt The non-zero amount to set the resource to.
  */
 function setResource(name, amt) {
-    if(typeof(amt) != "Number" || amt < 1) {
+    if(amt < 1) {
         return;
     } 
     let index = findResource(name);
@@ -170,6 +170,7 @@ function writeResourceParam(name, param, value) {
  * The main entry point for the game's resources. Currently just adds gold to the list if not found.
  */
 function initResources() {
+    setWGPS();
     if (findResource("Gold") == -1) {
         resourceList.push(new Resource("Gold", gold, true, 1, 0, 1, 1, true));
         save.resourcesOwned = resourceList;
@@ -238,4 +239,12 @@ function getShardGoldBonus() {
 function getGoldToNextShard() {
     var shards = getShardAmt();
     return Math.floor((Math.pow(1+shards,1.25)*BASE_GLD_AMT) - getResourceAmt("Gold"));
+}
+
+function setUpgradeFlag(upgrade) {
+    for(let i = 0; i < save.unlockedUpgrades.length; i++) {
+        if(save.unlockedUpgrades[i].ID === upgrade.ID) {
+            save.unlockedUpgrades.isPicked = true;
+        }
+    }
 }

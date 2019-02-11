@@ -172,9 +172,9 @@
   position: relative;
 }
 
-#T3_1, #T3_2 {
+/* #T3_1, #T3_2 {
   display: none;
-}
+} */
 
 .export {
   opacity: 1;

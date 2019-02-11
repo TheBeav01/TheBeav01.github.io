@@ -2,6 +2,7 @@ const WORK_EFF = "Worker efficiency++";
 const WORK_EFF_TT = "Increases the gold workers gather by 150%";
 const WORK_EFF_ID = "WorkEff";
 const DBL_WORK_EFF = "DBL_WORK_EFF";
+const UPG_TAG = "T2_R"
 function getStory(msg) {
 
     switch (msg) {
@@ -43,7 +44,7 @@ function getStory(msg) {
                 + " a fireball tear through the side of the tower you called home. Though the stained glass toward the top was preserved,"
                 + " the normal purple glow behind it appears stronger.";
         case 9:
-            return "Two explosions tear through the top of the towers. Two pulses rocket out from the source, moving past the horizon."
+            return "Two explosions tear through the top of the towers. From each tower, a pulse rockets out, moving beyond the horizon."
                 + " You look toward your bag and open it, sticking your hand in. It brushes past something cold that gives you pause"
                 + " You pull it out. It appears to be a golden pocketwatch, at least from the outside. When you open it up, a bright glow fills your vision."
                 + " Everything stops around you.";
