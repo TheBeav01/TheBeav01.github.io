@@ -299,22 +299,24 @@ function getButtonAndExecute(event) {
     }
 }
 
-function createUpgrade(title, id, upgTag) {
+function createUpgrade(upgTag, fromSave = false) {
+    if(!fromSave) {
     for (let i = 0; i < save.unlockedUpgrades.length; i++) {
-        if (save.unlockedUpgrades[i].ID === upgTag.ID || save.unlockedUpgrades[i].isPicked == true) {
+        if ((save.unlockedUpgrades[i].ID === upgTag.ID)) {
             return;
         }
     }
-    upgAmt++;
     save.unlockedUpgrades.push(upgTag);
+    }
+    upgAmt++;
     let button = document.createElement("button");
     var Att = document.createAttribute("upg");
     let tooltip = "";
     Att.value = JSON.stringify(upgTag);
     button.setAttribute("upg", Att.value);
-    button.append(document.createTextNode(title));
+    button.append(document.createTextNode(upgTag.name));
     button.setAttribute("class", UPG_TAG);
-    button.setAttribute("id", id);
+    button.setAttribute("id", upgTag.B_ID);
     button.setAttribute("title", tooltip);
     button.setAttribute("style", "display: inline-block;width: 100%;");
     if (selectedTab != 2) {

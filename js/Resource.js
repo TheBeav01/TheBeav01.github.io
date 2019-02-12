@@ -1,3 +1,5 @@
+let shards = 0;
+
 class Resource {
 
     /**
@@ -113,10 +115,10 @@ function incrementResource(name, amt) {
 /**
  * Searches for a resource by name and sets the amount to what's specified.
  * @param {String} name The name of the resource.
- * @param {Number} amt The non-zero amount to set the resource to.
+ * @param {Number} amt The non-negative amount to set the resource to.
  */
 function setResource(name, amt) {
-    if(amt < 1) {
+    if(amt < 0) {
         return;
     } 
     let index = findResource(name);
@@ -171,6 +173,13 @@ function writeResourceParam(name, param, value) {
  */
 function initResources() {
     setWGPS();
+    let len = save.unlockedUpgrades.length;
+    for(let i = 0; i < len; i++) {
+        if(save.unlockedUpgrades[i].isPicked === false) {
+            createUpgrade(save.unlockedUpgrades[i],true);
+        }
+    }
+    shards = Number.parseInt(getResourceAmt("Dark Shard"));
     if (findResource("Gold") == -1) {
         resourceList.push(new Resource("Gold", gold, true, 1, 0, 1, 1, true));
         save.resourcesOwned = resourceList;
@@ -220,6 +229,8 @@ function getShardAmt() {
  */
 function giveShard() {
     save.resourcesOwned[findResource("Dark Shard")].amt += 1;
+    shards++;
+    Log("Gold to next shard is: " + getGoldToNextShard());
     adjustLabelsOnScreen();
 }
 
@@ -227,24 +238,24 @@ function giveShard() {
  * Returns the gold bonus the shards give.
  */
 function getShardGoldBonus() {
-    if(getShardAmt() == 0) {
+    if(shards == 0) {
         return 1;
     }
-    return getShardAmt() * GOLD_SHD_AFF * 1.1;
+    return shards * GOLD_SHD_AFF * 1.1;
 }
 
 /**
  * Returns the amount of gold to the next shard.
  */
 function getGoldToNextShard() {
-    var shards = getShardAmt();
-    return Math.floor((Math.pow(1+shards,1.25)*BASE_GLD_AMT) - getResourceAmt("Gold"));
+    let GTNS = Math.floor((Math.pow(1+shards,1.5)*BASE_GLD_AMT) - getResourceAmt("Gold"));
+    return Math.floor((Math.pow(1+shards,1.7)*BASE_GLD_AMT) - getResourceAmt("Gold"));
 }
 
 function setUpgradeFlag(upgrade) {
     for(let i = 0; i < save.unlockedUpgrades.length; i++) {
         if(save.unlockedUpgrades[i].ID === upgrade.ID) {
-            save.unlockedUpgrades.isPicked = true;
+            save.unlockedUpgrades[i].isPicked = true;
         }
     }
 }

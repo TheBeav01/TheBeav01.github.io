@@ -96,7 +96,7 @@ function recieveGold() {
     save.resourcesOwned = resourceList;
   }
   incrementResource("Gold", getShardGoldBonus());
-  adjustLabel("ManualGoldButton", "Gold: " + getResourceAmt("Gold"));
+  adjustLabel("ManualGoldButton", "Gold: " + getResourceAmt("Gold").toPrecision(2));
 
 
 }
@@ -266,9 +266,8 @@ function confirmAscend() {
     if (resourceList[i].removeOnAscent === true) {
       indexesToRemove.push(i);
     }
-  }
+  }    
   for (let j = indexesToRemove.length - 1; j >= 0; j--) {
-    setResource("Worker", 0);
     resourceList.splice(indexesToRemove[j], 1);
   }
   var T2 = document.getElementById("Right_Panel");
@@ -280,9 +279,9 @@ function confirmAscend() {
 
   start();
   if(FL_DSTEXT = true) {
-    createResourceInfoLabel("You have: " + getShardAmt() + " shards. This gives you a " + getSimpleShardBonusStr() 
-    + "x increase in gold","T1_3");
-    createResourceInfoLabel(goldToShardString(), "T1_3_AMT");
+    // createResourceInfoLabel("You have: " + getShardAmt() + " shards. This gives you a " + getSimpleShardBonusStr() 
+    // + "x increase in gold","T1_3");
+    // createResourceInfoLabel(goldToShardString(), "T1_3_AMT");
   }
 }
 

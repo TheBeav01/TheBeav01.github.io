@@ -133,44 +133,44 @@ function handleOneTimeUnlocks() {
             let costArr = new Array();
             costArr.push(new Upgrade("Gold", 300));
             var upg = new UpgradeProto(WORK_EFF, costArr, -1, WORK_EFF_ID, false);
-            createUpgrade(WORK_EFF, WORK_EFF_ID, upg);
+            createUpgrade(upg);
             costArr.pop;
         }
         if (gold > 500) {
             let costArr = new Array();
             costArr.push(new Upgrade("Gold", 500));
             var upg = new UpgradeProto(WORK_EFF, costArr, 0, WORK_EFF_ID, false);
-            createUpgrade(WORK_EFF, WORK_EFF_ID, upg);
+            createUpgrade(upg);
             costArr.pop;
         }
         if (gold > 1500) {
             var costArr = new Array();
             costArr.push(new Upgrade("Gold", 2000));
             var upg = new UpgradeProto(WORK_EFF, costArr, 1, WORK_EFF_ID, false);
-            createUpgrade(WORK_EFF, WORK_EFF_ID, upg);
+            createUpgrade(upg);
             costArr.pop;
         }
         if(gold > 3000) {
             var costArr = new Array();
             costArr.push(new Upgrade("Gold", 3500));
             var upg = new UpgradeProto(WORK_EFF, costArr, 2, WORK_EFF_ID, false);
-            createUpgrade(WORK_EFF, WORK_EFF_ID, upg);
+            createUpgrade(upg);
             costArr.pop;
         }
         if(gold > 5000) {
             var costArr = new Array();
             costArr.push(new Upgrade("Gold", 6000));
             var upg = new UpgradeProto(WORK_EFF, costArr, 3, WORK_EFF_ID, false);
-            createUpgrade(WORK_EFF, WORK_EFF_ID, upg);
+            createUpgrade(upg);
             costArr.pop;
         }
         if(gold > 10000) {
             var upg1 = new UpgradeProto(DBL_WORK_EFF, new Upgrade("Gold",30000),5,"DBL_WORK_EFF",false)
-            createUpgrade(DBL_WORK_EFF, "DBL_WORK_EFF", upg1);
+            createUpgrade(upg1);
         }
         if(gold > 25000) {
             var upg1 = new UpgradeProto(DBL_WORK_EFF, new Upgrade("Gold",30000),4,"DBL_WORK_EFF",false)
-            createUpgrade(DBL_WORK_EFF, "DBL_WORK_EFF", upg1);
+            createUpgrade(upg1);
         }
     }
 }

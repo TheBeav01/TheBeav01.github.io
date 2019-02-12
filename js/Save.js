@@ -114,6 +114,7 @@ function printSS() {
 }
 
 function cleanSave() {
+  setResource("Gold",0);
   if (save.worldNum == 0) {
     save.maxWorkers = 0;
     save.availableWorkers = 10;

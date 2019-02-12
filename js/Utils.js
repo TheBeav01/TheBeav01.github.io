@@ -70,6 +70,7 @@ function initGame() {
     createResourceInfoLabel("You have: " + getShardAmt() + " shards. This gives you a " + getSimpleShardBonusStr() 
     + "x increase in gold","T1_3");
     createResourceInfoLabel(goldToShardString(), "T1_3_AMT")
+    Log(getGoldToNextShard());
     FL_DSTEXT = true;
   }
   gold = save.resourcesOwned[index].amt;
@@ -185,4 +186,12 @@ function adjustButtons() {
 }
 function printCookie() {
   Log(cookie);
+}
+
+//TODO: Balance shennanigans
+function simulateShardCost(fromShard, fromGold, spread) {
+  for(let i = 0; i < spread; i++) {
+    let GTNS = Math.floor((Math.pow(1.5,fromShard+i)*BASE_GLD_AMT) - fromGold);
+    Log("SIMULATED: Shard number: " + Number.parseInt(1+fromShard+i) + " Gold: " + GTNS);
+  }
 }
