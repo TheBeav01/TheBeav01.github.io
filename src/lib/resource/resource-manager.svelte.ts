@@ -14,5 +14,4 @@ export const removeResource = (name: string) => {
 
 export const tick = (resource: Resource) => {
     resourceStore.set(resource.name, resource)
-    console.log(resourceStore.get(resource.name))
 }
