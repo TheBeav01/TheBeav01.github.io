@@ -1,16 +1,16 @@
-import SaveObject from "../beans/save-object";
+import SaveObject from "../types/save-object";
 import { getCookieByKey, setCookie } from "../utils/cookie-utils";
-import { saveGame, save } from "../save/gameSave.svelte";
-import { decodeSave } from "../utils/save-utils.svelte";
+import { saveGame, save, decodeSave } from "../stores/gameSave.svelte";
+import { resources, resourceStore } from "../stores/resource-store.svelte";
+import { tick } from "../resource/resource-manager.svelte";
 let canAscend = false
 export function load() {
   const saveString = getCookieByKey("save")
   if(saveString != "") {
-    // Log("Save file exists");
     decodeSave(saveString);
 
     initGame();
-    initResources();
+    // initResources();
     gameLoop(0)
     return
 
@@ -29,7 +29,13 @@ let frameID = 0
 */
 function gameLoop(timeStamp) {
   frameID = requestAnimationFrame(gameLoop);
-  console.log(frameID)
+  updateAllResources()
+}
+
+function updateAllResources() {
+  for (const res of resources) {
+    tick(res[1])
+  }
 }
 
 /**
@@ -37,19 +43,7 @@ function gameLoop(timeStamp) {
  */
 function initGame() { 
   var date = new Date();
-  if(save.resourcesOwned[index].amt === undefined) {
-    gold = 0;
-    save.resourcesOwned[index].amt = 0;
-  }
-  adjustLabel("ManualGoldButton",save.resourcesOwned[index].amt);
-  gold = save.resourcesOwned[index].amt;
-  pushResourcesToLive();
-  workers = getResourceAmt("Worker");
-  // resourceList.push(save.resourcesOwned);
-  // adjustLabel("TS2", "Current Time: " + getDate());
-  // adjustLabel("UL1_label", "Workers: " + getResourceAmt("Worker"));
-  // adjustUpgradeTooltips();
-  unlockHandler();
+  
 }
 
 /**
@@ -58,15 +52,6 @@ function initGame() {
 function unlockHandler() {
   var worker_button = document.getElementById("UL1");
   handleStoryMessagesAndUnlocks();
-  handleOneTimeUnlocks();
-  if((gold >= 25) && save.upgradesPos == 0)  {
-      workers = 0;
-      UL1 = true;
-      Log("Unlocking workers");
-  }
-  else if((gold >= 25) && worker_button.style.visibility != "visible") {
-      unlockWorker(save);
-  }
 }
 
 function handleStoryMessagesAndUnlocks() {
