@@ -1,10 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { getResource } from "./lib/resource/resource-manager.svelte";
   import { load } from "./lib/game-loop/game-loop.svelte";
-  import TopBar from "./lib/components/topBar.svelte";
-  import Resource from "./lib/components/resource.svelte";
-    import ContentArea from "./lib/components/contentArea.svelte";
+  import TopBar from "./lib/components/topBar.svelte";  
+  import ContentArea from "./lib/components/contentArea.svelte";
   onMount(() => {
     load()
   })
@@ -19,9 +17,6 @@
   .main-app {
     display: flex;
     flex-direction: column;
-  }
-
-  .foo {
-    height: 100%
+    gap: 2em
   }
 </style>

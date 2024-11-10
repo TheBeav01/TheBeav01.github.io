@@ -13,13 +13,13 @@ export function load() {
 
     initGame();
     // initResources();
-    gameLoop(0)
+    gameLoop()
     return
 
   }
   // TODO: Save
   saveGame();
-  gameLoop(0);
+  gameLoop();
 }
 
 export let frameID = writable(0)
@@ -29,7 +29,7 @@ export let frameID = writable(0)
 * and a tick counter is kept for timekeeping purposes. It should run at 60 ticks per second
 * @param {*} timeStamp Is the time that the frame was requested (in ms.)
 */
-function gameLoop(_timeStamp) {
+function gameLoop() {
   frameID.set(requestAnimationFrame(gameLoop))
   updateAllResources()
 }

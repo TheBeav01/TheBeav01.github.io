@@ -1,12 +1,13 @@
 import SaveObject from "../types/save-object";
 import { setCookie } from "../utils/cookie-utils";
 import { writable } from "svelte/store";
-export let saveStore = writable(new SaveObject())
+import Box from "../utils/state-box.svelte";
+export let saveStore = new Box(new SaveObject())
 export let save = new SaveObject()
-saveStore.subscribe(x => saveGame(x))
 export function saveGame(s: SaveObject = save) {
     const saveString = encodeSave()
     setCookie("save", saveString, 365)
+    saveStore.value = s
   }
 
 
@@ -18,7 +19,7 @@ export function saveGame(s: SaveObject = save) {
  */
 export function decodeSave(stringToDecode: string) {
     const newSave = JSON.parse(atob(stringToDecode))
-    saveStore.set(newSave)
+    saveStore = newSave
   }
   
   /**
