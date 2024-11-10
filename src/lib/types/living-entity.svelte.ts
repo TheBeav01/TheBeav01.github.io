@@ -1,4 +1,5 @@
 import type Resource from "../components/resource.svelte";
+import { playerStore } from "../stores/playerStore.svelte";
 import type BaseEntity from "./base-entity";
 
 export default class LivingEntity implements BaseEntity {
@@ -15,7 +16,8 @@ export default class LivingEntity implements BaseEntity {
     }
 
     onKill = () => {
-        
+        const player = playerStore.get("player")
+        this.inventory.forEach(i => player?.awardItem(i))
     }
 
     attackEntity = (other: LivingEntity) => {
