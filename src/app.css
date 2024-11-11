@@ -8,6 +8,14 @@
   background-color: #242424;
 }
 
+body {
+  height: calc(100% - 16px);
+}
+
+:root, #app, html, main {
+  height: 100%;
+}
+
 button {
   padding: 0.5rem 0.75rem;
   height: 3em;

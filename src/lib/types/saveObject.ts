@@ -1,4 +1,4 @@
-import type Resource from "../components/resource.svelte"
+import type { Resource } from "./resources/resource.svelte"
 
 export default class SaveObject {
     /**

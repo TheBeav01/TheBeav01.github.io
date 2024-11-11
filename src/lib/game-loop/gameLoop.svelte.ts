@@ -1,23 +1,21 @@
-import SaveObject from "../types/save-object";
-import { getCookieByKey, setCookie } from "../utils/cookie-utils";
+import { getCookieByKey } from "../utils/cookieUtils";
 import { saveGame, save, decodeSave } from "../stores/gameSave.svelte";
-import { resources, resourceStore } from "../stores/resource-store.svelte";
-import { tick } from "../resource/resource-manager.svelte";
-import Box from "../utils/state-box.svelte";
+import { createResourcesFromSave, resources } from "../stores/resourceStore.svelte";
+import { tick } from "../resource/resourceManager.svelte";
 import { writable } from "svelte/store";
+import StoryUtils from "../utils/storyUtils";
+import { createPlayersFromSave } from "../stores/playerStore.svelte";
+import { log } from "../stores/messageList.svelte";
 let canAscend = false
 export function load() {
   const saveString = getCookieByKey("save")
   if(saveString != "") {
     decodeSave(saveString);
-
     initGame();
-    // initResources();
     gameLoop()
     return
 
   }
-  // TODO: Save
   saveGame();
   gameLoop();
 }
@@ -43,9 +41,19 @@ function updateAllResources() {
 /**
  * Initializes the game
  */
-function initGame() { 
-  var date = new Date();
-  
+function initGame() {
+  if (save.partnerName == "") {
+    const name = StoryUtils.generatePartnerName()
+    save.partnerName = name
+  }
+  if (save.playerName == "") {
+    const name = "You"
+    save.playerName = name
+  }
+  log(`Welcome back ${save.playerName} and ${save.partnerName}`)
+  createPlayersFromSave(save)
+  createResourcesFromSave(save)
+  saveGame(save)
 }
 
 /**

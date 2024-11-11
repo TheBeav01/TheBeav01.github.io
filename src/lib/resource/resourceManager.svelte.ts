@@ -1,5 +1,5 @@
 import type { Resource } from "../types/resources/resource.svelte";
-import { resources, resourceStore } from "../stores/resource-store.svelte";
+import { resources, resourceStore } from "../stores/resourceStore.svelte";
 
 export const getResource = (name: string) : Resource | undefined => {
     return resources.get(name)

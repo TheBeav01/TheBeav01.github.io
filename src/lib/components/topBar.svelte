@@ -1,7 +1,8 @@
 <script lang="ts">
-    import { getDate } from "../utils/date-utils";
-    import onFrameCooldown from "../utils/frame-utils.svelte";
-    import Resource from "./resource.svelte";
+    import { log } from "../stores/messageList.svelte";
+    import { getDate } from "../utils/dateUtils";
+    import {onFrameCooldown} from "../utils/gameUtils.svelte";
+    import Resource from "./resourceText.svelte";
     let date = $state(getDate())
     onFrameCooldown(30, () => date = getDate())
 </script>
@@ -15,7 +16,7 @@
         </div>
     </div>
     <div class="button-container center-item">
-        <button id="save-button">Save</button>
+        <button onclick={(_e) => log("AAAAA")} id="save-button">Save</button>
         <button id="settings-button">Settings</button>
     </div>
 </div>

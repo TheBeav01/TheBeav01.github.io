@@ -1,16 +1,16 @@
-import type Resource from "../components/resource.svelte";
 import { playerStore } from "../stores/playerStore.svelte";
-import type BaseEntity from "./base-entity";
+import type BaseEntity from "./baseEntity";
+import type { Resource } from "./resources/resource.svelte";
 
 export default class LivingEntity implements BaseEntity {
     name: string = "";
-    attack: number = 0;
-    defense: number = 0;
-    attackSpeed: number = 0;
-    critRate: number = 0;
-    maxHp: number = 0
-    currentHp: number = 0
-    inventory: Resource[] = []
+    attack: number = $state(0);
+    defense: number = $state(0);
+    attackSpeed: number = $state(0);
+    critRate: number = $state(0.0);
+    maxHp: number = $state(0);
+    currentHp: number = $state(0)
+    inventory: Resource[] = $state([])
     isDead = () => {
         return this.currentHp < 0
     }

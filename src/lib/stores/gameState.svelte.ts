@@ -2,7 +2,7 @@
  * Contains various states for global signals 
  */
 
-import Box from "../utils/state-box.svelte";
+import Box from "../utils/stateBox.svelte";
 import { saveStore } from "./gameSave.svelte";
 
 export const onDeath = new Box({

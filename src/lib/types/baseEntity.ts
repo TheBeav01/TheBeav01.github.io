@@ -3,6 +3,6 @@ export default interface BaseEntity {
     attack: number
     defense: number,
     attackSpeed: number,
-    critRate: number
-    
+    critRate: number,
+    maxHp: number
 }

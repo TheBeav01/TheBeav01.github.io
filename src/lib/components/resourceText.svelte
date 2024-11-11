@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { resourceStore } from "../stores/resource-store.svelte";
+    import { resourceStore } from "../stores/resourceStore.svelte";
 
     let { name }: {name: string} = $props()
     let resource = $state(resourceStore.get(name))

@@ -1,3 +1,7 @@
+<script>
+    import { playerStore } from "../stores/playerStore.svelte";
+</script>
+
 <div class="environment-container">
     <div>
         Navigation

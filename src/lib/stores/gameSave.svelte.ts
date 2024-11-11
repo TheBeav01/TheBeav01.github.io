@@ -1,14 +1,17 @@
-import SaveObject from "../types/save-object";
-import { setCookie } from "../utils/cookie-utils";
+import SaveObject from "../types/saveObject";
+import { setCookie } from "../utils/cookieUtils";
 import { writable } from "svelte/store";
-import Box from "../utils/state-box.svelte";
+import Box from "../utils/stateBox.svelte";
+import { log } from "./messageList.svelte";
 export let saveStore = new Box(new SaveObject())
 export let save = new SaveObject()
 export function saveGame(s: SaveObject = save) {
-    const saveString = encodeSave()
-    setCookie("save", saveString, 365)
-    saveStore.value = s
-  }
+  const saveString = encodeSave()
+  setCookie("save", saveString, 365)
+  saveStore.value = s
+  save = s
+  log("Saved!")
+}
 
 
 
@@ -18,34 +21,35 @@ export function saveGame(s: SaveObject = save) {
  * @param {*} stringToDecode The save string retrieved from the cookie 
  */
 export function decodeSave(stringToDecode: string) {
-    const newSave = JSON.parse(atob(stringToDecode))
-    saveStore = newSave
-  }
-  
-  /**
-   * Translates a variety of game features into a save string that will likely grow over time.
-   */
-  export function encodeSave() {
-    var encString = JSON.stringify(save);
-    var ret = btoa(encString);
-    return ret;
-  }
-  
-  /**
-   * Imports the game. Doesn't do anything of note ATM
-   */
-  export function Import() {
-  
-  }
-  /**
-   * Exports the game into a save string that is copied to the clipboard. Unlike import, this does something
-   */
-  export function Export() {
-    const string = encodeSave()
-  }
-  
-  
-  
-  export function cleanSave() {
-  
-  }
+  const newSave = JSON.parse(atob(stringToDecode))
+  saveStore.value = newSave
+  save = newSave
+}
+
+/**
+ * Translates a variety of game features into a save string that will likely grow over time.
+ */
+export function encodeSave() {
+  var encString = JSON.stringify(save);
+  var ret = btoa(encString);
+  return ret;
+}
+
+/**
+ * Imports the game. Doesn't do anything of note ATM
+ */
+export function Import() {
+
+}
+/**
+ * Exports the game into a save string that is copied to the clipboard. Unlike import, this does something
+ */
+export function Export() {
+  const string = encodeSave()
+}
+
+
+
+export function cleanSave() {
+
+}
