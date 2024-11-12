@@ -3,7 +3,7 @@ import { saveGame, save, decodeSave } from "../stores/gameSave.svelte";
 import { createResourcesFromSave, resources } from "../stores/resourceStore.svelte";
 import { tick } from "../resource/resourceManager.svelte";
 import { writable } from "svelte/store";
-import StoryUtils from "../utils/storyUtils";
+import StoryUtils from "../utils/storyUtils.svelte";
 import { createPlayersFromSave } from "../stores/playerStore.svelte";
 import { log } from "../stores/messageList.svelte";
 let canAscend = false
@@ -16,6 +16,7 @@ export function load() {
     return
 
   }
+  initGame();
   saveGame();
   gameLoop();
 }
@@ -50,7 +51,7 @@ function initGame() {
     const name = "You"
     save.playerName = name
   }
-  log(`Welcome back ${save.playerName} and ${save.partnerName}`)
+  log(`Welcome ${save.playerName} and ${save.partnerName}`)
   createPlayersFromSave(save)
   createResourcesFromSave(save)
   saveGame(save)

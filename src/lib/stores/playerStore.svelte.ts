@@ -1,5 +1,5 @@
 import Player from "../types/player"
-import type SaveObject from "../types/saveObject"
+import type SaveObject from "../types/saveObject.svelte"
 
 const buildMap = () => {
     const map = new Map()

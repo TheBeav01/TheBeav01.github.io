@@ -9,5 +9,3 @@ export const onDeath = new Box({
     playerDead: false,
     partnerDead: false
 })
-
-export const onStoryStateChange = new Box(saveStore.value)

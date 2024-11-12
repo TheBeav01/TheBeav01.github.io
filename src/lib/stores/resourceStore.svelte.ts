@@ -3,7 +3,7 @@ import type { Resource } from "../types/resources/resource.svelte";
 import Mana from "../types/resources/mana.svelte";
 import Soul from "../types/resources/souls.svelte";
 import Metal from "../types/resources/metal.svelte";
-import type SaveObject from "../types/saveObject";
+import type SaveObject from "../types/saveObject.svelte";
 
 const createDefaultMap = () => {
     const map: Map<string, Resource> = new Map()
