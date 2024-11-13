@@ -31,7 +31,7 @@ export default class SaveObject {
     /**
      * The story position
      */
-    storyPos = $state(0)
+    storyPos = 0
 
     /**
      * The location of the player
