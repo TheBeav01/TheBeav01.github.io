@@ -1,39 +1,30 @@
 <script lang="ts">
-    import { save, saveStore, savePos } from "../stores/gameSave.svelte";
-    import Box from "../utils/stateBox.svelte";
-    import StoryUtils, { currentStory } from "../utils/storyUtils.svelte";
-    let message = currentStory
-    let pos = saveStore.value.storyPos
-    $inspect(saveStore)
-    $inspect(save)
-    $inspect(currentStory)
-    function onClick(m: any){
-        m()
-        // message.value.value = StoryUtils.getCurrentStoryMessage()
-        // pos.value = save.storyPos
-    }
+    import { gameSave } from "../types/gameSave.svelte";
+    import StoryUtils from "../utils/storyUtils.svelte";
+    let message = $derived(StoryUtils.getStoryState(gameSave.save))
+    let save = $derived(gameSave.save)
+    let pos = $derived(gameSave.save.storyPos)
 </script>
-{message.value.text}
 {#if pos == 0}
-    {message.value.text}
+    {message.text}
     <div class="initial-progress">
-        <button class="progress-button initial-progress-button" onclick={() => onClick(message.value.onNext)}>{message.value.onNextText ?? "Next"}</button>
+        <button class="progress-button initial-progress-button" onclick={message.onNext}>{message.onNextText ?? "Next"}</button>
     </div>
 {/if}
 {#if pos > 0}
 <div class="environment-container">
     <div>
-        Navigation
+        Zone: {save.coordinates.zone}
     </div>
     <div>
         Battle
     </div>
     <div>
-        {#if message.value.text}
-            {message.value.text}
-            {#if message.value.onNext}
+        {#if message.text}
+            {message.text}
+            {#if message.onNext}
                 <div>
-                    <button class="progress-button" onclick={() => onClick(message.value.onNext)}>{message.value.onNextText ?? "Next"}</button>
+                    <button class="progress-button" onclick={message.onNext}>{message.onNextText ?? "Next"}</button>
                 </div>
             {/if}
         {/if}

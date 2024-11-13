@@ -1,12 +1,12 @@
 <script lang="ts">
     import { createTabs, melt } from "@melt-ui/svelte";
-    import { save } from "../stores/gameSave.svelte";
     import Environment from "./environment.svelte";
+    import { gameSave } from "../types/gameSave.svelte";
     const {
         elements: {root, list, trigger, content},
         states: { value }
     } = createTabs({ defaultValue: "Environment", orientation: "vertical"})
-    const upgradesUnlocked = save.storyPos > 1
+    const upgradesUnlocked = gameSave.save.storyPos > 1
     const tabHeaders = [
         { id: "Environment", title: "Environment"},
         { id: "Upgrades", title: "Upgrades", visible: true}

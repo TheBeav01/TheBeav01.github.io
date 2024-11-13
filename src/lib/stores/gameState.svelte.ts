@@ -3,7 +3,6 @@
  */
 
 import Box from "../utils/stateBox.svelte";
-import { saveStore } from "./gameSave.svelte";
 
 export const onDeath = new Box({
     playerDead: false,

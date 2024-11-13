@@ -1,11 +1,12 @@
 import { getCookieByKey } from "../utils/cookieUtils";
-import { saveGame, save, decodeSave } from "../stores/gameSave.svelte";
+import { saveGame, decodeSave } from "../stores/gameSave.svelte";
 import { createResourcesFromSave, resources } from "../stores/resourceStore.svelte";
 import { tick } from "../resource/resourceManager.svelte";
 import { writable } from "svelte/store";
 import StoryUtils from "../utils/storyUtils.svelte";
 import { createPlayersFromSave } from "../stores/playerStore.svelte";
 import { log } from "../stores/messageList.svelte";
+import { gameSave } from "../types/gameSave.svelte";
 let canAscend = false
 export function load() {
   const saveString = getCookieByKey("save")
@@ -13,12 +14,13 @@ export function load() {
     decodeSave(saveString);
     initGame();
     gameLoop()
-    return
+    return true
 
   }
   initGame();
   saveGame();
   gameLoop();
+  return true
 }
 
 export let frameID = writable(0)
@@ -43,18 +45,18 @@ function updateAllResources() {
  * Initializes the game
  */
 function initGame() {
-  if (save.partnerName == "") {
+  if (gameSave.save.partnerName == "") {
     const name = StoryUtils.generatePartnerName()
-    save.partnerName = name
+    gameSave.save.partnerName = name
   }
-  if (save.playerName == "") {
+  if (gameSave.save.playerName == "") {
     const name = "You"
-    save.playerName = name
+    gameSave.save.playerName = name
   }
-  log(`Welcome ${save.playerName} and ${save.partnerName}`)
-  createPlayersFromSave(save)
-  createResourcesFromSave(save)
-  saveGame(save)
+  log(`Welcome ${gameSave.save.playerName} and ${gameSave.save.partnerName}`)
+  createPlayersFromSave(gameSave.save)
+  createResourcesFromSave(gameSave.save)
+  saveGame()
 }
 
 /**
@@ -67,7 +69,7 @@ function unlockHandler() {
 
 function handleStoryMessagesAndUnlocks() {
 
-  if(save.storyPos >= 8 && !canAscend) {
+  if(gameSave.save.storyPos >= 8 && !canAscend) {
     canAscend = true;
 }
 }
