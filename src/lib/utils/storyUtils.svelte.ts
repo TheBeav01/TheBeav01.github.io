@@ -1,4 +1,4 @@
-import { STORY_MESSAGE_2, STORY_MESSAGE_INITIAL } from "../constants"
+import { STORY_MESSAGE_2, STORY_MESSAGE_DEFAULT, STORY_MESSAGE_INITIAL } from "../constants"
 import { saveGame } from "../stores/gameSave.svelte"
 import { gameSave } from "../types/gameSave.svelte"
 import type SaveObject from "../types/saveObject.svelte"
@@ -6,9 +6,13 @@ import { generateRandomNumber } from "./gameUtils.svelte"
 import Box from "./stateBox.svelte"
 
 interface StoryHandler {
-    text: string
+    text: StoryText[]
     onNext?: () => void
     onNextText?: string
+}
+
+interface StoryText {
+    text: string
 }
 export default class StoryUtils {
     private static partnerNames = ["Zephyr", "Aluca", "Ruby", "Zircon", "Topaz", "Orion", "Zatha", "Ba'kan", "Azl'ka", "Xa'ahn"]
@@ -23,8 +27,8 @@ export default class StoryUtils {
         saveGame()
     }
     
-    static incrementStoryPosition() {
-        gameSave.save = {...gameSave.save, storyPos: gameSave.save.storyPos + 1}
+    static setStoryPosition(pos: number) {
+        gameSave.save = {...gameSave.save, storyPos: pos}
     }
     
     public static getStoryState(s: SaveObject) : StoryHandler {
@@ -32,17 +36,17 @@ export default class StoryUtils {
             case 0:
                 return {
                     text: STORY_MESSAGE_INITIAL,
-                    onNext: () => this.saveWrapper(() => this.incrementStoryPosition()),
+                    onNext: () => this.saveWrapper(() => this.setStoryPosition(1)),
                     onNextText: "Scan?"
                 }
-            case 2:
+            case 1:
                 return {
                 text: STORY_MESSAGE_2,
-                onNext: () => this.saveWrapper(() => this.incrementStoryPosition())
+                onNext: () => this.saveWrapper(() => this.setStoryPosition(2))
             }
             default:
                 return {
-                    text: ""
+                    text: STORY_MESSAGE_DEFAULT
                 }
             }
             }

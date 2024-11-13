@@ -4,6 +4,7 @@
     let message = $derived(StoryUtils.getStoryState(gameSave.save))
     let save = $derived(gameSave.save)
     let pos = $derived(gameSave.save.storyPos)
+    $inspect(message)
 </script>
 {#if pos == 0}
     {message.text}
@@ -20,8 +21,11 @@
         Battle
     </div>
     <div>
-        {#if message.text}
-            {message.text}
+        {#if message.text.length > 0}
+            {#each message.text as textItem}
+                {textItem.text}
+                <br/><br/>
+            {/each}
             {#if message.onNext}
                 <div>
                     <button class="progress-button" onclick={message.onNext}>{message.onNextText ?? "Next"}</button>
