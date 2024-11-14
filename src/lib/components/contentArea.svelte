@@ -2,14 +2,15 @@
     import { createTabs, melt } from "@melt-ui/svelte";
     import Environment from "./environment.svelte";
     import { gameSave } from "../types/gameSave.svelte";
+    import { DRONE_POS } from "../utils/storyUtils.svelte";
     const {
         elements: {root, list, trigger, content},
         states: { value }
     } = createTabs({ defaultValue: "Environment", orientation: "vertical"})
-    const upgradesUnlocked = gameSave.save.storyPos > 1
+    const upgradesUnlocked = gameSave.save.storyPos >= DRONE_POS
     const tabHeaders = [
         { id: "Environment", title: "Environment"},
-        { id: "Upgrades", title: "Upgrades", visible: true}
+        { id: "Upgrades", title: "Upgrades", visible: upgradesUnlocked}
     ]
 </script>
 <div class="tab-container" use:melt={$root}>

@@ -4,9 +4,9 @@
     const messages = message_list.value ?? []
 </script>
 <div class="message-container">
-    {#each messages.reverse() as message}
+    <!-- {#each messages.reverse() as message}
         <div class="message">{message}</div>
-    {/each}
+    {/each} -->
 </div>
 
 <style>

@@ -14,6 +14,9 @@ interface StoryHandler {
 interface StoryText {
     text: string
 }
+export const INITIAL_STORY = 0
+export const INITIAL_SCAN_POS = 1
+export const DRONE_POS = 3
 export default class StoryUtils {
     private static partnerNames = ["Zephyr", "Aluca", "Ruby", "Zircon", "Topaz", "Orion", "Zatha", "Ba'kan", "Azl'ka", "Xa'ahn"]
     static generatePartnerName() {
@@ -22,12 +25,12 @@ export default class StoryUtils {
         return this.partnerNames[idx]
     }
     
-    static saveWrapper = (cbk: () => void) =>  {
+    private static saveWrapper = (cbk: () => void) =>  {
         cbk()
         saveGame()
     }
     
-    static setStoryPosition(pos: number) {
+    public static setStoryPosition(pos: number) {
         gameSave.save = {...gameSave.save, storyPos: pos}
     }
     
@@ -41,8 +44,7 @@ export default class StoryUtils {
                 }
             case 1:
                 return {
-                text: STORY_MESSAGE_2,
-                onNext: () => this.saveWrapper(() => this.setStoryPosition(2))
+                text: STORY_MESSAGE_2
             }
             default:
                 return {
