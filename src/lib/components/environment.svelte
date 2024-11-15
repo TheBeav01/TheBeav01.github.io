@@ -60,7 +60,6 @@
 {#if pos > 0}
 <div class="environment-container">
     <div>
-        {#if pos > 0}
         <div class="nav-button-group">
             <button onclick={() => travel(0)}>Travel North</button>
             <div>
@@ -69,13 +68,12 @@
             </div>
             <button disabled={save.coordinates.zone == 0} onclick={() => travel(2)}>Travel South</button>
         </div>
-        {/if}
         A:{save.coordinates.zone}
     </div>
     {#if pos > 1}
-    <div class={divClass}>
-        Battle
-    </div>
+        <div class={divClass}>
+            Battle
+        </div>
     {/if}
     <div class={divClass}>
         {#if message.text.length > 0 && message.text[0].text != ""}
