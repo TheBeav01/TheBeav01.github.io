@@ -3,6 +3,10 @@ import type BaseEntity from "./baseEntity";
 import type { Resource } from "./resources/resource.svelte";
 
 export default class LivingEntity implements BaseEntity {
+    constructor(maxHp = 0) {
+        this.maxHp = maxHp
+        this.currentHp = this.currentHp
+    }
     name: string = "";
     attack: number = 0;
     defense: number = 0;

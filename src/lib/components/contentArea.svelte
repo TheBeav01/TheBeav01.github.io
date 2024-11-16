@@ -56,7 +56,7 @@
     }
 
     .tab-content {
-        padding: 0px 2em;
+        padding: 0px 1em;
         height: max-content;
     }
 

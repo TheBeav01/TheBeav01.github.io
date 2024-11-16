@@ -9,8 +9,13 @@ const LOW_AFFINITY_SCALE_FACTOR = 1.15
 const DEFAULT_ATTACK_SCALE_FACTOR = 1.20
 const DEFENSE_SCALE_FACTOR = 1.15
 const HP_SCALE_FACTOR = DEFENSE_SCALE_FACTOR
-const DEFAULT_VAL = 2
+const DEFAULT_VAL = 50
 type Affinity = "attack" | "defense" | "hp" | "speed" | "crit" | "accuracy"
+
+export interface EnemyDisplay {
+    entity: LivingEntity,
+    labels: string[]
+}
 interface EnemyListItem {
     name: string,
     //Default: null
@@ -79,7 +84,7 @@ const zones7To10 : EnemyTemplate[] = [ {
 }]
 
 
-export const generateEnemy = () => {
+export const generateEnemy = () : EnemyDisplay => {
     const le = new LivingEntity()
     const zone = gameSave.save.coordinates.zone
     le.attackSpeed = 1
@@ -88,7 +93,7 @@ export const generateEnemy = () => {
     return applyModifiers(le, zone)
 }
 
-const applyModifiers = (entity: LivingEntity, zone: number) => {
+const applyModifiers = (entity: LivingEntity, zone: number) : EnemyDisplay => {
     let enemy: EnemyTemplate
     if (zone <= 6) {
         enemy = pickEnemyFromWeightedList(zones1To6)

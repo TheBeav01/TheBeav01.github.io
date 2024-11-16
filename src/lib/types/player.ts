@@ -5,7 +5,7 @@ import type { Resource } from "./resources/resource.svelte";
 
 export default class Player extends LivingEntity {
     constructor(isPartner: boolean = false) {
-        super()
+        super(5)
         this.isPartner = isPartner
     }
     isPartner: boolean

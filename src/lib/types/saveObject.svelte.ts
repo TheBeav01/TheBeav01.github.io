@@ -12,6 +12,11 @@ export default class SaveObject {
     playerName = ""
 
     /**
+     * Player health
+     */
+    playerHp = 0
+
+    /**
      * Player inventory. Deconstructable resources
      */
     playerInv: Resource[] = []
@@ -22,6 +27,10 @@ export default class SaveObject {
    
    partnerName = ""
    
+   /**
+    * Partner health
+    */
+   partnerHp = 0
    /**
     * Partner upgrades
     */

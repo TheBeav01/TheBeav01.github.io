@@ -1,117 +1,174 @@
 <script lang="ts">
+    import { playerStore } from "../stores/playerStore.svelte";
     import { gameSave } from "../types/gameSave.svelte";
     import type LivingEntity from "../types/livingEntity.svelte";
-    import { generateEnemy } from "../utils/generators/enemyGenerator";
+    import {
+        generateEnemy,
+        type EnemyDisplay,
+    } from "../utils/generators/enemyGenerator";
     import StoryUtils, { INITIAL_SCAN_POS } from "../utils/storyUtils.svelte";
-    let message = $derived(StoryUtils.getStoryState(gameSave.save))
-    let save = $derived(gameSave.save)
-    let pos = $derived(gameSave.save.storyPos)
-    const divClass = $derived(pos == 1 ? "intermediate-panel" : null)
-    let foe : {entity: LivingEntity, labels: string[]} | null = $state(null)
-    $inspect(foe)
-    $inspect(save)
+    import StatBar from "./statBar.svelte";
+    let message = $derived(StoryUtils.getStoryState(gameSave.save));
+    let save = $derived(gameSave.save);
+    let pos = $derived(gameSave.save.storyPos);
+    const divClass = $derived(pos == 1 ? "intermediate-panel" : null);
+    const battleClass = $derived(
+        pos == 1 ? "intermediate-panel" : "battle-panel",
+    );
+    const epz = $derived(
+        Math.min(
+            gameSave.save.coordinates.zone == 0
+                ? 1
+                : gameSave.save.coordinates.zone,
+            5,
+        ),
+    );
+    let allFoesInlevel: EnemyDisplay[] = $state([]);
+    let currentFoe: EnemyDisplay | null = $derived(allFoesInlevel[0] ?? null);
+
+    const currentPlayer = $derived(playerStore.get("player"));
+    const currentPartner = $derived(playerStore.get("partner"));
     const travel = (dir: number) => {
-        const coords = {...gameSave.save.coordinates}
+        const coords = { ...gameSave.save.coordinates };
         if (dir < 0) {
-            dir = 0
+            dir = 0;
         }
         if (dir > 3) {
-            dir = 3
+            dir = 3;
         }
-        
-        switch(dir) {
+
+        switch (dir) {
             case 0:
-                coords.zone += 1
+                coords.zone += 1;
                 break;
             case 1:
                 if (coords.sidePathPosition == -1) {
-                    coords.sidePathPosition = 0
+                    coords.sidePathPosition = 0;
                     break;
                 }
-                coords.sidePathPosition = 1
+                coords.sidePathPosition = 1;
                 break;
             case 3:
                 if (coords.sidePathPosition == 1) {
-                    coords.sidePathPosition = 0
+                    coords.sidePathPosition = 0;
                     break;
                 }
-                coords.sidePathPosition = -1
+                coords.sidePathPosition = -1;
                 break;
             case 2:
-                coords.zone -= 1
-                break
+                coords.zone -= 1;
+                break;
         }
-        gameSave.save = {...gameSave.save, coordinates: coords}
+        gameSave.save = { ...gameSave.save, coordinates: coords };
         if (pos == INITIAL_SCAN_POS) {
-            StoryUtils.setStoryPosition(INITIAL_SCAN_POS + 1)
+            StoryUtils.setStoryPosition(INITIAL_SCAN_POS + 1);
         }
-        generateEncounter()
-    }
+        allFoesInlevel = [];
+        for (let i = 0; i < epz; i++) {
+            generateEncounter(i);
+        }
+    };
 
-    const generateEncounter = () => {
-        foe = generateEnemy()
-    }
+    const generateEncounter = (num: number) => {
+        allFoesInlevel.push(generateEnemy());
+    };
 </script>
+
 {#if pos == 0}
     <div class="initial-progress">
         {#each message.text as textItem}
             {textItem.text}
-            <br/><br/>
+            <br /><br />
         {/each}
-        <button class="progress-button initial-progress-button" onclick={message.onNext}>{message.onNextText ?? "Next"}</button>
+        <button
+            class="progress-button initial-progress-button"
+            onclick={message.onNext}>{message.onNextText ?? "Next"}</button
+        >
     </div>
 {/if}
 {#if pos > 0}
-<div class="environment-container">
-    <div>
-        <div class="nav-button-group">
-            <button onclick={() => travel(0)}>Advance</button>
-            <div>
-                <button disabled={save.coordinates.zone == 0} onclick={() => travel(3)}>Left Path</button>
-                <button disabled={save.coordinates.zone == 0} onclick={() => travel(1)}>Right Path</button>
+    <div class="environment-container">
+        <div>
+            Area {save.coordinates.zone}
+            <div class="nav-button-group">
+                <button onclick={() => travel(0)}>Advance</button>
+                <div>
+                    <button
+                        disabled={save.coordinates.zone == 0 ||
+                            save.coordinates.sidePathPosition === -1}
+                        onclick={() => travel(3)}>Left Path</button
+                    >
+                    <button
+                        disabled={save.coordinates.zone == 0 ||
+                            save.coordinates.sidePathPosition === 1}
+                        onclick={() => travel(1)}>Right Path</button
+                    >
+                </div>
+                <button
+                    disabled={save.coordinates.zone == 0}
+                    onclick={() => travel(2)}>Go Back</button
+                >
             </div>
-            <button disabled={save.coordinates.zone == 0} onclick={() => travel(2)}>Go Back</button>
         </div>
-        A:{save.coordinates.zone}
-    </div>
-    {#if pos > 1}
-    
-        <div class={divClass}>
-            {#if foe?.entity}
-                {foe.entity.name}
-                {foe.entity.currentHp} / {foe.entity.maxHp}
-                <div>
-                    {#each foe.labels as label}
-                        <span>{label}</span>  
-                    {/each}
-                </div>
-            {/if}
-            {#if !foe?.entity || foe.entity.currentHp === 0}
-                <div>No entities found in area</div>
-            {/if}
-        </div>
-    {/if}
-    <div class={divClass}>
-        {#if message.text.length > 0 && message.text[0].text != ""}
-            {#each message.text as textItem}
-                {textItem.text}
-                <br/><br/>
-            {/each}
-            {#if message.onNext}
-                <div>
-                    <button class="progress-button" onclick={message.onNext}>{message.onNextText ?? "Next"}</button>
-                </div>
-            {/if}
+        {#if pos > 1}
+            <div class={battleClass}>
+                {#if !currentFoe?.entity || currentFoe.entity.currentHp === 0}
+                    <div>No entities found in area</div>
+                {/if}
+                {#if currentFoe?.entity}
+                    <div class="ally">
+                        <div>
+                            {currentPlayer?.name}:
+                            <StatBar
+                                currentRes={currentPlayer?.currentHp ?? 0}
+                                maxRes={currentPlayer?.maxHp ?? 0}
+                            />
+                        </div>
+                        <div>
+                            {currentPartner?.name}
+                            <StatBar
+                                currentRes={currentPartner?.currentHp ?? 0}
+                                maxRes={currentPartner?.maxHp ?? 0}
+                            />
+                        </div>
+                    </div>
+                    <span id="vs-text">VS:</span>
+                    <div class="enemy">
+                        {currentFoe.entity.name}
+                        <StatBar currentRes={currentFoe.entity.currentHp ?? 0}
+                            maxRes={currentFoe.entity.maxHp ?? 0}/>
+                        <div>
+                            {#each currentFoe.labels as label}
+                                <span>{label}</span>
+                            {/each}
+                        </div>
+                    </div>
+                {/if}
+            </div>
         {/if}
+        <div class={divClass}>
+            {#if message.text.length > 0 && message.text[0].text != ""}
+                {#each message.text as textItem}
+                    {textItem.text}
+                    <br /><br />
+                {/each}
+                {#if message.onNext}
+                    <div>
+                        <button class="progress-button" onclick={message.onNext}
+                            >{message.onNextText ?? "Next"}</button
+                        >
+                    </div>
+                {/if}
+            {/if}
+        </div>
     </div>
-</div>
 {/if}
 
 <style>
     .environment-container {
         display: grid;
         grid-auto-flow: column;
-        grid-template-columns: 33% 33% 33%
+        grid-template-columns: 33% 33% 33%;
     }
     .progress-button {
         border-color: #6c0e0e;
@@ -125,6 +182,11 @@
     }
     .intermediate-panel {
         grid-column: 2 / 4;
+    }
+    .battle-panel {
+        display: grid;
+        gap: 5px;
+        grid-template-columns: 1fr auto 1fr;
     }
     .nav-button-group {
         display: flex;
@@ -142,5 +204,8 @@
     .nav-button-group > div {
         display: flex;
         justify-content: space-around;
+    }
+    #vs-text {
+        align-self: center;
     }
 </style>
