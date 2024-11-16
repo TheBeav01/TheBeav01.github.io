@@ -9,7 +9,7 @@ const LOW_AFFINITY_SCALE_FACTOR = 1.15
 const DEFAULT_ATTACK_SCALE_FACTOR = 1.20
 const DEFENSE_SCALE_FACTOR = 1.15
 const HP_SCALE_FACTOR = DEFENSE_SCALE_FACTOR
-const DEFAULT_VAL = 50
+const DEFAULT_VAL = 2
 type Affinity = "attack" | "defense" | "hp" | "speed" | "crit" | "accuracy"
 
 export interface EnemyDisplay {
