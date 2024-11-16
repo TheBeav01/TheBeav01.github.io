@@ -2,15 +2,15 @@ import * as Enemy from "../../constants/enemyConstants"
 import { gameSave } from "../../types/gameSave.svelte"
 import LivingEntity from "../../types/livingEntity.svelte"
 import { generateRandomNumber } from "../gameUtils.svelte"
-const HIGH_AFFINITY_SCALE_FACTOR = 1.10
+const HIGH_AFFINITY_SCALE_FACTOR = 1.33
 const HIGH_SPECIAL_SCALE_FACTOR = 1.25
 const LOW_SPECIAL_SCALE_FACTOR = 0.80
-const LOW_AFFINITY_SCALE_FACTOR = 1.02
-const DEFAULT_ATTACK_SCALE_FACTOR = 1.08
-const DEFENSE_SCALE_FACTOR = 1.05
+const LOW_AFFINITY_SCALE_FACTOR = 1.15
+const DEFAULT_ATTACK_SCALE_FACTOR = 1.20
+const DEFENSE_SCALE_FACTOR = 1.15
 const HP_SCALE_FACTOR = DEFENSE_SCALE_FACTOR
 const DEFAULT_VAL = 2
-type Affinity = "attack" | "defense" | "hp" | "speed" | "crit"
+type Affinity = "attack" | "defense" | "hp" | "speed" | "crit" | "accuracy"
 interface EnemyListItem {
     name: string,
     //Default: null
@@ -79,7 +79,7 @@ const zones7To10 : EnemyTemplate[] = [ {
 }]
 
 
-const generateEnemy = () => {
+export const generateEnemy = () => {
     const le = new LivingEntity()
     const zone = gameSave.save.coordinates.zone
     le.attackSpeed = 1
@@ -98,6 +98,7 @@ const applyModifiers = (entity: LivingEntity, zone: number) => {
     } else {
         enemy = pickEnemyFromWeightedList(zones1To6)
     }
+    entity.name = enemy.name
     entity.attack = Math.round(DEFAULT_VAL + Math.pow(zone, pickModifier(enemy.name, "attack")))
     entity.defense = Math.round(DEFAULT_VAL + Math.pow(zone, pickModifier(enemy.name, "defense")))
     entity.maxHp = Math.round(DEFAULT_VAL + Math.pow(zone, pickModifier(enemy.name, "hp")))
@@ -105,7 +106,44 @@ const applyModifiers = (entity: LivingEntity, zone: number) => {
     entity.attackSpeed = pickModifier(enemy.name, "speed")
     entity.critRate = pickModifier(enemy.name, "crit")
     console.log(entity)
-    return entity
+    return {entity, labels: generateLabels(enemy.name)}
+}
+
+const generateLabels = (name: string) => {
+    const enemy = enemyMap.get(name)
+    const labels : string[] = []
+    enemy?.affinity?.forEach(x => {
+        labels.push(pickLabel(x))
+    })
+    enemy?.drawback?.forEach(x => {
+        labels.push(pickLabel(x, true))
+    })
+    return labels
+}
+
+const pickLabel = (label: Affinity, drawback = false) => {
+    let labels = []
+    switch(label) {
+        case "attack":
+            labels = ["Vicious", "Blunting"]
+            break
+        case "defense":
+            labels = ["Tough", "Vulnerable"]
+            break
+        case "hp":
+            labels = ["Healthy", "Frail"]
+            break
+        case "speed":
+            labels = ["Quick", "Passive"]
+            break
+        case "crit":
+            labels = ["Precise", "Inexact"]
+            break
+        case "accuracy":
+            labels = ["Accurate", "Blinded"]
+            break
+    }
+    return drawback ? labels[1] : labels[0]
 }
 
 const pickModifier = (name: string, modifier: Affinity) => {
@@ -135,6 +173,7 @@ const pickDefaultModifier = (modifier: Affinity) => {
         case "hp":
             return HP_SCALE_FACTOR
         case "speed":
+        case "accuracy":
         case "crit":
             return 1
     }
@@ -143,7 +182,7 @@ const pickDefaultModifier = (modifier: Affinity) => {
 const pickEnemyFromWeightedList = (list: EnemyTemplate[]) => {
     const fixedWeights = list.map(i => {
         if (i.spawnWeight === undefined) {
-            i.spawnWeight = 0
+            i.spawnWeight = 100
         }
         return i
     })

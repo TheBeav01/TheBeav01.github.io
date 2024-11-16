@@ -1,10 +1,14 @@
 <script lang="ts">
     import { gameSave } from "../types/gameSave.svelte";
+    import type LivingEntity from "../types/livingEntity.svelte";
+    import { generateEnemy } from "../utils/generators/enemyGenerator";
     import StoryUtils, { INITIAL_SCAN_POS } from "../utils/storyUtils.svelte";
     let message = $derived(StoryUtils.getStoryState(gameSave.save))
     let save = $derived(gameSave.save)
     let pos = $derived(gameSave.save.storyPos)
     const divClass = $derived(pos == 1 ? "intermediate-panel" : null)
+    let foe : {entity: LivingEntity, labels: string[]} | null = $state(null)
+    $inspect(foe)
     $inspect(save)
     const travel = (dir: number) => {
         const coords = {...gameSave.save.coordinates}
@@ -45,7 +49,7 @@
     }
 
     const generateEncounter = () => {
-        console.log("A")
+        foe = generateEnemy()
     }
 </script>
 {#if pos == 0}
@@ -61,18 +65,30 @@
 <div class="environment-container">
     <div>
         <div class="nav-button-group">
-            <button onclick={() => travel(0)}>Travel North</button>
+            <button onclick={() => travel(0)}>Advance</button>
             <div>
-                <button disabled={save.coordinates.zone == 0} onclick={() => travel(3)}>Travel West</button>
-                <button disabled={save.coordinates.zone == 0} onclick={() => travel(1)}>Travel East</button>
+                <button disabled={save.coordinates.zone == 0} onclick={() => travel(3)}>Left Path</button>
+                <button disabled={save.coordinates.zone == 0} onclick={() => travel(1)}>Right Path</button>
             </div>
-            <button disabled={save.coordinates.zone == 0} onclick={() => travel(2)}>Travel South</button>
+            <button disabled={save.coordinates.zone == 0} onclick={() => travel(2)}>Go Back</button>
         </div>
         A:{save.coordinates.zone}
     </div>
     {#if pos > 1}
+    
         <div class={divClass}>
-            Battle
+            {#if foe?.entity}
+                {foe.entity.name}
+                {foe.entity.currentHp} / {foe.entity.maxHp}
+                <div>
+                    {#each foe.labels as label}
+                        <span>{label}</span>  
+                    {/each}
+                </div>
+            {/if}
+            {#if !foe?.entity || foe.entity.currentHp === 0}
+                <div>No entities found in area</div>
+            {/if}
         </div>
     {/if}
     <div class={divClass}>
