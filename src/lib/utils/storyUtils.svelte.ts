@@ -1,4 +1,4 @@
-import { STORY_MESSAGE_2, STORY_MESSAGE_DEFAULT, STORY_MESSAGE_INITIAL } from "../constants"
+import { STORY_MESSAGE_2, STORY_MESSAGE_DEFAULT, STORY_MESSAGE_INITIAL } from "../constants/constants"
 import { saveGame } from "../stores/gameSave.svelte"
 import { gameSave } from "../types/gameSave.svelte"
 import type SaveObject from "../types/saveObject.svelte"

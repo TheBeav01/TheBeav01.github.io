@@ -1,0 +1,8 @@
+export const RAT = "Rat"
+export const RABBIT = "Rabbit"
+export const SQUIRREL = "Squirrel"
+export const CHIPMUNK = "Chipmunk"
+export const HEDGEHOG = "Hedgehog"
+export const PORCUPINE = "Procupine"
+export const RAVEN = "Raven"
+export const CROW = "Crow"
