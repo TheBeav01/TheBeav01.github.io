@@ -1,12 +1,13 @@
 import { getCookieByKey } from "../utils/cookieUtils";
 import { saveGame, decodeSave } from "../stores/gameSave.svelte";
-import { createResourcesFromSave, resources } from "../stores/resourceStore.svelte";
-import { tick } from "../resource/resourceManager.svelte";
+import { createResourcesFromSave } from "../stores/resourceStore.svelte";
 import { writable } from "svelte/store";
 import StoryUtils from "../utils/storyUtils.svelte";
 import { createPlayersFromSave } from "../stores/playerStore.svelte";
 import { log } from "../stores/messageList.svelte";
 import { gameSave } from "../types/gameSave.svelte";
+import { ResourceLoop } from "./resource-loop.svelte";
+import { CombatLoop } from "./combat-loop.svelte";
 let canAscend = false
 export function load() {
   const saveString = getCookieByKey("save")
@@ -24,21 +25,20 @@ export function load() {
 }
 
 export let frameID = writable(0)
-
+let date = Date.now()
+let diff = 0
 /**
 * The loop of this game. This runs via requestAnimationFrame(), 
 * and a tick counter is kept for timekeeping purposes. It should run at 60 ticks per second
 * @param {*} timeStamp Is the time that the frame was requested (in ms.)
 */
 function gameLoop() {
+  diff += Date.now()-date
   frameID.set(requestAnimationFrame(gameLoop))
-  updateAllResources()
-}
 
-function updateAllResources() {
-  for (const res of resources) {
-    tick(res[1])
-  }
+  ResourceLoop.tick(diff)
+  CombatLoop.tick(diff)
+  date = Date.now()
 }
 
 /**

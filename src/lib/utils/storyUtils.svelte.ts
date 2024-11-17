@@ -1,11 +1,8 @@
 import { STORY_MESSAGE_2, STORY_MESSAGE_3, STORY_MESSAGE_DEFAULT, STORY_MESSAGE_INITIAL } from "../constants/constants"
 import { saveGame } from "../stores/gameSave.svelte"
-import { PARTNER_NAME } from "../stores/playerStore.svelte"
 import { gameSave } from "../types/gameSave.svelte"
-import type LivingEntity from "../types/livingEntity.svelte"
 import type SaveObject from "../types/saveObject.svelte"
 import { generateRandomNumber } from "./gameUtils.svelte"
-import Box from "./stateBox.svelte"
 
 interface StoryHandler {
     text: StoryText[]
@@ -18,7 +15,7 @@ interface StoryText {
 }
 export const INITIAL_STORY = 0
 export const INITIAL_SCAN_POS = 1
-export const DRONE_POS = 3
+export const DRONE_POS = 4
 export default class StoryUtils {
     private static partnerNames = ["Zephyr", "Aluca", "Ruby", "Zircon", "Topaz", "Orion", "Zatha", "Ba'kan", "Azl'ka", "Xa'ahn"]
     static generatePartnerName() {

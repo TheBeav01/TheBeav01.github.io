@@ -12,6 +12,15 @@ export const removeResource = (name: string) => {
     resources.delete(name)
 }
 
-export const tick = (resource: Resource) => {
+export const tick = (resource: Resource, tick: number = 0) => {
+    if (tick) {
+        const seconds = tick / 1000
+        const amountToAdd = seconds * resource.genRatePerSecond
+        if (amountToAdd < 0) {
+            resource.remove(amountToAdd)
+        } else {
+            resource.add(amountToAdd)
+        }
+    }
     resourceStore.set(resource.name, resource)
 }

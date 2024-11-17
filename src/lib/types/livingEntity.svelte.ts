@@ -15,6 +15,7 @@ export default class LivingEntity implements BaseEntity {
     maxHp: number = 0;
     currentHp: number = 0
     inventory: Resource[] = []
+    timeToAttack: number = 0
     isDead = () => {
         return this.currentHp < 0
     }
@@ -24,7 +25,7 @@ export default class LivingEntity implements BaseEntity {
         this.inventory.forEach(i => player?.awardItem(i))
     }
 
-    attackEntity = (other: LivingEntity) => {
+    getBaseDamage = (other: LivingEntity) => {
         // Big pos diff = small attack. Small diff = attack does ~ x hp. Big neg diff = more damage
         const attackDefenseDifferential = (this.attack / other.defense).toFixed(2)
 
@@ -34,13 +35,28 @@ export default class LivingEntity implements BaseEntity {
             finalAttack = 1
         }
 
-        const rounded = Math.round(finalAttack)
+        return Math.round(finalAttack)
+    }
+
+    attackEntity = (other: LivingEntity) => {
+        const rounded = this.getBaseDamage(other)
 
         if (other.currentHp < rounded) {
-
+            other.currentHp = 0
+            other.onKill()
+            this.resetAttackTime()
+            return
         }
+        other.currentHp -= rounded
+        this.resetAttackTime()
+    }
 
+    resetAttackTime = () => {
+        this.timeToAttack = this.attackSpeed * 1000
+    }
 
+    tick = (diff: number) => {
+        this.timeToAttack -= diff
     }
     
 }

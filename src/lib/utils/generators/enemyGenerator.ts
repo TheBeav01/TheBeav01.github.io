@@ -1,7 +1,6 @@
 import * as Enemy from "../../constants/enemyConstants"
 import { gameSave } from "../../types/gameSave.svelte"
 import LivingEntity from "../../types/livingEntity.svelte"
-import { generateRandomNumber } from "../gameUtils.svelte"
 const HIGH_AFFINITY_SCALE_FACTOR = 1.33
 const HIGH_SPECIAL_SCALE_FACTOR = 1.25
 const LOW_SPECIAL_SCALE_FACTOR = 0.80

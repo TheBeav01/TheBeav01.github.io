@@ -15,6 +15,11 @@ export abstract class Resource {
      * The amount of the resource
      */
     public amt = $state(0)
+
+    /**
+     * How many we get per second
+     */
+    public genRatePerSecond = $state(0.0)
     /**
      * True to remove the resource on ascencion
      */
@@ -38,13 +43,11 @@ export abstract class Resource {
         let amtToAdd = amt ?? 0
         amtToAdd = amtToAdd < 0 ? 0 : amtToAdd
         this.amt += amtToAdd
-        tick(this)
     }
 
     public remove(amt: number) {
         let amtToRemove = amt ?? 0
         amtToRemove = amtToRemove > 0 ? 0 : amtToRemove
         this.amt -= Math.max(this.amt - amtToRemove, 0)
-        tick(this)
     }
 }
