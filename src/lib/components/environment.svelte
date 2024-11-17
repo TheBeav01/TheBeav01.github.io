@@ -91,7 +91,13 @@
         <div>
             Area {save.coordinates.zone}
             <div class="nav-button-group">
-                <button onclick={() => travel(0)}>Advance</button>
+                <div>
+                    <button
+                    disabled={save.coordinates.zone == 0}
+                    onclick={() => travel(2)}>Previous Zone</button>
+                    <button onclick={() => travel(0)}>Next Zone</button>
+                    
+                </div>
                 <div>
                     <button
                         disabled={save.coordinates.zone == 0 ||
@@ -104,14 +110,10 @@
                         onclick={() => travel(1)}>Right Path</button
                     >
                 </div>
-                <button
-                    disabled={save.coordinates.zone == 0}
-                    onclick={() => travel(2)}>Go Back</button
-                >
             </div>
         </div>
         {#if pos > 1}
-            <div class={battleClass}>
+            <div class={`${battleClass} fit-height`}>
                 {#if !currentFoe?.entity || currentFoe.entity.currentHp === 0}
                     <div>No entities found in area</div>
                 {/if}
@@ -168,7 +170,8 @@
     .environment-container {
         display: grid;
         grid-auto-flow: column;
-        grid-template-columns: 33% 33% 33%;
+        grid-template-columns: 20% 60% 20%;
+        gap: 1em;
     }
     .progress-button {
         border-color: #6c0e0e;
@@ -192,20 +195,20 @@
         display: flex;
         flex-direction: column;
         gap: 0.5em;
-    }
-    .nav-button-group > button {
-        align-self: center;
+        padding-top: 1em;
     }
     .nav-button-group button {
-        width: fit-content;
-        height: fit-content;
-        padding: 2px 3px;
+        width: 50%;
     }
     .nav-button-group > div {
         display: flex;
-        justify-content: space-around;
+        gap: 8px;
     }
     #vs-text {
         align-self: center;
+    }
+
+    .fit-height {
+        height: fit-content;
     }
 </style>

@@ -1,6 +1,8 @@
-import { STORY_MESSAGE_2, STORY_MESSAGE_DEFAULT, STORY_MESSAGE_INITIAL } from "../constants/constants"
+import { STORY_MESSAGE_2, STORY_MESSAGE_3, STORY_MESSAGE_DEFAULT, STORY_MESSAGE_INITIAL } from "../constants/constants"
 import { saveGame } from "../stores/gameSave.svelte"
+import { PARTNER_NAME } from "../stores/playerStore.svelte"
 import { gameSave } from "../types/gameSave.svelte"
+import type LivingEntity from "../types/livingEntity.svelte"
 import type SaveObject from "../types/saveObject.svelte"
 import { generateRandomNumber } from "./gameUtils.svelte"
 import Box from "./stateBox.svelte"
@@ -44,33 +46,16 @@ export default class StoryUtils {
                 }
             case 1:
                 return {
-                text: STORY_MESSAGE_2
-            }
+                    text: STORY_MESSAGE_2
+                }
+            case 2:
+                return {
+                    text: STORY_MESSAGE_3
+                }
             default:
                 return {
                     text: STORY_MESSAGE_DEFAULT
                 }
             }
-            }
-            
-            // getCurrentStoryMessage(): StoryHandler {
-                //     console.log(gameSave.save)
-                //     switch (gameSave.save.storyPos) {
-                    //         case 0:
-                    //             return {
-                        //                 text: STORY_MESSAGE_INITIAL,
-    //                 onNext: () => this.saveWrapper(() => this.incrementStoryPosition()),
-    //                 onNextText: "Scan?"
-    //             }
-    //         case 2:
-    //             return {
-        //                 text: STORY_MESSAGE_2,
-        //                 onNext: () => this.saveWrapper(() => this.incrementStoryPosition())
-        //             }
-        //         default:
-        //             return {
-            //                 text: ""
-            //             }
-            //     }
-    // }
+        }
 }
