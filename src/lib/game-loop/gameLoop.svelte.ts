@@ -33,7 +33,7 @@ let diff = 0
 * @param {*} timeStamp Is the time that the frame was requested (in ms.)
 */
 function gameLoop() {
-  diff += Date.now()-date
+  diff = Date.now()-date
   frameID.set(requestAnimationFrame(gameLoop))
 
   ResourceLoop.tick(diff)

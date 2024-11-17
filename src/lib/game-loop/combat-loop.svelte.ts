@@ -7,7 +7,8 @@ export class CombatLoop {
     static tick(diff: number) {
         //Subtract all time to attacks. Partner -> Enemies
         const currentFoe = encounterState.state.foe
-        if (!currentFoe) {
+        if (!currentFoe.name) {
+            console.log("No foe!")
             return
         }
         const partner = encounterState.state.partner
@@ -15,10 +16,7 @@ export class CombatLoop {
         //If expired, select target and attack
         partner.tick(diff)
         currentFoe.tick(diff)
-        if (partner.timeToAttack <= 0) {
-            partner.attackEntity(currentFoe)
-        }
-
+        partner.attackEntity(currentFoe)
         const willAttackPlayer = this.willAttack(player, currentFoe)
         if (willAttackPlayer) {
             currentFoe.attackEntity(player)

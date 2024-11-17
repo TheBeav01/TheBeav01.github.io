@@ -10,7 +10,7 @@ export default class LivingEntity implements BaseEntity {
     name: string = "";
     attack: number = 0;
     defense: number = 0;
-    attackSpeed: number = 0;
+    attackSpeed: number = 1;
     critRate: number = 0.0;
     maxHp: number = 0;
     currentHp: number = 0
@@ -39,7 +39,11 @@ export default class LivingEntity implements BaseEntity {
     }
 
     attackEntity = (other: LivingEntity) => {
+        if (this.timeToAttack > 0) {
+            return
+        }
         const rounded = this.getBaseDamage(other)
+        console.log(this.name, " attacks ", other.name, " for ", rounded, " damage")
 
         if (other.currentHp < rounded) {
             other.currentHp = 0

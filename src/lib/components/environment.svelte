@@ -1,7 +1,9 @@
 <script lang="ts">
+    import { setEncounter } from "../stores/encounter.svelte";
     import { playerStore } from "../stores/playerStore.svelte";
     import { gameSave } from "../types/gameSave.svelte";
     import type LivingEntity from "../types/livingEntity.svelte";
+    import Player from "../types/player";
     import {
         generateEnemy,
         type EnemyDisplay,
@@ -26,8 +28,8 @@
     let allFoesInlevel: EnemyDisplay[] = $state([]);
     let currentFoe: EnemyDisplay | null = $derived(allFoesInlevel[0] ?? null);
 
-    const currentPlayer = $derived(playerStore.get("player"));
-    const currentPartner = $derived(playerStore.get("partner"));
+    const currentPlayer = $derived(playerStore.get("player") ?? new Player());
+    const currentPartner = $derived(playerStore.get("partner") ?? new Player(true));
     const travel = (dir: number) => {
         const coords = { ...gameSave.save.coordinates };
         if (dir < 0) {
@@ -70,7 +72,11 @@
     };
 
     const generateEncounter = (num: number) => {
-        allFoesInlevel.push(generateEnemy());
+        const foe = generateEnemy()
+        if (num == 0) {
+            setEncounter(currentPlayer, currentPartner, foe.entity)
+        }
+        allFoesInlevel.push(foe);
     };
 </script>
 
