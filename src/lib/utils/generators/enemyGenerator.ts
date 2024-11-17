@@ -9,6 +9,7 @@ const DEFAULT_ATTACK_SCALE_FACTOR = 1.20
 const DEFENSE_SCALE_FACTOR = 1.15
 const HP_SCALE_FACTOR = DEFENSE_SCALE_FACTOR
 const DEFAULT_VAL = 1
+const BASE_HP = 1
 type Affinity = "attack" | "defense" | "hp" | "speed" | "crit" | "accuracy"
 
 export interface EnemyDisplay {
@@ -86,7 +87,7 @@ const zones7To10 : EnemyTemplate[] = [ {
 export const generateEnemy = () : EnemyDisplay => {
     const le = new LivingEntity()
     const zone = gameSave.save.coordinates.zone
-    le.attackSpeed = 1
+    le.attackSpeed = 0.25
     le.critRate = 0.05
     le.inventory = []
     return applyModifiers(le, zone)
@@ -107,7 +108,8 @@ const applyModifiers = (entity: LivingEntity, zone: number) : EnemyDisplay => {
     entity.defense = Math.round(DEFAULT_VAL + Math.pow(zone, pickModifier(enemy.name, "defense")))
     entity.maxHp = Math.round(DEFAULT_VAL + Math.pow(zone, pickModifier(enemy.name, "hp")))
     entity.currentHp = entity.maxHp
-    entity.attackSpeed = pickModifier(enemy.name, "speed")
+    const baseAttackSpeed = gameSave.save.coordinates.zone <= 5 ? 0.25 : 1
+    entity.attackSpeed = baseAttackSpeed * pickModifier(enemy.name, "speed")
     entity.critRate = pickModifier(enemy.name, "crit")
     entity.resetAttackTime()
     console.log(entity)

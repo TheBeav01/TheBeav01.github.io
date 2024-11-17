@@ -10,6 +10,7 @@ export default class LivingEntity implements BaseEntity {
     name: string = "";
     attack: number = 0;
     defense: number = 0;
+    // Attacks / s
     attackSpeed: number = 1;
     critRate: number = 0.0;
     maxHp: number = 0;
@@ -57,7 +58,7 @@ export default class LivingEntity implements BaseEntity {
     }
 
     resetAttackTime = () => {
-        this.timeToAttack = this.attackSpeed * 1000
+        this.timeToAttack = 1000 / this.attackSpeed
     }
 
     tick = (diff: number) => {
