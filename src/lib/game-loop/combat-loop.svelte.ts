@@ -1,4 +1,4 @@
-import { encounterState } from "../stores/encounter.svelte";
+import { encounterState, onTurnFinish } from "../stores/encounter.svelte";
 import type LivingEntity from "../types/livingEntity.svelte";
 import type Player from "../types/player";
 import { generateRandomNumber } from "../utils/gameUtils.svelte";
@@ -13,22 +13,23 @@ export class CombatLoop {
         }
         const partner = encounterState.state.partner
         const player = encounterState.state.player
-        //If expired, select target and attack
         partner.tick(diff)
         currentFoe.tick(diff)
+        //If expired, select target and attack
         partner.attackEntity(currentFoe)
         const willAttackPlayer = this.willAttack(player, currentFoe)
         if (willAttackPlayer) {
             currentFoe.attackEntity(player)
-            return
+        } else {
+            // Random for now
+            const random = generateRandomNumber(100, 1)
+            if (random < 50) {
+                currentFoe.attackEntity(player)
+            } else {
+                currentFoe.attackEntity(partner)
+            }
         }
-        // Random for now
-        const random = generateRandomNumber(100, 1)
-        if (random < 50) {
-            currentFoe.attackEntity(player)
-            return
-        }
-        currentFoe.attackEntity(partner)
+        onTurnFinish(player, partner, currentFoe)
     }
 
     private static willAttack (player: Player, currentFoe: LivingEntity) {

@@ -26,8 +26,9 @@ export default class LivingEntity implements BaseEntity {
     }
 
     getBaseDamage = (other: LivingEntity) => {
+        const defense = other.defense ?? 1
         // Big pos diff = small attack. Small diff = attack does ~ x hp. Big neg diff = more damage
-        const attackDefenseDifferential = (this.attack / other.defense).toFixed(2)
+        const attackDefenseDifferential = (this.attack / defense).toFixed(2)
 
         let finalAttack = this.attack * Number.parseFloat(attackDefenseDifferential)
 
@@ -39,11 +40,11 @@ export default class LivingEntity implements BaseEntity {
     }
 
     attackEntity = (other: LivingEntity) => {
-        if (this.timeToAttack > 0) {
+        if (this.timeToAttack > 0 || this.attackSpeed === 0 || this.attack === 0) {
             return
         }
         const rounded = this.getBaseDamage(other)
-        console.log(this.name, " attacks ", other.name, " for ", rounded, " damage")
+        console.log(`${this.name} attacks ${other.name} for ${rounded} damage`)
 
         if (other.currentHp < rounded) {
             other.currentHp = 0

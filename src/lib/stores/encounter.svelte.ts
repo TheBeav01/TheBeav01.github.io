@@ -1,5 +1,6 @@
 import LivingEntity from "../types/livingEntity.svelte";
 import Player from "../types/player";
+import { playerStore } from "./playerStore.svelte";
 
 interface Encounter {
     player: Player,
@@ -19,4 +20,10 @@ export function setEncounter(player: Player, partner: Player, newFoe: LivingEnti
     encounterState.state = {
         player: player, partner: partner, foe: newFoe
     }
+}
+
+export function onTurnFinish(player: Player, partner: Player, newFoe: LivingEntity) {
+    setEncounter(player, partner, newFoe)
+    playerStore.set("partner", partner)
+    playerStore.set("player", player)
 }

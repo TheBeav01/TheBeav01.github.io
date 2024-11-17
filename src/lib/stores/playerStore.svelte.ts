@@ -11,20 +11,39 @@ export let playerStore : Map<"player" | "partner", Player> = $state(buildMap())
 
 export const createPlayersFromSave = (save: SaveObject) => {
     const player = new Player()
-    save.playerInv.forEach(i => {
-        player.awardItem(i)
-    })
     player.name = save.playerName
     player.currentHp = save.playerHp === undefined ? player.maxHp : save.playerHp
+    applyPlayerUpgrades(save, player)
     const partner = new Player(true)
-    save.partnerInv.forEach(i => {
-        partner.awardItem(i)
-    })
     partner.name = save.partnerName
     partner.currentHp = save.partnerHp === undefined ? partner.maxHp : save.partnerHp
+    applyPartnerUpgrades(save, partner)
     playerStore.set("player", player)
     playerStore.set("partner", partner)
     return playerStore
+
+}
+
+const applyPlayerUpgrades = (save: SaveObject, player: Player) => {
+    player.attack = 1
+    player.defense = 3
+    player.maxHp = 5
+    player.attackSpeed = 0
+    player.critRate = 0
+    save.playerInv.forEach(i => {
+        player.awardItem(i)
+    })
+
+}
+const applyPartnerUpgrades = (save: SaveObject, partner: Player) => {
+    partner.attack = 0
+    partner.defense = 3
+    partner.maxHp = 5
+    partner.attackSpeed = 0
+    partner.critRate = 0
+    save.playerInv.forEach(i => {
+        partner.awardItem(i)
+    })
 
 }
 
