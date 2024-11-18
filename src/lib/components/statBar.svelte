@@ -10,14 +10,13 @@
     const {
         elements: { root },
   } = createProgress({
-    value: val,
     max: 100,
   });
 </script>
 <div>
     <div class="base-progress base-height" use:melt={$root}>
         <div class="base-height bar-fill" style={`transform: translateX(-${
-            $val
+            Math.floor(100 - ((currentRes / (maxRes ?? currentRes)) * 100))
           }%)`}></div>
     </div>
     {currentRes} / {maxRes}

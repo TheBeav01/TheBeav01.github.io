@@ -8,7 +8,6 @@ export class CombatLoop {
         //Subtract all time to attacks. Partner -> Enemies
         const currentFoe = encounterState.state.foe
         if (!currentFoe.name) {
-            console.log("No foe!")
             return
         }
         const partner = encounterState.state.partner

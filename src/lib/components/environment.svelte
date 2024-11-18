@@ -31,7 +31,6 @@
     const currentPlayer = $derived(playerStore.get("player") ?? new Player());
     const currentPartner = $derived(playerStore.get("partner") ?? new Player(true));
     const encounter = $derived(encounterState.state)
-    $inspect(encounter)
     const travel = (dir: number) => {
         const coords = { ...gameSave.save.coordinates };
         if (dir < 0) {
