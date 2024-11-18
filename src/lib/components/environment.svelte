@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { setEncounter } from "../stores/encounter.svelte";
+    import { encounterState, setEncounter } from "../stores/encounter.svelte";
     import { playerStore } from "../stores/playerStore.svelte";
     import { gameSave } from "../types/gameSave.svelte";
     import type LivingEntity from "../types/livingEntity.svelte";
@@ -30,9 +30,8 @@
 
     const currentPlayer = $derived(playerStore.get("player") ?? new Player());
     const currentPartner = $derived(playerStore.get("partner") ?? new Player(true));
-    // $inspect(currentFoe)
-    // $inspect(currentPartner)
-    // $inspect(currentPlayer)
+    const encounter = $derived(encounterState.state)
+    $inspect(encounter)
     const travel = (dir: number) => {
         const coords = { ...gameSave.save.coordinates };
         if (dir < 0) {
@@ -77,7 +76,7 @@
     const generateEncounter = (num: number) => {
         const foe = generateEnemy()
         if (num == 0) {
-            setEncounter(currentPlayer, currentPartner, foe.entity)
+            setEncounter(foe.entity)
         }
         allFoesInlevel.push(foe);
     };
@@ -131,23 +130,23 @@
                         <div>
                             {currentPlayer?.name}:
                             <StatBar
-                                currentRes={currentPlayer?.currentHp ?? 0}
-                                maxRes={currentPlayer?.maxHp ?? 0}
+                                currentRes={encounter?.player.currentHp ?? 0}
+                                maxRes={encounter?.player.maxHp ?? 0}
                             />
                         </div>
                         <div>
                             {currentPartner?.name}
                             <StatBar
-                                currentRes={currentPartner?.currentHp ?? 0}
-                                maxRes={currentPartner?.maxHp ?? 0}
+                                currentRes={encounter?.partner.currentHp ?? 0}
+                                maxRes={encounter?.partner.maxHp ?? 0}
                             />
                         </div>
                     </div>
                     <span id="vs-text">VS:</span>
                     <div class="enemy">
-                        {currentFoe.entity.name}
-                        <StatBar currentRes={currentFoe.entity.currentHp ?? 0}
-                            maxRes={currentFoe.entity.maxHp ?? 0}/>
+                        {encounter.foe.name}
+                        <StatBar currentRes={encounter.foe.currentHp ?? 0}
+                            maxRes={encounter.foe.maxHp ?? 0}/>
                         <div>
                             {#each currentFoe.labels as label}
                                 <span>{label}</span>

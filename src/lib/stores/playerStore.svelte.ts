@@ -47,4 +47,12 @@ const applyPartnerUpgrades = (save: SaveObject, partner: Player) => {
 
 }
 
+export const getPlayer = () => {
+    return playerStore.get("player") ?? new Player()
+}
+
+export const getPartner = () => {
+    return playerStore.get("partner") ?? new Player(true)
+}
+
 export const PARTNER_NAME = playerStore.get("partner")?.name

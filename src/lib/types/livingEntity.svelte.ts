@@ -40,8 +40,12 @@ export default class LivingEntity implements BaseEntity {
         return Math.round(finalAttack)
     }
 
+    canAttack = () => {
+        return this.attackSpeed !== 0 && this.attack !== 0
+    }
+
     attackEntity = (other: LivingEntity) => {
-        if (this.timeToAttack > 0 || this.attackSpeed === 0 || this.attack === 0) {
+        if (this.timeToAttack > 0 || !this.canAttack()) {
             return
         }
         const rounded = this.getBaseDamage(other)
@@ -58,11 +62,14 @@ export default class LivingEntity implements BaseEntity {
     }
 
     resetAttackTime = () => {
-        this.timeToAttack = 1000 / this.attackSpeed
+        this.timeToAttack = 1000 / (this.attackSpeed ?? 1)
     }
 
     tick = (diff: number) => {
+        if (!this.canAttack()) {
+            return false
+        }
         this.timeToAttack -= diff
+        return this.timeToAttack <= 0
     }
-    
 }

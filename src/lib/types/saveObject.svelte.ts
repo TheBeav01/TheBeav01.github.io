@@ -14,7 +14,7 @@ export default class SaveObject {
     /**
      * Player health
      */
-    playerHp = 0
+    playerHp = 5
 
     /**
      * Player inventory. Deconstructable resources
@@ -30,7 +30,7 @@ export default class SaveObject {
    /**
     * Partner health
     */
-   partnerHp = 0
+   partnerHp = 5
    /**
     * Partner upgrades
     */

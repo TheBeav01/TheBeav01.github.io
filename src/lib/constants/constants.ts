@@ -13,7 +13,7 @@ export const STORY_MESSAGE_3 = [{
     text: "A creature rustles in the tall grass. The dragon locks their gaze on the location of the rustling and leaps from your shoulder. They begin to circle around where they think the creature is. You squint in the morning sun, not sure why the dragon has taken an interest in it."
 },
 {
-    text: "An uncomfortable number of moments pass. Perhaps they're waiting for you."
+    text: "An uncomfortable number of moments pass. Perhaps they're waiting for you. Perhaps instinctively, your hand reaches down to the daggers holstered to your side."
 }]
 export const STORY_MESSAGE_DEFAULT = [
     {

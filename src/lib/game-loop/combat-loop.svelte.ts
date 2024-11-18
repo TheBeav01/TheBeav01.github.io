@@ -13,8 +13,8 @@ export class CombatLoop {
         }
         const partner = encounterState.state.partner
         const player = encounterState.state.player
-        partner.tick(diff)
-        currentFoe.tick(diff)
+        const partnerUpdate = partner.tick(diff)
+        const foeUpdate = currentFoe.tick(diff)
         //If expired, select target and attack
         partner.attackEntity(currentFoe)
         const willAttackPlayer = this.willAttack(player, currentFoe)
@@ -29,7 +29,9 @@ export class CombatLoop {
                 currentFoe.attackEntity(partner)
             }
         }
-        onTurnFinish(player, partner, currentFoe)
+        if (partnerUpdate || foeUpdate) {
+            onTurnFinish(player, partner, currentFoe)
+        }
     }
 
     private static willAttack (player: Player, currentFoe: LivingEntity) {
