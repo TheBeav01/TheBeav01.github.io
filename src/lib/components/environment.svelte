@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { handleFocus } from "@melt-ui/svelte/internal/helpers";
     import { attackManually, encounterState, setEncounter, simulateDamage } from "../stores/encounter.svelte";
     import { playerStore } from "../stores/playerStore.svelte";
     import { gameSave } from "../types/gameSave.svelte";
@@ -30,6 +31,29 @@
     const currentPlayer = $derived(playerStore.get("player") ?? new Player());
     const currentPartner = $derived(playerStore.get("partner") ?? new Player(true));
     const encounter = $derived(encounterState.state)
+    $effect(() => {
+        if (encounter.foe.currentHp <= 0) {
+            onEnemyKill()
+        }
+        if (encounter.player.currentHp <= 0) {
+            onPlayerKill()
+        }
+        if (encounter.partner.currentHp <= 0) {
+            onPartnerKill()
+        }
+    })
+
+    const onEnemyKill = () => {
+        allFoesInlevel.shift()
+    }
+
+    const onPlayerKill = () => {
+        //TODO: Murder
+    }
+
+    const onPartnerKill = () => {
+        //TODO: Remove all autoattacks
+    }
     const damagerPerAttack = $derived(simulateDamage(encounter.player, encounter.foe))
     const travel = (dir: number) => {
         const coords = { ...gameSave.save.coordinates };

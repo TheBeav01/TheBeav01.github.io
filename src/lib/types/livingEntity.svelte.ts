@@ -45,6 +45,9 @@ export default class LivingEntity implements BaseEntity {
     }
 
     attackEntity = (other: LivingEntity, manual = false) => {
+        if (this.isDead() || other.isDead()) {
+            return other
+        }
         if (!manual && (this.timeToAttack > 0 || !this.canAttack())) {
             return other
         }

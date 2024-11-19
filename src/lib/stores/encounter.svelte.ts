@@ -2,7 +2,7 @@ import LivingEntity from "../types/livingEntity.svelte";
 import Player from "../types/player";
 import { getPartner, getPlayer, playerStore } from "./playerStore.svelte";
 
-interface Encounter {
+export interface Encounter {
     player: Player,
     partner: Player,
     foe: LivingEntity
