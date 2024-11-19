@@ -104,7 +104,7 @@
         allFoesInlevel.push(foe);
     };
 
-    const att = (_e) => {
+    const att = (_e: any) => {
         console.log("EEEEEEEEEE")
         attackManually()
     }

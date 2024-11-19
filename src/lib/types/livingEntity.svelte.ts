@@ -18,7 +18,7 @@ export default class LivingEntity implements BaseEntity {
     inventory: Resource[] = []
     timeToAttack: number = 0
     isDead = () => {
-        return this.currentHp < 0
+        return this.currentHp <= 0
     }
 
     onKill = () => {
