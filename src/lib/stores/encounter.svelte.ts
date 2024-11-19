@@ -28,7 +28,18 @@ export function onTurnFinish(player: Player, partner: Player, newFoe: LivingEnti
     playerStore.set("player", player)
 }
 
+// export function afterManualAttack(foe: LivingEntity) {
+//     setEncounter(foe)
+// }
+
 export function attackManually() {
-    const player = playerStore.get("player")
-    player?.attackEntity(encounterState.state.foe)
+    console.log("A")
+    const p = encounterState.state.player
+    const f = p?.attackEntity(encounterState.state.foe, true)
+    setEncounter(f)
+    return f
+}
+
+export function simulateDamage(p: Player, onFoe: LivingEntity) {
+    return p.getBaseDamage(onFoe)
 }

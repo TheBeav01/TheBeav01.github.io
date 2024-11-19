@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { encounterState, setEncounter } from "../stores/encounter.svelte";
+    import { attackManually, encounterState, setEncounter, simulateDamage } from "../stores/encounter.svelte";
     import { playerStore } from "../stores/playerStore.svelte";
     import { gameSave } from "../types/gameSave.svelte";
     import type LivingEntity from "../types/livingEntity.svelte";
@@ -27,10 +27,10 @@
     );
     let allFoesInlevel: EnemyDisplay[] = $state([]);
     let currentFoe: EnemyDisplay | null = $derived(allFoesInlevel[0] ?? null);
-
     const currentPlayer = $derived(playerStore.get("player") ?? new Player());
     const currentPartner = $derived(playerStore.get("partner") ?? new Player(true));
     const encounter = $derived(encounterState.state)
+    const damagerPerAttack = $derived(simulateDamage(encounter.player, encounter.foe))
     const travel = (dir: number) => {
         const coords = { ...gameSave.save.coordinates };
         if (dir < 0) {
@@ -79,6 +79,11 @@
         }
         allFoesInlevel.push(foe);
     };
+
+    const att = (_e) => {
+        console.log("EEEEEEEEEE")
+        attackManually()
+    }
 </script>
 
 {#if pos == 0}
@@ -102,7 +107,7 @@
                     <button
                     disabled={save.coordinates.zone == 0}
                     onclick={() => travel(2)}>Previous Zone</button>
-                    <button onclick={() => travel(0)}>Next Zone</button>
+                    <button disabled={allFoesInlevel.length > 0} onclick={() => travel(0)}>Next Zone</button>
                     
                 </div>
                 <div>
@@ -139,6 +144,9 @@
                                 currentRes={encounter?.partner.currentHp ?? 0}
                                 maxRes={encounter?.partner.maxHp ?? 0}
                             />
+                        </div>
+                        <div>
+                            <button onclick={att}>Attack</button> ~{damagerPerAttack} damage
                         </div>
                     </div>
                     <span id="vs-text">VS:</span>

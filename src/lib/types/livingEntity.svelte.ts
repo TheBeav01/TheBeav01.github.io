@@ -44,9 +44,9 @@ export default class LivingEntity implements BaseEntity {
         return this.attackSpeed !== 0 && this.attack !== 0
     }
 
-    attackEntity = (other: LivingEntity) => {
-        if (this.timeToAttack > 0 || !this.canAttack()) {
-            return
+    attackEntity = (other: LivingEntity, manual = false) => {
+        if (!manual && (this.timeToAttack > 0 || !this.canAttack())) {
+            return other
         }
         const rounded = this.getBaseDamage(other)
         console.log(`${this.name} attacks ${other.name} for ${rounded} damage`)
@@ -55,10 +55,14 @@ export default class LivingEntity implements BaseEntity {
             other.currentHp = 0
             other.onKill()
             this.resetAttackTime()
-            return
+            return other
         }
         other.currentHp -= rounded
+        if(manual) {
+            return other
+        }
         this.resetAttackTime()
+        return other
     }
 
     resetAttackTime = () => {

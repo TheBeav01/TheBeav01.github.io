@@ -1,12 +1,6 @@
 <script lang="ts">
     import { createProgress, melt } from "@melt-ui/svelte";
-    import { writable } from "svelte/store";
-    const calculatePercentage = (current: number, max: number) => {
-        return Math.floor(100 - ((current / (max ?? current)) * 100))
-    }
     const {currentRes, maxRes} : {currentRes: number, maxRes: number} = $props()
-    const percentage = calculatePercentage(currentRes, maxRes)
-    const val = writable(percentage)
     const {
         elements: { root },
   } = createProgress({
