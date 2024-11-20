@@ -33,7 +33,6 @@
     const encounter = $derived(encounterState.state)
     $effect(() => {
         if (encounter.foe.dead) {
-            console.log("E")
             untrack(() => onEnemyKill())
         }
         if (encounter.partner.dead) {
@@ -44,13 +43,16 @@
         }
     })
     const onEnemyKill = () => {
-        console.log("KILL")
+        if (pos === INITIAL_NAVIGATION_POS) {
+            StoryUtils.setStoryPosition(AFTER_INITIAL_COMBAT)
+        }
+        if (save.coordinates.sidePathPosition != 0) {
+            generateEncounter()
+            return
+        }
         remaining = remaining - 1
         if (remaining > 0) {
             generateEncounter()
-        }
-        if (pos === INITIAL_NAVIGATION_POS) {
-            StoryUtils.setStoryPosition(AFTER_INITIAL_COMBAT)
         }
     }
     const damagerPerAttack = $derived(simulateDamage(encounter.player, encounter.foe))
