@@ -26,44 +26,32 @@
             5,
         ),
     );
-    let allFoesInlevel: EnemyDisplay[] = $state([]);
-    let currentFoe: EnemyDisplay | null = $derived(allFoesInlevel[0] ?? null);
+    let remaining = $state(0)
+    let currentFoe: EnemyDisplay | null = $state(null);
     const currentPlayer = $derived(playerStore.get("player") ?? new Player());
     const currentPartner = $derived(playerStore.get("partner") ?? new Player(true));
     const encounter = $derived(encounterState.state)
-    let deathHandled = $state(false)
-    $inspect(allFoesInlevel)
     $effect(() => {
-        if (encounter.foe.isDead()) {
-            onEnemyKill()
+        if (encounter.foe.dead) {
+            console.log("E")
+            untrack(() => onEnemyKill())
         }
-        if (encounter.player.currentHp <= 0) {
-            onPlayerKill()
+        if (encounter.partner.dead) {
+
         }
-        if (encounter.partner.currentHp <= 0) {
-            onPartnerKill()
+        if (encounter.player.dead) {
+
         }
     })
-
     const onEnemyKill = () => {
         console.log("KILL")
+        remaining = remaining - 1
+        if (remaining > 0) {
+            generateEncounter()
+        }
         if (pos === INITIAL_NAVIGATION_POS) {
             StoryUtils.setStoryPosition(AFTER_INITIAL_COMBAT)
         }
-        //TODO: Not this
-        // allFoesInlevel = untrack(() => allFoesInlevel.slice(1))
-        // console.log(allFoesInlevel.length)
-        // if (allFoesInlevel.length > 0) {
-        //     untrack(() => setEncounter(allFoesInlevel[0].entity))
-        // }
-    }
-
-    const onPlayerKill = () => {
-        //TODO: Murder
-    }
-
-    const onPartnerKill = () => {
-        //TODO: Remove all autoattacks
     }
     const damagerPerAttack = $derived(simulateDamage(encounter.player, encounter.foe))
     const travel = (dir: number) => {
@@ -101,18 +89,15 @@
         if (pos == INITIAL_SCAN_POS) {
             StoryUtils.setStoryPosition(INITIAL_SCAN_POS + 1);
         }
-        allFoesInlevel = [];
-        for (let i = 0; i < epz; i++) {
-            generateEncounter(i);
-        }
+        generateEncounter();
     };
 
-    const generateEncounter = (num: number) => {
-        const foe = generateEnemy()
-        if (num == 0) {
-            setEncounter(foe.entity)
+    const generateEncounter = () => {
+        currentFoe = generateEnemy()
+        setEncounter(currentFoe.entity)
+        if (remaining == 0) {
+            remaining = epz
         }
-        allFoesInlevel = [...allFoesInlevel, foe]
     };
 
     const att = (_e: any) => {
@@ -141,7 +126,7 @@
                     <button
                     disabled={save.coordinates.zone == 0}
                     onclick={() => travel(2)}>Previous Zone</button>
-                    <button disabled={allFoesInlevel.length > 0} onclick={() => travel(0)}>Next Zone</button>
+                    <button disabled={remaining > 0} onclick={() => travel(0)}>Next Zone</button>
                     
                 </div>
                 <div>
@@ -160,10 +145,10 @@
         </div>
         {#if pos > 1}
             <div class={`${battleClass} fit-height`}>
-                {#if !currentFoe?.entity || currentFoe.entity.currentHp === 0}
+                {#if remaining <= 0}
                     <div>No entities found in area</div>
                 {/if}
-                {#if currentFoe?.entity}
+                {#if remaining > 0}
                     <div class="ally">
                         <div>
                             {currentPlayer?.name}:
@@ -187,12 +172,14 @@
                     <div class="enemy">
                         {encounter.foe.name}
                         <StatBar currentRes={encounter.foe.currentHp ?? 0}
-                            maxRes={encounter.foe.maxHp ?? 0}/>
-                        <div>
-                            {#each currentFoe.labels as label}
-                                <span>{label}</span>
-                            {/each}
-                        </div>
+                            maxRes={encounter.foe.maxHp ?? 0}/>\
+                        {#if currentFoe}
+                            <div>
+                                {#each currentFoe.labels as label}
+                                    <span>{label}</span>
+                                {/each}
+                            </div>
+                        {/if}
                     </div>
                 {/if}
             </div>
@@ -208,7 +195,6 @@
         display: grid;
         grid-auto-flow: column;
         grid-template-columns: 20% 60% 20%;
-        gap: 1em;
     }
     .progress-button {
         border-color: #6c0e0e;
@@ -226,6 +212,8 @@
     .battle-panel {
         display: grid;
         gap: 5px;
+        padding-left: 1em;
+        padding-right: 1em;
         grid-template-columns: 1fr auto 1fr;
     }
     .nav-button-group {

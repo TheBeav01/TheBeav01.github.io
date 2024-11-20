@@ -18,6 +18,7 @@ export default class LivingEntity implements BaseEntity {
     currentHp: number = 0
     inventory: Resource[] = []
     timeToAttack: number = 0
+    dead = false
     isDead = () => {
         return this.currentHp <= 0 && this.maxHp > 0
     }
@@ -46,6 +47,9 @@ export default class LivingEntity implements BaseEntity {
     }
 
     attackEntity = (other: LivingEntity, manual = false) => {
+        if (other.dead || this.dead) {
+            return other
+        }
         if (!manual && (this.timeToAttack > 0 || !this.canAttack())) {
             return other
         }
@@ -54,6 +58,7 @@ export default class LivingEntity implements BaseEntity {
 
         if (other.currentHp <= rounded) {
             other.currentHp = 0
+            other.dead = true
             other.onKill()
             log(`${this.name} kills ${other.name}`)
             this.resetAttackTime()

@@ -53,7 +53,6 @@ function initGame() {
     const name = "You"
     gameSave.save.playerName = name
   }
-  log(`Welcome ${gameSave.save.playerName} and ${gameSave.save.partnerName}`)
   createPlayersFromSave(gameSave.save)
   createResourcesFromSave(gameSave.save)
   saveGame()
