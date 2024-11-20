@@ -19,9 +19,7 @@ export function saveGame(s: SaveObject = gameSave.save) {
  * @param {*} stringToDecode The save string retrieved from the cookie 
  */
 export function decodeSave(stringToDecode: string) {
-  console.log("Decoding string - ", stringToDecode)
   const newSave = JSON.parse(atob(stringToDecode))
-  console.log(atob(stringToDecode))
   gameSave.save = newSave
 }
 
@@ -29,9 +27,7 @@ export function decodeSave(stringToDecode: string) {
  * Translates a variety of game features into a save string that will likely grow over time.
  */
 export function encodeSave(s: any) {
-  console.log("Encoding save - ", s)
   var encString = JSON.stringify(s);
-  console.log("Encoded: ", encString)
   var ret = btoa(encString);
   return ret;
 }

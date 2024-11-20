@@ -33,7 +33,6 @@ export function onTurnFinish(player: Player, partner: Player, newFoe: LivingEnti
 // }
 
 export function attackManually() {
-    console.log("A")
     const p = encounterState.state.player
     const f = p?.attackEntity(encounterState.state.foe, true)
     setEncounter(f)

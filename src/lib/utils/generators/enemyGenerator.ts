@@ -112,7 +112,6 @@ const applyModifiers = (entity: LivingEntity, zone: number) : EnemyDisplay => {
     entity.attackSpeed = baseAttackSpeed * pickModifier(enemy.name, "speed")
     entity.critRate = pickModifier(enemy.name, "crit")
     entity.resetAttackTime()
-    console.log(entity)
     return {entity, labels: generateLabels(enemy.name)}
 }
 

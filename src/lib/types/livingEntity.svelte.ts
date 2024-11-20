@@ -1,3 +1,4 @@
+import { log } from "../stores/messageList.svelte";
 import { playerStore } from "../stores/playerStore.svelte";
 import type BaseEntity from "./baseEntity";
 import type { Resource } from "./resources/resource.svelte";
@@ -18,7 +19,7 @@ export default class LivingEntity implements BaseEntity {
     inventory: Resource[] = []
     timeToAttack: number = 0
     isDead = () => {
-        return this.currentHp <= 0
+        return this.currentHp <= 0 && this.maxHp > 0
     }
 
     onKill = () => {
@@ -45,18 +46,16 @@ export default class LivingEntity implements BaseEntity {
     }
 
     attackEntity = (other: LivingEntity, manual = false) => {
-        if (this.isDead() || other.isDead()) {
-            return other
-        }
         if (!manual && (this.timeToAttack > 0 || !this.canAttack())) {
             return other
         }
         const rounded = this.getBaseDamage(other)
-        console.log(`${this.name} attacks ${other.name} for ${rounded} damage`)
+        log(`${this.name} attacks ${other.name} for ${rounded} damage`)
 
-        if (other.currentHp < rounded) {
+        if (other.currentHp <= rounded) {
             other.currentHp = 0
             other.onKill()
+            log(`${this.name} kills ${other.name}`)
             this.resetAttackTime()
             return other
         }

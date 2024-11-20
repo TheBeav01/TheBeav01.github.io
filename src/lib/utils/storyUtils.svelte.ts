@@ -1,4 +1,4 @@
-import { STORY_MESSAGE_2, STORY_MESSAGE_3, STORY_MESSAGE_DEFAULT, STORY_MESSAGE_INITIAL } from "../constants/constants"
+import { STORY_MESSAGE_2, STORY_MESSAGE_3, STORY_MESSAGE_4, STORY_MESSAGE_DEFAULT, STORY_MESSAGE_INITIAL } from "../constants/constants"
 import { saveGame } from "../stores/gameSave.svelte"
 import { gameSave } from "../types/gameSave.svelte"
 import type SaveObject from "../types/saveObject.svelte"
@@ -15,7 +15,9 @@ interface StoryText {
 }
 export const INITIAL_STORY = 0
 export const INITIAL_SCAN_POS = 1
-export const DRONE_POS = 4
+export const INITIAL_NAVIGATION_POS = 2
+export const AFTER_INITIAL_COMBAT = 3
+export const DRONE_POS = 7
 export default class StoryUtils {
     private static partnerNames = ["Zephyr", "Aluca", "Ruby", "Zircon", "Topaz", "Orion", "Zatha", "Ba'kan", "Azl'ka", "Xa'ahn"]
     static generatePartnerName() {
@@ -35,19 +37,25 @@ export default class StoryUtils {
     
     public static getStoryState(s: SaveObject) : StoryHandler {
         switch (s.storyPos) {
-            case 0:
+            case INITIAL_STORY:
                 return {
                     text: STORY_MESSAGE_INITIAL,
                     onNext: () => this.saveWrapper(() => this.setStoryPosition(1)),
                     onNextText: "Scan?"
                 }
-            case 1:
+            case INITIAL_SCAN_POS:
                 return {
                     text: STORY_MESSAGE_2
                 }
-            case 2:
+            case INITIAL_NAVIGATION_POS:
                 return {
                     text: STORY_MESSAGE_3
+                }
+            case AFTER_INITIAL_COMBAT:
+                return {
+                    text: STORY_MESSAGE_4,
+                    onNext: () => this.saveWrapper(() => this.setStoryPosition(AFTER_INITIAL_COMBAT + 1)),
+                    onNextText: "-->"
                 }
             default:
                 return {

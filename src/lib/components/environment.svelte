@@ -1,16 +1,16 @@
 <script lang="ts">
-    import { handleFocus } from "@melt-ui/svelte/internal/helpers";
     import { attackManually, encounterState, setEncounter, simulateDamage } from "../stores/encounter.svelte";
     import { playerStore } from "../stores/playerStore.svelte";
     import { gameSave } from "../types/gameSave.svelte";
-    import type LivingEntity from "../types/livingEntity.svelte";
     import Player from "../types/player";
+    import { untrack } from "svelte";
     import {
         generateEnemy,
         type EnemyDisplay,
     } from "../utils/generators/enemyGenerator";
-    import StoryUtils, { INITIAL_SCAN_POS } from "../utils/storyUtils.svelte";
+    import StoryUtils, { AFTER_INITIAL_COMBAT, INITIAL_NAVIGATION_POS, INITIAL_SCAN_POS } from "../utils/storyUtils.svelte";
     import StatBar from "./statBar.svelte";
+    import InfoTabs from "./infoTabs.svelte";
     let message = $derived(StoryUtils.getStoryState(gameSave.save));
     let save = $derived(gameSave.save);
     let pos = $derived(gameSave.save.storyPos);
@@ -31,8 +31,10 @@
     const currentPlayer = $derived(playerStore.get("player") ?? new Player());
     const currentPartner = $derived(playerStore.get("partner") ?? new Player(true));
     const encounter = $derived(encounterState.state)
+    let deathHandled = $state(false)
+    $inspect(allFoesInlevel)
     $effect(() => {
-        if (encounter.foe.currentHp <= 0) {
+        if (encounter.foe.isDead()) {
             onEnemyKill()
         }
         if (encounter.player.currentHp <= 0) {
@@ -44,7 +46,16 @@
     })
 
     const onEnemyKill = () => {
-        allFoesInlevel.shift()
+        console.log("KILL")
+        if (pos === INITIAL_NAVIGATION_POS) {
+            StoryUtils.setStoryPosition(AFTER_INITIAL_COMBAT)
+        }
+        //TODO: Not this
+        // allFoesInlevel = untrack(() => allFoesInlevel.slice(1))
+        // console.log(allFoesInlevel.length)
+        // if (allFoesInlevel.length > 0) {
+        //     untrack(() => setEncounter(allFoesInlevel[0].entity))
+        // }
     }
 
     const onPlayerKill = () => {
@@ -101,11 +112,10 @@
         if (num == 0) {
             setEncounter(foe.entity)
         }
-        allFoesInlevel.push(foe);
+        allFoesInlevel = [...allFoesInlevel, foe]
     };
 
     const att = (_e: any) => {
-        console.log("EEEEEEEEEE")
         attackManually()
     }
 </script>
@@ -188,19 +198,7 @@
             </div>
         {/if}
         <div class={divClass}>
-            {#if message.text.length > 0 && message.text[0].text != ""}
-                {#each message.text as textItem}
-                    {textItem.text}
-                    <br /><br />
-                {/each}
-                {#if message.onNext}
-                    <div>
-                        <button class="progress-button" onclick={message.onNext}
-                            >{message.onNextText ?? "Next"}</button
-                        >
-                    </div>
-                {/if}
-            {/if}
+            <InfoTabs/>
         </div>
     </div>
 {/if}
