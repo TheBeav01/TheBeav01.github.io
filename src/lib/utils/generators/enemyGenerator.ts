@@ -104,11 +104,12 @@ const applyModifiers = (entity: LivingEntity, zone: number) : EnemyDisplay => {
         enemy = pickEnemyFromWeightedList(zones1To6)
     }
     entity.name = enemy.name
+    entity.zone = gameSave.save.coordinates.zone
     entity.attack = Math.round(DEFAULT_VAL + Math.pow(zone, pickModifier(enemy.name, "attack")))
     entity.defense = Math.round(DEFAULT_VAL + Math.pow(zone, pickModifier(enemy.name, "defense")))
     entity.maxHp = Math.round(DEFAULT_VAL + Math.pow(zone, pickModifier(enemy.name, "hp")))
     entity.currentHp = entity.maxHp
-    const baseAttackSpeed = gameSave.save.coordinates.zone <= 5 ? 0.25 : 1
+    const baseAttackSpeed = entity.zone <= 5 ? 0.25 : 1
     entity.attackSpeed = baseAttackSpeed * pickModifier(enemy.name, "speed")
     entity.critRate = pickModifier(enemy.name, "crit")
     entity.resetAttackTime()

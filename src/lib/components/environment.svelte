@@ -31,6 +31,7 @@
     const currentPlayer = $derived(playerStore.get("player") ?? new Player());
     const currentPartner = $derived(playerStore.get("partner") ?? new Player(true));
     const encounter = $derived(encounterState.state)
+    const coords = $derived(gameSave.save.coordinates)
     $effect(() => {
         if (encounter.foe.dead) {
             untrack(() => onEnemyKill())
@@ -65,9 +66,12 @@
             dir = 3;
         }
 
+        let resetCount = false
+
         switch (dir) {
             case 0:
                 coords.zone += 1;
+                resetCount = true
                 break;
             case 1:
                 if (coords.sidePathPosition == -1) {
@@ -85,19 +89,20 @@
                 break;
             case 2:
                 coords.zone -= 1;
+                resetCount = true
                 break;
         }
         gameSave.save = { ...gameSave.save, coordinates: coords };
         if (pos == INITIAL_SCAN_POS) {
             StoryUtils.setStoryPosition(INITIAL_SCAN_POS + 1);
         }
-        generateEncounter();
+        generateEncounter(resetCount);
     };
 
-    const generateEncounter = () => {
+    const generateEncounter = (resetCount = false) => {
         currentFoe = generateEnemy()
         setEncounter(currentFoe.entity)
-        if (remaining == 0) {
+        if (resetCount) {
             remaining = epz
         }
     };
@@ -122,24 +127,24 @@
 {#if pos > 0}
     <div class="environment-container">
         <div>
-            Area {save.coordinates.zone}
+            Area {coords.zone} - {remaining <= 0 ? "No" : remaining} Creatures Remain
             <div class="nav-button-group">
                 <div>
                     <button
-                    disabled={save.coordinates.zone == 0}
+                    disabled={coords.zone == 0}
                     onclick={() => travel(2)}>Previous Zone</button>
                     <button disabled={remaining > 0} onclick={() => travel(0)}>Next Zone</button>
                     
                 </div>
                 <div>
                     <button
-                        disabled={save.coordinates.zone == 0 ||
-                            save.coordinates.sidePathPosition === -1}
+                        disabled={coords.zone == 0 ||
+                            coords.sidePathPosition === -1}
                         onclick={() => travel(3)}>Left Path</button
                     >
                     <button
-                        disabled={save.coordinates.zone == 0 ||
-                            save.coordinates.sidePathPosition === 1}
+                        disabled={coords.zone == 0 ||
+                            coords.sidePathPosition === 1}
                         onclick={() => travel(1)}>Right Path</button
                     >
                 </div>
@@ -147,10 +152,10 @@
         </div>
         {#if pos > 1}
             <div class={`${battleClass} fit-height`}>
-                {#if remaining <= 0}
+                {#if remaining <= 0 && coords.sidePathPosition === 0}
                     <div>No entities found in area</div>
                 {/if}
-                {#if remaining > 0}
+                {#if remaining > 0 || coords.sidePathPosition !== 0}
                     <div class="ally">
                         <div>
                             {currentPlayer?.name}:
