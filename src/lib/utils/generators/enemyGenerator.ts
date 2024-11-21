@@ -1,6 +1,8 @@
 import * as Enemy from "../../constants/enemyConstants"
 import { gameSave } from "../../types/gameSave.svelte"
 import LivingEntity from "../../types/livingEntity.svelte"
+import { generateItems } from "./itemGenerator"
+import { pickItemFromWeightedList, type Spawnable } from "./sharedGenerator"
 const HIGH_AFFINITY_SCALE_FACTOR = 1.33
 const HIGH_SPECIAL_SCALE_FACTOR = 1.25
 const LOW_SPECIAL_SCALE_FACTOR = 0.80
@@ -23,10 +25,8 @@ interface EnemyListItem {
     //Default: null
     drawback?: Affinity[]
 }
-interface EnemyTemplate {
-    name: string,
-    // Default: 100
-    spawnWeight?: number
+interface EnemyTemplate extends Spawnable {
+    name: string
 }
 
 const rawEnemyList : EnemyListItem[] = [{
@@ -96,12 +96,12 @@ export const generateEnemy = () : EnemyDisplay => {
 const applyModifiers = (entity: LivingEntity, zone: number) : EnemyDisplay => {
     let enemy: EnemyTemplate
     if (zone <= 6) {
-        enemy = pickEnemyFromWeightedList(zones1To6)
+        enemy = pickItemFromWeightedList(zones1To6)
     }
     else if (zone <= 10) {
-        enemy = pickEnemyFromWeightedList(zones7To10)
+        enemy = pickItemFromWeightedList(zones7To10)
     } else {
-        enemy = pickEnemyFromWeightedList(zones1To6)
+        enemy = pickItemFromWeightedList(zones1To6)
     }
     entity.name = enemy.name
     entity.zone = gameSave.save.coordinates.zone
@@ -113,6 +113,7 @@ const applyModifiers = (entity: LivingEntity, zone: number) : EnemyDisplay => {
     entity.attackSpeed = baseAttackSpeed * pickModifier(enemy.name, "speed")
     entity.critRate = pickModifier(enemy.name, "crit")
     entity.resetAttackTime()
+    entity.inventory = generateItems(entity.zone)
     return {entity, labels: generateLabels(enemy.name)}
 }
 
@@ -184,26 +185,4 @@ const pickDefaultModifier = (modifier: Affinity) => {
         case "crit":
             return 1
     }
-}
-
-const pickEnemyFromWeightedList = (list: EnemyTemplate[]) => {
-    const fixedWeights = list.map(i => {
-        if (i.spawnWeight === undefined) {
-            i.spawnWeight = 100
-        }
-        return i
-    })
-    const weight = fixedWeights.reduce((l, c, _i, _list) => l + c.spawnWeight!, 0)
-    const rand = Math.random()
-    const final = rand * weight
-    let total = 0
-    for(const item of fixedWeights) {
-        total += item.spawnWeight!
-        if (total >= final) {
-            return item
-        }
-    }
-    //Else: Randomly pick. If we still overflow, pick last.
-    const scaled = Math.floor(rand * list.length)
-    return list[scaled] ?? list[list.length - 1]
 }
