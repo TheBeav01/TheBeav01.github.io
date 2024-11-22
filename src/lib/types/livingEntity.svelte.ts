@@ -24,8 +24,10 @@ export default class LivingEntity implements BaseEntity {
     isDead = () => {
         return this.currentHp <= 0 && this.maxHp > 0
     }
-
     onKill = () => {
+        this.onDefaultKill()
+    }
+    readonly onDefaultKill = () => {
         const player = playerStore.get("player")
         this.inventory.forEach(i => player?.awardItem(i))
     }

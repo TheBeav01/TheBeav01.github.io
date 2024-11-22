@@ -110,11 +110,11 @@
             setEncounter(currentFoe.entity)
             return
         }
-        generateEncounter(resetCount);
+        generateEncounter();
     };
 
-    const generateEncounter = (resetCount = false) => {
-        currentFoe = generateEnemy()
+    const generateEncounter = () => {
+        currentFoe = generateEnemy(remaining)
         setEncounter(currentFoe.entity)
 
     };

@@ -1,6 +1,9 @@
 import * as Enemy from "../../constants/enemyConstants"
 import { gameSave } from "../../types/gameSave.svelte"
 import LivingEntity from "../../types/livingEntity.svelte"
+import { Item } from "../../types/resources/item.svelte"
+import type { Coordinates } from "../../types/saveObject.svelte"
+import StoryUtils, { POST_EQUIPMENT_ERA } from "../storyUtils.svelte"
 import { generateItems } from "./itemGenerator"
 import { pickItemFromWeightedList, type Spawnable } from "./sharedGenerator"
 const HIGH_AFFINITY_SCALE_FACTOR = 1.20
@@ -84,18 +87,22 @@ const zones7To10 : EnemyTemplate[] = [ {
 }]
 
 
-export const generateEnemy = () : EnemyDisplay => {
+export const generateEnemy = (left: number) : EnemyDisplay => {
     const le = new LivingEntity()
     le.attackSpeed = 0.25
     le.critRate = 0.05
     le.inventory = []
-    return applyModifiers(le)
+    return applyModifiers(le, left)
 }
 
-const applyModifiers = (entity: LivingEntity) : EnemyDisplay => {
+const applyModifiers = (entity: LivingEntity, left: number) : EnemyDisplay => {
     let enemy: EnemyTemplate
     const coords = gameSave.save.coordinates
     const zone = coords.zone
+    entity.coordinates = coords
+    if (canGenerateSpecialEnemy(coords, left)) {
+        return generateSpecialEnemy(coords, entity)
+    }
     if (zone <= 6) {
         enemy = pickItemFromWeightedList(zones1To6)
     }
@@ -105,7 +112,6 @@ const applyModifiers = (entity: LivingEntity) : EnemyDisplay => {
         enemy = pickItemFromWeightedList(zones1To6)
     }
     entity.name = enemy.name
-    entity.coordinates = coords
     entity.attack = Math.round(DEFAULT_VAL + Math.pow(zone, pickModifier(enemy.name, "attack")))
     entity.defense = Math.round(DEFAULT_VAL + Math.pow(zone, pickModifier(enemy.name, "defense")))
     entity.maxHp = Math.round(DEFAULT_VAL + Math.pow(zone, pickModifier(enemy.name, "hp")))
@@ -116,6 +122,30 @@ const applyModifiers = (entity: LivingEntity) : EnemyDisplay => {
     entity.resetAttackTime()
     entity.inventory = generateItems(entity.coordinates.zone)
     return {entity, labels: generateLabels(enemy.name)}
+}
+
+const canGenerateSpecialEnemy = (coords: Coordinates, left: number) => {
+    if (coords.zone === 3 && left === 1) {
+        return true
+    }
+    return false
+}
+
+const generateSpecialEnemy = (coords: Coordinates, entity: LivingEntity) : EnemyDisplay => {
+    entity.name = "Homing Pidgeon"
+    entity.attack = 1
+    entity.defense = 1
+    entity.attackSpeed = 0.5
+    entity.critRate = 0
+    entity.maxHp = Math.round(DEFAULT_VAL + Math.pow(coords.zone, HP_SCALE_FACTOR))
+    entity.currentHp = entity.maxHp
+    if (coords.zone === 3) {
+        entity.onKill = () => {
+            entity.onDefaultKill()
+            StoryUtils.setStoryPosition(POST_EQUIPMENT_ERA)
+        }
+    }
+    return {entity, labels: []}
 }
 
 const generateLabels = (name: string) => {

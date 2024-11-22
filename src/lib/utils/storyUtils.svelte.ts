@@ -17,6 +17,8 @@ export const INITIAL_STORY = 0
 export const INITIAL_SCAN_POS = 1
 export const INITIAL_NAVIGATION_POS = 2
 export const AFTER_INITIAL_COMBAT = 3
+export const PRE_EQUIPMENT_ERA = 4
+export const POST_EQUIPMENT_ERA = 5
 export const DRONE_POS = 7
 export default class StoryUtils {
     private static partnerNames = ["Zephyr", "Aluca", "Ruby", "Zircon", "Topaz", "Orion", "Zatha", "Ba'kan", "Azl'ka", "Xa'ahn"]
