@@ -2,6 +2,7 @@ import { log } from "../stores/messageList.svelte";
 import { playerStore } from "../stores/playerStore.svelte";
 import type BaseEntity from "./baseEntity";
 import type { Resource } from "./resources/resource.svelte";
+import { Coordinates } from "./saveObject.svelte";
 
 export default class LivingEntity implements BaseEntity {
     constructor(maxHp = 0) {
@@ -17,9 +18,9 @@ export default class LivingEntity implements BaseEntity {
     maxHp: number = 0;
     currentHp: number = 0
     inventory: Resource[] = []
-    timeToAttack: number = 0
+    timeToAttack: number = $state(0)
     dead = false
-    zone = 0
+    coordinates: Coordinates = new Coordinates(0, 0, 0)
     isDead = () => {
         return this.currentHp <= 0 && this.maxHp > 0
     }

@@ -9,8 +9,10 @@
         type EnemyDisplay,
     } from "../utils/generators/enemyGenerator";
     import StoryUtils, { AFTER_INITIAL_COMBAT, INITIAL_NAVIGATION_POS, INITIAL_SCAN_POS } from "../utils/storyUtils.svelte";
-    import StatBar from "./statBar.svelte";
+    import StatBar from "./bars/statBar.svelte";
     import InfoTabs from "./infoTabs.svelte";
+    import LivingEntity from "../types/livingEntity.svelte";
+    import { Coordinates } from "../types/saveObject.svelte";
     let message = $derived(StoryUtils.getStoryState(gameSave.save));
     let save = $derived(gameSave.save);
     let pos = $derived(gameSave.save.storyPos);
@@ -27,7 +29,10 @@
         ),
     );
     let remaining = $state(0)
-    let currentFoe: EnemyDisplay | null = $state(null);
+    let currentFoe: EnemyDisplay = $state({
+        entity: new LivingEntity(0),
+        labels: []
+    });
     const currentPlayer = $derived(playerStore.get("player") ?? new Player());
     const currentPartner = $derived(playerStore.get("partner") ?? new Player(true));
     const encounter = $derived(encounterState.state)
@@ -58,7 +63,8 @@
     }
     const damagerPerAttack = $derived(simulateDamage(encounter.player, encounter.foe))
     const travel = (dir: number) => {
-        const coords = { ...gameSave.save.coordinates };
+        const gsc = gameSave.save.coordinates
+        const coords = new Coordinates(gsc.zone, gsc.sidePathPosition, gsc.world);
         if (dir < 0) {
             dir = 0;
         }
@@ -96,15 +102,21 @@
         if (pos == INITIAL_SCAN_POS) {
             StoryUtils.setStoryPosition(INITIAL_SCAN_POS + 1);
         }
+        if (resetCount) {
+            remaining = epz
+        }
+        if (coords.sidePathPosition == 0 && remaining == 0) {
+            currentFoe.entity.dead = true
+            setEncounter(currentFoe.entity)
+            return
+        }
         generateEncounter(resetCount);
     };
 
     const generateEncounter = (resetCount = false) => {
         currentFoe = generateEnemy()
         setEncounter(currentFoe.entity)
-        if (resetCount) {
-            remaining = epz
-        }
+
     };
 
     const att = (_e: any) => {
@@ -179,7 +191,7 @@
                     <div class="enemy">
                         {encounter.foe.name}
                         <StatBar currentRes={encounter.foe.currentHp ?? 0}
-                            maxRes={encounter.foe.maxHp ?? 0}/>\
+                            maxRes={encounter.foe.maxHp ?? 0} additionalText={`${(encounter.foe.timeToAttack / 1000).toFixed(1)}s until next attack`}/>
                         {#if currentFoe}
                             <div>
                                 {#each currentFoe.labels as label}

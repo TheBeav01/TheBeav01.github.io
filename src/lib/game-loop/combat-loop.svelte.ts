@@ -1,4 +1,5 @@
 import { encounterState, onTurnFinish } from "../stores/encounter.svelte";
+import { gameSave } from "../types/gameSave.svelte";
 import type LivingEntity from "../types/livingEntity.svelte";
 import type Player from "../types/player";
 import { generateRandomNumber } from "../utils/gameUtils.svelte";

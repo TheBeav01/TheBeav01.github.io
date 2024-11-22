@@ -3,13 +3,13 @@ import { gameSave } from "../../types/gameSave.svelte"
 import LivingEntity from "../../types/livingEntity.svelte"
 import { generateItems } from "./itemGenerator"
 import { pickItemFromWeightedList, type Spawnable } from "./sharedGenerator"
-const HIGH_AFFINITY_SCALE_FACTOR = 1.33
+const HIGH_AFFINITY_SCALE_FACTOR = 1.20
+const LOW_AFFINITY_SCALE_FACTOR = 1.08
+const DEFAULT_ATTACK_SCALE_FACTOR = 1.15
+const DEFENSE_SCALE_FACTOR = 1.10
+const HP_SCALE_FACTOR = DEFENSE_SCALE_FACTOR
 const HIGH_SPECIAL_SCALE_FACTOR = 1.25
 const LOW_SPECIAL_SCALE_FACTOR = 0.80
-const LOW_AFFINITY_SCALE_FACTOR = 1.15
-const DEFAULT_ATTACK_SCALE_FACTOR = 1.20
-const DEFENSE_SCALE_FACTOR = 1.15
-const HP_SCALE_FACTOR = DEFENSE_SCALE_FACTOR
 const DEFAULT_VAL = 1
 const BASE_HP = 1
 type Affinity = "attack" | "defense" | "hp" | "speed" | "crit" | "accuracy"
@@ -86,15 +86,16 @@ const zones7To10 : EnemyTemplate[] = [ {
 
 export const generateEnemy = () : EnemyDisplay => {
     const le = new LivingEntity()
-    const zone = gameSave.save.coordinates.zone
     le.attackSpeed = 0.25
     le.critRate = 0.05
     le.inventory = []
-    return applyModifiers(le, zone)
+    return applyModifiers(le)
 }
 
-const applyModifiers = (entity: LivingEntity, zone: number) : EnemyDisplay => {
+const applyModifiers = (entity: LivingEntity) : EnemyDisplay => {
     let enemy: EnemyTemplate
+    const coords = gameSave.save.coordinates
+    const zone = coords.zone
     if (zone <= 6) {
         enemy = pickItemFromWeightedList(zones1To6)
     }
@@ -104,16 +105,16 @@ const applyModifiers = (entity: LivingEntity, zone: number) : EnemyDisplay => {
         enemy = pickItemFromWeightedList(zones1To6)
     }
     entity.name = enemy.name
-    entity.zone = gameSave.save.coordinates.zone
+    entity.coordinates = coords
     entity.attack = Math.round(DEFAULT_VAL + Math.pow(zone, pickModifier(enemy.name, "attack")))
     entity.defense = Math.round(DEFAULT_VAL + Math.pow(zone, pickModifier(enemy.name, "defense")))
     entity.maxHp = Math.round(DEFAULT_VAL + Math.pow(zone, pickModifier(enemy.name, "hp")))
     entity.currentHp = entity.maxHp
-    const baseAttackSpeed = entity.zone <= 5 ? 0.25 : 1
+    const baseAttackSpeed = entity.coordinates.zone <= 5 ? 0.25 : 1
     entity.attackSpeed = baseAttackSpeed * pickModifier(enemy.name, "speed")
     entity.critRate = pickModifier(enemy.name, "crit")
     entity.resetAttackTime()
-    entity.inventory = generateItems(entity.zone)
+    entity.inventory = generateItems(entity.coordinates.zone)
     return {entity, labels: generateLabels(enemy.name)}
 }
 

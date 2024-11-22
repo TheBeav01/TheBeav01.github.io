@@ -45,7 +45,7 @@ export default class SaveObject {
     /**
      * The location of the player
      */
-    coordinates = new Coordinates()
+    coordinates = new Coordinates(0, 0, 0)
 
     /**
      * Owned global resources
@@ -56,7 +56,13 @@ export default class SaveObject {
 /**
  * Coordinates represent the location of the player in a given world
  */
-class Coordinates {
+export class Coordinates {
+    constructor(zone: number, sidepath: -1 | 0 | 1, world: number) {
+        this.zone = zone
+        this.sidePathPosition = sidepath
+        this.world = zone
+    }
+    
     /**
      * The zone. The higher the zone, the stronger the enemy and the higher amount of rewards
      */
@@ -70,4 +76,22 @@ class Coordinates {
      * The world ID
      */
     world = 0
+
+
+
+    coordsMatch(other: Coordinates) {
+        if (other == null && this == null) {
+            return true
+        }
+        if (other.world != this.world) {
+            return false;
+        }
+        if (other.sidePathPosition != this.sidePathPosition) {
+            return false
+        }
+        if (other.zone != this.zone) {
+            return false
+        }
+        return true
+    }
 }

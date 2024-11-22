@@ -20,7 +20,6 @@ export class Item extends Resource implements BaseEntity {
         entity.attackSpeed += this.attackSpeed
         entity.critRate += this.critRate
         entity.maxHp += this.maxHp
-        entity.inventory = [...entity.inventory, this]
         return entity
     }
 }

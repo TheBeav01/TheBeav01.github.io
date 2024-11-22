@@ -26,7 +26,7 @@ export const createPlayersFromSave = (save: SaveObject) => {
 
 const applyPlayerUpgrades = (save: SaveObject, player: Player) => {
     player.attack = 1
-    player.defense = 3
+    player.defense = 5
     player.maxHp = 5
     player.attackSpeed = 0
     player.critRate = 0
@@ -37,7 +37,7 @@ const applyPlayerUpgrades = (save: SaveObject, player: Player) => {
 }
 const applyPartnerUpgrades = (save: SaveObject, partner: Player) => {
     partner.attack = 0
-    partner.defense = 3
+    partner.defense = 5
     partner.maxHp = 5
     partner.attackSpeed = 0
     partner.critRate = 0

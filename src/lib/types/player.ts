@@ -19,7 +19,12 @@ export default class Player extends LivingEntity {
     };
 
     awardItem = (item: Resource) => {
-        this.inventory.push(item)
+        const found = this.inventory.findIndex(x => x.name === item.name)
+        if (found < 0) {
+            this.inventory.push(item)
+        } else {
+            this.inventory[found].add(item.amt)
+        }
         if (item.isItem) {
             (item as Item).equip(this)
             return
