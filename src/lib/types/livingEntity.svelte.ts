@@ -93,11 +93,13 @@ export default class LivingEntity implements BaseEntity {
 
     fromBase(being: LivingEntity) {
         this.attack = being.attack
+        this.name = being.name
         this.attackSpeed = being.attackSpeed
         const c = being.coordinates
         this.coordinates = new Coordinates(c.zone, c.sidePathPosition, c.world)
         this.critRate = being.critRate
         this.currentHp = being.currentHp
+        this.maxHp = being.maxHp
         this.dead = being.dead
         this.defense = being.defense
         this.inventory = being.inventory.map(i => {

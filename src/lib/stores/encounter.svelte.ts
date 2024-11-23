@@ -31,7 +31,7 @@ export function onTurnFinish(player: Player, partner: Player, newFoe: LivingEnti
     setEncounter(newFoe, player, partner)
     playerStore.set("partner", partner)
     playerStore.set("player", player)
-    gameSave.save.encounter = {...encounterState.state}
+    gameSave.save.encounter = cloneEncounter(encounterState.state)
     saveGame()
 }
 
@@ -51,7 +51,7 @@ export function simulateDamage(p: Player, onFoe: LivingEntity) {
 export function tick(num?: number) {
     const remaining = num === undefined ? encounterState.state.remaining - 1 : num
     encounterState.state = {
-        ...encounterState.state, remaining: remaining
+        foe: encounterState.state.foe, player: encounterState.state.player, partner: encounterState.state.partner, remaining: remaining
     }
 }
 
@@ -59,9 +59,14 @@ export function setupEncounter(save: SaveObject) {
     if (!save.encounter) {
         return
     }
-    const enc = $state.snapshot(save.encounter)
+    const enc = cloneEncounter(save.encounter)
     const p = Player.from(enc.player)
     const part = Player.fromPartner(enc.partner)
     const foe = LivingEntity.from(enc.foe)
+    foe.resetAttackTime()
     onTurnFinish(p, part, foe)
+}
+
+export function cloneEncounter(encounter: Encounter) : Encounter {
+    return {foe: encounter.foe, player: encounter.player, partner: encounter.partner, remaining: encounter.remaining}
 }

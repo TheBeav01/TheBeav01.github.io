@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { saveGame } from "../stores/gameSave.svelte";
     import { log } from "../stores/messageList.svelte";
     import { getDate } from "../utils/dateUtils";
     import {onFrameCooldown} from "../utils/gameUtils.svelte";
@@ -16,7 +17,7 @@
         </div>
     </div>
     <div class="button-container center-item">
-        <button onclick={(_e) => log("AAAAA")} id="save-button">Save</button>
+        <button onclick={(_e) => saveGame()} id="save-button">Save</button>
         <button id="settings-button">Settings</button>
     </div>
 </div>

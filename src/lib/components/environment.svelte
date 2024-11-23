@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { attackManually, encounterState, setEncounter, simulateDamage, tick } from "../stores/encounter.svelte";
+    import { attackManually, cloneEncounter, encounterState, setEncounter, simulateDamage, tick } from "../stores/encounter.svelte";
     import { playerStore } from "../stores/playerStore.svelte";
     import { gameSave } from "../types/gameSave.svelte";
     import Player from "../types/player";
@@ -14,6 +14,7 @@
     import LivingEntity from "../types/livingEntity.svelte";
     import { Coordinates } from "../types/saveObject.svelte";
     import { getEnemiesPerZone } from "../utils/gameUtils.svelte";
+    import { saveGame } from "../stores/gameSave.svelte";
     let message = $derived(StoryUtils.getStoryState(gameSave.save));
     let save = $derived(gameSave.save);
     let pos = $derived(gameSave.save.storyPos);
@@ -103,9 +104,11 @@
             remaining = epz
             tick(epz)
         }
-        if (coords.sidePathPosition == 0 && remaining == 0) {
+        if (coords.sidePathPosition == 0 && remaining <= 0) {
             currentFoe.entity.dead = true
             setEncounter(currentFoe.entity)
+            gameSave.save.encounter = cloneEncounter(encounterState.state)
+            saveGame()
             return
         }
         generateEncounter();

@@ -44,6 +44,7 @@ export const generateItems = (zone: number) => {
     const base = gennedItem.baseAmount ?? 1
     const mult = gennedItem.multiplier ?? 1
     item.amt = base
+    item._amt = base
     item.genRatePerSecond = 0.5 * mult
     return [item]
 }

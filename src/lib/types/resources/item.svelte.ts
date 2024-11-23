@@ -23,23 +23,25 @@ export class Item extends Resource implements BaseEntity {
         return entity
     }
     public from(res: Resource): Resource {
-        if (!(res instanceof Item)) {
+        if (!res.isItem) {
             return res
         }
+        const cloneFrom = res as Item
         const thisItem = new Item()
-        thisItem.fromBase(res)
-        thisItem.attack = res.attack
-        thisItem.attackSpeed = res.attackSpeed
-        thisItem.consumable = res.consumable
-        thisItem.critRate = res.critRate
-        thisItem.defense = res.defense
-        thisItem.description = res.description
-        thisItem.genRatePerSecond = res.genRatePerSecond
+        thisItem.fromBase(cloneFrom)
+        thisItem.add(cloneFrom._amt)
+        thisItem.attack = cloneFrom.attack
+        thisItem.attackSpeed = cloneFrom.attackSpeed
+        thisItem.consumable = cloneFrom.consumable
+        thisItem.critRate = cloneFrom.critRate
+        thisItem.defense = cloneFrom.defense
+        thisItem.description = cloneFrom.description
+        thisItem.genRatePerSecond = cloneFrom.genRatePerSecond
         thisItem.isItem = true
-        thisItem.isKey = res.isKey
-        thisItem.maxHp = res.maxHp
-        thisItem.name = res.name
-        thisItem.removeOnAscent = res.removeOnAscent
+        thisItem.isKey = cloneFrom.isKey
+        thisItem.maxHp = cloneFrom.maxHp
+        thisItem.name = cloneFrom.name
+        thisItem.removeOnAscent = cloneFrom.removeOnAscent
         return thisItem
     }
 }

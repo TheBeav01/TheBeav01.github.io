@@ -23,7 +23,7 @@ export default class Player extends LivingEntity {
         if (found < 0) {
             this.inventory.push(item)
         } else {
-            this.inventory[found].add(item.amt)
+            this.inventory[found].add(item._amt)
         }
         if (item.isItem) {
             (item as Item).equip(this)
@@ -33,6 +33,7 @@ export default class Player extends LivingEntity {
     static fromPartner(partner: Player) {
         const p = new Player(true)
         p.fromBase(partner)
+        p.resetAttackTime()
         return p
     }
     static from(player: Player) {

@@ -16,6 +16,8 @@ export abstract class Resource {
      */
     public amt = $state(0)
 
+    public _amt = 0
+
     /**
      * How many we get per second
      */
@@ -45,12 +47,15 @@ export abstract class Resource {
         let amtToAdd = amt ?? 0
         amtToAdd = amtToAdd < 0 ? 0 : amtToAdd
         this.amt += amtToAdd
+        this._amt += amtToAdd
     }
 
     public remove(amt: number) {
         let amtToRemove = amt ?? 0
         amtToRemove = amtToRemove > 0 ? 0 : amtToRemove
-        this.amt -= Math.max(this.amt - amtToRemove, 0)
+        amtToRemove = Math.max(this.amt - amtToRemove, 0)
+        this.amt -= amtToRemove
+        this._amt -= amtToRemove
     }
 
     public fromBase(baseRes: Resource) {
