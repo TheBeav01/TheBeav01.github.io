@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { attackManually, encounterState, setEncounter, simulateDamage } from "../stores/encounter.svelte";
+    import { attackManually, encounterState, setEncounter, simulateDamage, tick } from "../stores/encounter.svelte";
     import { playerStore } from "../stores/playerStore.svelte";
     import { gameSave } from "../types/gameSave.svelte";
     import Player from "../types/player";
@@ -13,6 +13,7 @@
     import InfoTabs from "./infoTabs.svelte";
     import LivingEntity from "../types/livingEntity.svelte";
     import { Coordinates } from "../types/saveObject.svelte";
+    import { getEnemiesPerZone } from "../utils/gameUtils.svelte";
     let message = $derived(StoryUtils.getStoryState(gameSave.save));
     let save = $derived(gameSave.save);
     let pos = $derived(gameSave.save.storyPos);
@@ -21,12 +22,7 @@
         pos == 1 ? "intermediate-panel" : "battle-panel",
     );
     const epz = $derived(
-        Math.min(
-            gameSave.save.coordinates.zone == 0
-                ? 1
-                : gameSave.save.coordinates.zone,
-            5,
-        ),
+        getEnemiesPerZone(gameSave.save.coordinates.zone),
     );
     let remaining = $state(0)
     let currentFoe: EnemyDisplay = $state({
@@ -60,6 +56,7 @@
         if (remaining > 0) {
             generateEncounter()
         }
+        tick()
     }
     const damagerPerAttack = $derived(simulateDamage(encounter.player, encounter.foe))
     const travel = (dir: number) => {
@@ -104,6 +101,7 @@
         }
         if (resetCount) {
             remaining = epz
+            tick(epz)
         }
         if (coords.sidePathPosition == 0 && remaining == 0) {
             currentFoe.entity.dead = true

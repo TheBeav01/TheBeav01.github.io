@@ -22,4 +22,24 @@ export class Item extends Resource implements BaseEntity {
         entity.maxHp += this.maxHp
         return entity
     }
+    public from(res: Resource): Resource {
+        if (!(res instanceof Item)) {
+            return res
+        }
+        const thisItem = new Item()
+        thisItem.fromBase(res)
+        thisItem.attack = res.attack
+        thisItem.attackSpeed = res.attackSpeed
+        thisItem.consumable = res.consumable
+        thisItem.critRate = res.critRate
+        thisItem.defense = res.defense
+        thisItem.description = res.description
+        thisItem.genRatePerSecond = res.genRatePerSecond
+        thisItem.isItem = true
+        thisItem.isKey = res.isKey
+        thisItem.maxHp = res.maxHp
+        thisItem.name = res.name
+        thisItem.removeOnAscent = res.removeOnAscent
+        return thisItem
+    }
 }

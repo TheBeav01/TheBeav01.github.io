@@ -35,6 +35,8 @@ export abstract class Resource {
 
     public abstract isItem : boolean
 
+    public abstract from(res: Resource) : Resource
+
     public removeFromStore = () => {
         removeResource(this.name)
     }
@@ -49,5 +51,16 @@ export abstract class Resource {
         let amtToRemove = amt ?? 0
         amtToRemove = amtToRemove > 0 ? 0 : amtToRemove
         this.amt -= Math.max(this.amt - amtToRemove, 0)
+    }
+
+    public fromBase(baseRes: Resource) {
+        this.add(baseRes.amt)
+        this.consumable = baseRes.consumable
+        this.description = baseRes.description
+        this.genRatePerSecond = baseRes.genRatePerSecond
+        this.isItem = baseRes.isItem
+        this.isKey = baseRes.isKey
+        this.name = baseRes.name
+        this.removeOnAscent = baseRes.removeOnAscent
     }
 }

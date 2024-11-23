@@ -1,14 +1,10 @@
 import SaveObject from "../types/saveObject.svelte";
 import { setCookie } from "../utils/cookieUtils";
-import { writable } from "svelte/store";
-import Box from "../utils/stateBox.svelte";
-import { log } from "./messageList.svelte";
 import { gameSave } from "../types/gameSave.svelte";
 
 export function saveGame(s: SaveObject = gameSave.save) {
   const saveString = encodeSave(s)
   setCookie("save", saveString, 365)
-  log("Saved!")
 }
 
 

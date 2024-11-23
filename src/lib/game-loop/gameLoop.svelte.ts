@@ -8,6 +8,7 @@ import { log } from "../stores/messageList.svelte";
 import { gameSave } from "../types/gameSave.svelte";
 import { ResourceLoop } from "./resource-loop.svelte";
 import { CombatLoop } from "./combat-loop.svelte";
+import { setupEncounter } from "../stores/encounter.svelte";
 let canAscend = false
 export function load() {
   const saveString = getCookieByKey("save")
@@ -55,6 +56,7 @@ function initGame() {
   }
   createPlayersFromSave(gameSave.save)
   createResourcesFromSave(gameSave.save)
+  setupEncounter(gameSave.save)
   saveGame()
 }
 

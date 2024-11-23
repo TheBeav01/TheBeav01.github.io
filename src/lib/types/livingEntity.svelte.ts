@@ -1,7 +1,10 @@
 import { log } from "../stores/messageList.svelte";
 import { playerStore } from "../stores/playerStore.svelte";
 import type BaseEntity from "./baseEntity";
-import type { Resource } from "./resources/resource.svelte";
+import { Item } from "./resources/item.svelte";
+import Mana from "./resources/mana.svelte";
+import { Resource } from "./resources/resource.svelte";
+import Soul from "./resources/souls.svelte";
 import { Coordinates } from "./saveObject.svelte";
 
 export default class LivingEntity implements BaseEntity {
@@ -21,36 +24,36 @@ export default class LivingEntity implements BaseEntity {
     timeToAttack: number = $state(0)
     dead = false
     coordinates: Coordinates = new Coordinates(0, 0, 0)
-    isDead = () => {
+    isDead() {
         return this.currentHp <= 0 && this.maxHp > 0
     }
-    onKill = () => {
+    onKill() {
         this.onDefaultKill()
     }
-    readonly onDefaultKill = () => {
+    onDefaultKill() {
         const player = playerStore.get("player")
         this.inventory.forEach(i => player?.awardItem(i))
     }
-
-    getBaseDamage = (other: LivingEntity) => {
+    
+    getBaseDamage (other: LivingEntity) {
         const defense = other.defense ?? 1
         // Big pos diff = small attack. Small diff = attack does ~ x hp. Big neg diff = more damage
         const attackDefenseDifferential = (this.attack / defense).toFixed(2)
-
+        
         let finalAttack = this.attack * Number.parseFloat(attackDefenseDifferential)
-
+        
         if (finalAttack < 1) {
             finalAttack = 1
         }
-
+        
         return Math.round(finalAttack)
     }
-
-    canAttack = () => {
+    
+    canAttack() {
         return this.attackSpeed !== 0 && this.attack !== 0
     }
-
-    attackEntity = (other: LivingEntity, manual = false) => {
+    
+    attackEntity(other: LivingEntity, manual = false) {
         if (other.dead || this.dead) {
             return other
         }
@@ -59,7 +62,7 @@ export default class LivingEntity implements BaseEntity {
         }
         const rounded = this.getBaseDamage(other)
         log(`${this.name} attacks ${other.name} for ${rounded} damage`)
-
+        
         if (other.currentHp <= rounded) {
             other.currentHp = 0
             other.dead = true
@@ -75,16 +78,43 @@ export default class LivingEntity implements BaseEntity {
         this.resetAttackTime()
         return other
     }
-
-    resetAttackTime = () => {
+    
+    resetAttackTime(){
         this.timeToAttack = 1000 / (this.attackSpeed ?? 1)
     }
-
-    tick = (diff: number) => {
+    
+    tick(diff: number){
         if (!this.canAttack()) {
             return false
         }
         this.timeToAttack -= diff
         return this.timeToAttack <= 0
+    }
+
+    fromBase(being: LivingEntity) {
+        this.attack = being.attack
+        this.attackSpeed = being.attackSpeed
+        const c = being.coordinates
+        this.coordinates = new Coordinates(c.zone, c.sidePathPosition, c.world)
+        this.critRate = being.critRate
+        this.currentHp = being.currentHp
+        this.dead = being.dead
+        this.defense = being.defense
+        this.inventory = being.inventory.map(i => {
+            if (i instanceof Soul) {
+                return new Soul().from(i)
+            }
+            else if (i instanceof Mana) {
+                return new Mana().from(i)
+            }
+            else {
+                return new Item().from(i)
+            }
+        })
+    }
+    static from(foe: LivingEntity) {
+        const f = new LivingEntity()
+        f.fromBase(foe)
+        return f
     }
 }

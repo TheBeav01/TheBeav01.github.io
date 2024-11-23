@@ -3,7 +3,7 @@ import { gameSave } from "../../types/gameSave.svelte"
 import LivingEntity from "../../types/livingEntity.svelte"
 import { Item } from "../../types/resources/item.svelte"
 import type { Coordinates } from "../../types/saveObject.svelte"
-import StoryUtils, { POST_EQUIPMENT_ERA } from "../storyUtils.svelte"
+import StoryUtils, { EQUIPMENT_ERA } from "../storyUtils.svelte"
 import { generateItems } from "./itemGenerator"
 import { pickItemFromWeightedList, type Spawnable } from "./sharedGenerator"
 const HIGH_AFFINITY_SCALE_FACTOR = 1.20
@@ -142,7 +142,7 @@ const generateSpecialEnemy = (coords: Coordinates, entity: LivingEntity) : Enemy
     if (coords.zone === 3) {
         entity.onKill = () => {
             entity.onDefaultKill()
-            StoryUtils.setStoryPosition(POST_EQUIPMENT_ERA)
+            StoryUtils.setStoryPosition(EQUIPMENT_ERA)
         }
     }
     return {entity, labels: []}

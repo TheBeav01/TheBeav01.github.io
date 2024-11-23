@@ -9,7 +9,7 @@ export default class Player extends LivingEntity {
         this.isPartner = isPartner
     }
     isPartner: boolean
-    onKill = () => {
+    onKill() {
         if (this.isPartner) {
             onDeath.value = {...onDeath.value, partnerDead: true}
             return
@@ -17,8 +17,8 @@ export default class Player extends LivingEntity {
         onDeath.value = {...onDeath.value, playerDead: true}
         return
     };
-
-    awardItem = (item: Resource) => {
+    
+    awardItem(item: Resource) {
         const found = this.inventory.findIndex(x => x.name === item.name)
         if (found < 0) {
             this.inventory.push(item)
@@ -29,5 +29,15 @@ export default class Player extends LivingEntity {
             (item as Item).equip(this)
             return
         }
+    }
+    static fromPartner(partner: Player) {
+        const p = new Player(true)
+        p.fromBase(partner)
+        return p
+    }
+    static from(player: Player) {
+        const p = new Player()
+        p.fromBase(player)
+        return p
     }
 }

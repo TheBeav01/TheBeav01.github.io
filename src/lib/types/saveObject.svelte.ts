@@ -1,4 +1,4 @@
-import type { Item } from "./resources/item.svelte"
+import type { Encounter } from "../stores/encounter.svelte"
 import type { Resource } from "./resources/resource.svelte"
 
 export default class SaveObject {
@@ -52,6 +52,9 @@ export default class SaveObject {
      * Owned global resources
      */
     resources: Resource[] = []
+
+    encounter: Encounter | null = null
+
 }
 
 /**

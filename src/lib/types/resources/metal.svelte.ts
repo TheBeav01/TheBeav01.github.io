@@ -7,5 +7,12 @@ export default class Metal extends Resource {
     public consumable: boolean = true;
     public isKey: boolean = false;
     public isItem: boolean = false;
-    
+    public from(res: Resource): Resource {
+        if (!(res instanceof Metal)) {
+            return res
+        }
+        const metal = new Metal()
+        metal.fromBase(res)
+        return metal
+    }
 }
