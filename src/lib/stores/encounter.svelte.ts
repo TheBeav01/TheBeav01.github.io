@@ -60,6 +60,7 @@ export function setupEncounter(save: SaveObject) {
         return
     }
     const enc = cloneEncounter(save.encounter)
+    tick(enc.remaining)
     const p = Player.from(enc.player)
     const part = Player.fromPartner(enc.partner)
     const foe = LivingEntity.from(enc.foe)

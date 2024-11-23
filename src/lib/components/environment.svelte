@@ -25,7 +25,6 @@
     const epz = $derived(
         getEnemiesPerZone(gameSave.save.coordinates.zone),
     );
-    let remaining = $state(0)
     let currentFoe: EnemyDisplay = $state({
         entity: new LivingEntity(0),
         labels: []
@@ -53,11 +52,11 @@
             generateEncounter()
             return
         }
-        remaining = remaining - 1
+        tick()
+        const remaining = encounter.remaining
         if (remaining > 0) {
             generateEncounter()
         }
-        tick()
     }
     const damagerPerAttack = $derived(simulateDamage(encounter.player, encounter.foe))
     const travel = (dir: number) => {
@@ -101,10 +100,9 @@
             StoryUtils.setStoryPosition(INITIAL_SCAN_POS + 1);
         }
         if (resetCount) {
-            remaining = epz
             tick(epz)
         }
-        if (coords.sidePathPosition == 0 && remaining <= 0) {
+        if (coords.sidePathPosition == 0 && encounter.remaining <= 0) {
             currentFoe.entity.dead = true
             setEncounter(currentFoe.entity)
             gameSave.save.encounter = cloneEncounter(encounterState.state)
@@ -115,7 +113,7 @@
     };
 
     const generateEncounter = () => {
-        currentFoe = generateEnemy(remaining)
+        currentFoe = generateEnemy(encounter.remaining)
         setEncounter(currentFoe.entity)
 
     };
@@ -140,13 +138,13 @@
 {#if pos > 0}
     <div class="environment-container">
         <div>
-            Area {coords.zone} - {remaining <= 0 ? "No" : remaining} Creatures Remain
+            Area {coords.zone} - {encounter.remaining <= 0 ? "No" : encounter.remaining} Creatures Remain
             <div class="nav-button-group">
                 <div>
                     <button
                     disabled={coords.zone == 0}
                     onclick={() => travel(2)}>Previous Zone</button>
-                    <button disabled={remaining > 0} onclick={() => travel(0)}>Next Zone</button>
+                    <button disabled={encounter.remaining > 0} onclick={() => travel(0)}>Next Zone</button>
                     
                 </div>
                 <div>
@@ -165,10 +163,10 @@
         </div>
         {#if pos > 1}
             <div class={`${battleClass} fit-height`}>
-                {#if remaining <= 0 && coords.sidePathPosition === 0}
+                {#if encounter.remaining <= 0 && coords.sidePathPosition === 0}
                     <div>No entities found in area</div>
                 {/if}
-                {#if remaining > 0 || coords.sidePathPosition !== 0}
+                {#if encounter.remaining > 0 || coords.sidePathPosition !== 0}
                     <div class="ally">
                         <div>
                             {currentPlayer?.name}:

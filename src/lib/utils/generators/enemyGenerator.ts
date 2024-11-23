@@ -1,4 +1,5 @@
 import * as Enemy from "../../constants/enemyConstants"
+import { encounterState } from "../../stores/encounter.svelte"
 import { gameSave } from "../../types/gameSave.svelte"
 import LivingEntity from "../../types/livingEntity.svelte"
 import { Item } from "../../types/resources/item.svelte"
