@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { getPlayer, playerStore } from "../stores/playerStore.svelte";
+    import { getPartnerName, getPlayer } from "../stores/playerStore.svelte";
     import { gameSave } from "../types/gameSave.svelte";
     import StoryUtils from "../utils/storyUtils.svelte";
 
@@ -9,6 +9,10 @@
         if (message.onNext) {
             message.onNext()
         }
+    }
+
+    const substituteText = (text: string) => {
+        return text.replaceAll("[[partnername]]", getPartnerName() ?? "Zephyr")
     }
 </script>
 <div>
@@ -23,7 +27,7 @@
     {/if}
     {#if hasMessage}
         {#each message.text as textItem}
-            {textItem.text}
+            {substituteText(textItem.text)}
             <br /><br />
         {/each}
         {#if message.onNext}

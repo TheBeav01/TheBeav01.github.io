@@ -1,6 +1,6 @@
 <script lang="ts">
     import { attackManually, cloneEncounter, encounterState, setEncounter, simulateDamage, tick } from "../stores/encounter.svelte";
-    import { playerStore } from "../stores/playerStore.svelte";
+    import { getPartnerName, playerStore } from "../stores/playerStore.svelte";
     import { gameSave } from "../types/gameSave.svelte";
     import Player from "../types/player";
     import { untrack } from "svelte";
@@ -17,6 +17,7 @@
     import { saveGame } from "../stores/gameSave.svelte";
     import AttackPanel from "./environment/attackPanel.svelte";
     import EncounterEntity from "./environment/encounterEntity.svelte";
+    import UpgradePane from "./upgrades/upgradePane.svelte";
     let message = $derived(StoryUtils.getStoryState(gameSave.save));
     let save = $derived(gameSave.save);
     let pos = $derived(gameSave.save.storyPos);
@@ -132,12 +133,15 @@
         setEncounter(currentFoe.entity)
 
     };
+    const substituteText = (text: string) => {
+        return text.replaceAll("[[partnername]]", getPartnerName() ?? "Zephyr")
+    }
 </script>
 
 {#if pos == 0}
     <div class="initial-progress">
         {#each message.text as textItem}
-            {textItem.text}
+            {substituteText(textItem.text)}
             <br /><br />
         {/each}
         <button
@@ -197,14 +201,16 @@
         <div class={divClass}>
             <InfoTabs/>
         </div>
+        <UpgradePane/>
     </div>
 {/if}
 
 <style>
     .environment-container {
         display: grid;
-        grid-auto-flow: column;
         grid-template-columns: 20% 60% 20%;
+        grid-template-rows: 50% 50%;
+        height: 100%;
     }
     .progress-button {
         border-color: #6c0e0e;

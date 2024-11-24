@@ -58,4 +58,6 @@ export const getPartner = () => {
     return playerStore.get("partner") ?? new Player(true)
 }
 
-export const PARTNER_NAME = playerStore.get("partner")?.name
+export const getPartnerName = () => {
+    return playerStore.get("partner")?.name
+}

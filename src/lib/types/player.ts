@@ -30,10 +30,6 @@ export default class Player extends LivingEntity {
         } else {
             this.inventory[found].add(item._amt)
         }
-        if (item.isItem) {
-            (item as Item).equip(this)
-            return
-        }
     }
     static fromPartner(partner: Player) {
         const p = new Player(true)

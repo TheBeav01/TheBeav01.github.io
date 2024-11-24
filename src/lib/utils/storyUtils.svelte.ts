@@ -2,6 +2,7 @@ import * as Constants from "../constants/constants"
 import { saveGame } from "../stores/gameSave.svelte"
 import { log } from "../stores/messageList.svelte"
 import { gameSave } from "../types/gameSave.svelte"
+import { Item } from "../types/resources/item.svelte"
 import type SaveObject from "../types/saveObject.svelte"
 import { generateRandomNumber } from "./gameUtils.svelte"
 
@@ -20,6 +21,7 @@ export const INITIAL_NAVIGATION_POS = 2
 export const AFTER_INITIAL_COMBAT = 3
 export const PRE_EQUIPMENT_ERA = 4
 export const EQUIPMENT_ERA = 5
+export const POST_EQUIPMENT_ERA = 6
 export const DRONE_POS = 7
 export default class StoryUtils {
     private static partnerNames = ["Zephyr", "Aluca", "Ruby", "Zircon", "Topaz", "Orion", "Zatha", "Ba'kan", "Azl'ka", "Xa'ahn"]
@@ -54,13 +56,54 @@ export default class StoryUtils {
             case AFTER_INITIAL_COMBAT:
                 return {
                     text: Constants.STORY_MESSAGE_4,
-                    onNext: () => this.setStoryPosition(AFTER_INITIAL_COMBAT + 1),
+                    onNext: () => this.setStoryPosition(PRE_EQUIPMENT_ERA),
                     onNextText: "-->"
+                }
+            case EQUIPMENT_ERA:
+                return {
+                    text: Constants.STORY_MESSAGE_EQUIPMENT,
+                    onNext: () => this.setStoryPosition(POST_EQUIPMENT_ERA)
                 }
             default:
                 return {
                     text: Constants.STORY_MESSAGE_DEFAULT
                 }
             }
-        }
+    }
+    public static getAvailablePlayerUpgrades() {
+        const d = [
+            this.createAttackItem("Sharpen Dagger", 10, 0.25, 1.08),
+            this.createAttackItem("+1 Dagger",25, 1, 1.25),
+            this.createDefenseItem("Improve Boots", 10, 0.5, 1.10),
+            this.createDefenseItem("Improve Gloves", 15, 0.5, 1.10),
+            this.createDefenseItem("Improve Cloak Fibers",40, 2, 1.25)
+        ]
+        return d
+    }
+
+    public static getOffensiveUpgrades() {
+        return this.getAvailablePlayerUpgrades().filter((up) => up.defense > 0).filter((up, idx) => up.displayItem(idx))
+    }
+
+    public static getDefensiveUpgrades() {
+        return this.getAvailablePlayerUpgrades().filter((up) => up.defense > 0).filter((up, idx) => up.displayItem(idx))
+    }
+
+    private static createAttackItem(name: string, baseCost: number, attack: number, scalingFactor: number) {
+        const item = new Item()
+        item.name = name
+        item.attack = attack
+        item.baseCost = baseCost
+        item.scalingFactor = scalingFactor
+        return item
+    }
+
+    private static createDefenseItem(name: string, baseCost: number, defense: number, scalingFactor: number) {
+        const item = new Item()
+        item.name = name
+        item.defense = defense
+        item.baseCost = baseCost
+        item.scalingFactor = scalingFactor
+        return item
+    }
 }

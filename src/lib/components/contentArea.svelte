@@ -53,11 +53,12 @@
     .tab-container {
         border: #16b8b8;
         display: flex;
+        flex-grow: 1;
     }
 
     .tab-content {
         padding: 0px 1em;
-        height: max-content;
+        height: 100%;
     }
 
     .tab-panel {

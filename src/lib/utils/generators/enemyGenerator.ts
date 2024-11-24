@@ -123,7 +123,7 @@ const applyModifiers = (entity: LivingEntity, left: number) : EnemyDisplay => {
 }
 
 const canGenerateSpecialEnemy = (coords: Coordinates, left: number) => {
-    if (coords.zone === 3 && left === 1 && coords.sidePathPosition === 0) {
+    if (coords.zone === 3 && left === 1 && coords.sidePathPosition === 0 && gameSave.save.storyPos < EQUIPMENT_ERA) {
         return true
     }
     return false
