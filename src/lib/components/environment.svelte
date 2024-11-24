@@ -15,6 +15,7 @@
     import { Coordinates } from "../types/saveObject.svelte";
     import { getEnemiesPerZone } from "../utils/gameUtils.svelte";
     import { saveGame } from "../stores/gameSave.svelte";
+    import AttackPanel from "./environment/attackPanel.svelte";
     let message = $derived(StoryUtils.getStoryState(gameSave.save));
     let save = $derived(gameSave.save);
     let pos = $derived(gameSave.save.storyPos);
@@ -57,14 +58,19 @@
         if (remaining > 0) {
             generateEncounter()
         }
+        if (encounter.foe.coordinates.zone != gameSave.save.coordinates.zone) {
+            console.log("Skipping update")
+            return
+        }
+        if (remaining <= 0) {
+            gameSave.save.highestArea = gameSave.save.coordinates.zone + 1
+            console.log(`Updated highest: ${gameSave.save.highestArea}`)
+        } 
     }
-    const damagerPerAttack = $derived(simulateDamage(encounter.player, encounter.foe))
-    const travel = (dir: number) => {
+    const onTravel = (dir: number) => {
         const gsc = gameSave.save.coordinates
         const coords = new Coordinates(gsc.zone, gsc.sidePathPosition, gsc.world);
-        if (dir < 0) {
-            dir = 0;
-        }
+        let highest = gameSave.save.highestArea
         if (dir > 3) {
             dir = 3;
         }
@@ -72,6 +78,11 @@
         let resetCount = false
 
         switch (dir) {
+            case -1:
+                coords.zone -= 1
+                resetCount = true
+                coords.sidePathPosition = 0
+                break
             case 0:
                 coords.zone += 1;
                 resetCount = true
@@ -95,12 +106,15 @@
                 resetCount = true
                 break;
         }
-        gameSave.save = { ...gameSave.save, coordinates: coords };
+        
+        gameSave.save = { ...gameSave.save, coordinates: coords};
         if (pos == INITIAL_SCAN_POS) {
             StoryUtils.setStoryPosition(INITIAL_SCAN_POS + 1);
         }
         if (resetCount) {
-            tick(epz)
+            console.log(`Highest: ${highest} and current: ${coords.zone}`)
+            const newEPZ = highest > coords.zone ? 0 : epz
+            tick(newEPZ)
         }
         if (coords.sidePathPosition == 0 && encounter.remaining <= 0) {
             currentFoe.entity.dead = true
@@ -117,10 +131,6 @@
         setEncounter(currentFoe.entity)
 
     };
-
-    const att = (_e: any) => {
-        attackManually()
-    }
 </script>
 
 {#if pos == 0}
@@ -143,20 +153,20 @@
                 <div>
                     <button
                     disabled={coords.zone == 0}
-                    onclick={() => travel(2)}>Previous Zone</button>
-                    <button disabled={encounter.remaining > 0} onclick={() => travel(0)}>Next Zone</button>
+                    onclick={() => onTravel(2)}>Previous Zone</button>
+                    <button disabled={encounter.remaining > 0} onclick={() => onTravel(0)}>Next Zone</button>
                     
                 </div>
                 <div>
                     <button
                         disabled={coords.zone == 0 ||
                             coords.sidePathPosition === -1}
-                        onclick={() => travel(3)}>Left Path</button
+                        onclick={() => onTravel(3)}>Left Path</button
                     >
                     <button
                         disabled={coords.zone == 0 ||
                             coords.sidePathPosition === 1}
-                        onclick={() => travel(1)}>Right Path</button
+                        onclick={() => onTravel(1)}>Right Path</button
                     >
                 </div>
             </div>
@@ -182,9 +192,7 @@
                                 maxRes={encounter?.partner.maxHp ?? 0}
                             />
                         </div>
-                        <div>
-                            <button onclick={att}>Attack</button> ~{damagerPerAttack} damage
-                        </div>
+                        <AttackPanel onTravel={onTravel}/>
                     </div>
                     <span id="vs-text">VS:</span>
                     <div class="enemy">

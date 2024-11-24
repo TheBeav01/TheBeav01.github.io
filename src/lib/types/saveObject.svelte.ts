@@ -55,6 +55,11 @@ export default class SaveObject {
 
     encounter: Encounter | null = null
 
+    /**
+     * Represents the highest CLEARED area
+     */
+    highestArea = -1
+
 }
 
 /**

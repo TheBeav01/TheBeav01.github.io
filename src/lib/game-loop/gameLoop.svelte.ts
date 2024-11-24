@@ -3,7 +3,7 @@ import { saveGame, decodeSave } from "../stores/gameSave.svelte";
 import { createResourcesFromSave } from "../stores/resourceStore.svelte";
 import { writable } from "svelte/store";
 import StoryUtils from "../utils/storyUtils.svelte";
-import { createPlayersFromSave } from "../stores/playerStore.svelte";
+import { createPlayersFromSave, playerStore } from "../stores/playerStore.svelte";
 import { log } from "../stores/messageList.svelte";
 import { gameSave } from "../types/gameSave.svelte";
 import { ResourceLoop } from "./resource-loop.svelte";
@@ -55,22 +55,11 @@ function initGame() {
     gameSave.save.playerName = name
   }
   createPlayersFromSave(gameSave.save)
+  if (gameSave.save.highestArea == -1) {
+    gameSave.save.highestArea = playerStore.get("player")!.coordinates.zone
+    console.log(`Updated highest: ${gameSave.save.highestArea}`)
+  }
   createResourcesFromSave(gameSave.save)
   setupEncounter(gameSave.save)
   saveGame()
-}
-
-/**
- * Handles unlocks at load or update.
- */
-function unlockHandler() {
-  var worker_button = document.getElementById("UL1");
-  handleStoryMessagesAndUnlocks();
-}
-
-function handleStoryMessagesAndUnlocks() {
-
-  if(gameSave.save.storyPos >= 8 && !canAscend) {
-    canAscend = true;
-}
 }
