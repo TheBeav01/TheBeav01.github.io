@@ -239,9 +239,6 @@
         display: flex;
         gap: 8px;
     }
-    #vs-text {
-        align-self: center;
-    }
 
     .fit-height {
         height: fit-content;

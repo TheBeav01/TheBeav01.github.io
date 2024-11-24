@@ -27,9 +27,6 @@
         background-color: whitesmoke;
         overflow-y: hidden;
     }
-    .bar-fill {
-        background-color: aqua;
-    }
     .base-height {
         height: 5px;
     }
