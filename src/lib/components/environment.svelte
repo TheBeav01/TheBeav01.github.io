@@ -16,6 +16,7 @@
     import { getEnemiesPerZone } from "../utils/gameUtils.svelte";
     import { saveGame } from "../stores/gameSave.svelte";
     import AttackPanel from "./environment/attackPanel.svelte";
+    import EncounterEntity from "./environment/encounterEntity.svelte";
     let message = $derived(StoryUtils.getStoryState(gameSave.save));
     let save = $derived(gameSave.save);
     let pos = $derived(gameSave.save.storyPos);
@@ -179,33 +180,16 @@
                 {#if encounter.remaining > 0 || coords.sidePathPosition !== 0}
                     <div class="ally">
                         <div>
-                            {currentPlayer?.name}:
-                            <StatBar
-                                currentRes={encounter?.player.currentHp ?? 0}
-                                maxRes={encounter?.player.maxHp ?? 0}
-                            />
+                            <EncounterEntity entity={encounter.player}/>
                         </div>
                         <div>
-                            {currentPartner?.name}
-                            <StatBar
-                                currentRes={encounter?.partner.currentHp ?? 0}
-                                maxRes={encounter?.partner.maxHp ?? 0}
-                            />
+                            <EncounterEntity entity={encounter.partner}/>
                         </div>
                         <AttackPanel onTravel={onTravel}/>
                     </div>
-                    <span id="vs-text">VS:</span>
                     <div class="enemy">
-                        {encounter.foe.name}
-                        <StatBar currentRes={encounter.foe.currentHp ?? 0}
-                            maxRes={encounter.foe.maxHp ?? 0} additionalText={`${(encounter.foe.timeToAttack / 1000).toFixed(1)}s until next attack`}/>
-                        {#if currentFoe}
-                            <div>
-                                {#each currentFoe.labels as label}
-                                    <span>{label}</span>
-                                {/each}
-                            </div>
-                        {/if}
+                        <EncounterEntity entity={encounter.foe} additionalBarText={`${(encounter.foe.timeToAttack / 1000).toFixed(1)}s until next attack`}
+                        labels={currentFoe?.labels} barColor="#b81616"/>
                     </div>
                 {/if}
             </div>
@@ -240,7 +224,7 @@
         gap: 5px;
         padding-left: 1em;
         padding-right: 1em;
-        grid-template-columns: 1fr auto 1fr;
+        grid-template-columns: 1fr 1fr;
     }
     .nav-button-group {
         display: flex;
@@ -261,5 +245,8 @@
 
     .fit-height {
         height: fit-content;
+    }
+    .ally > div {
+        padding: 4px 0;
     }
 </style>

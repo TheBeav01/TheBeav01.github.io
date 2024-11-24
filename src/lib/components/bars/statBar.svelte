@@ -1,6 +1,6 @@
 <script lang="ts">
     import { createProgress, melt } from "@melt-ui/svelte";
-    const {currentRes, maxRes, additionalText} : {currentRes: number, maxRes: number, additionalText?: string} = $props()
+    const {currentRes, maxRes, additionalText, barColor} : {currentRes: number, maxRes: number, additionalText?: string, barColor: string} = $props()
     const {
         elements: { root },
   } = createProgress({
@@ -9,9 +9,9 @@
 </script>
 <div>
     <div class="base-progress base-height" use:melt={$root}>
-        <div class="base-height bar-fill" style={`transform: translateX(-${
+        <div class="base-height" style={`transform: translateX(-${
             Math.floor(100 - ((currentRes / (maxRes ?? currentRes)) * 100))
-          }%)`}></div>
+          }%); background-color: ${barColor}`}></div>
     </div>
     <div class="bottom-text">
         <span>{currentRes} / {maxRes}</span>
