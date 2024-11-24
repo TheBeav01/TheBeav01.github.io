@@ -8,4 +8,9 @@ export default class Soul extends Resource {
     public isItem: boolean = false;
     public name: string = "Soul";
     public description: string = `An etheral essence all creatures possess. ${PARTNER_NAME} reacts strongly to it.`;
+    public from(_res: Resource): Resource {
+        const soul = new Soul()
+        soul.add(1)
+        return soul
+    }
 }

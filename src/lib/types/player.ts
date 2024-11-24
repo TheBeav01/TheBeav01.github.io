@@ -1,4 +1,5 @@
 import { onDeath } from "../stores/gameState.svelte";
+import { addResource } from "../stores/resourceStore.svelte";
 import LivingEntity from "./livingEntity.svelte";
 import type { Item } from "./resources/item.svelte";
 import type { Resource } from "./resources/resource.svelte";
@@ -19,6 +20,10 @@ export default class Player extends LivingEntity {
     };
     
     awardItem(item: Resource) {
+        if (!item.isItem) {
+            addResource(item)
+            return
+        }
         const found = this.inventory.findIndex(x => x.name === item.name)
         if (found < 0) {
             this.inventory.push(item)

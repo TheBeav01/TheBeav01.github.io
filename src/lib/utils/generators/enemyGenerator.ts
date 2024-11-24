@@ -1,8 +1,6 @@
 import * as Enemy from "../../constants/enemyConstants"
-import { encounterState } from "../../stores/encounter.svelte"
 import { gameSave } from "../../types/gameSave.svelte"
 import LivingEntity from "../../types/livingEntity.svelte"
-import { Item } from "../../types/resources/item.svelte"
 import type { Coordinates } from "../../types/saveObject.svelte"
 import StoryUtils, { EQUIPMENT_ERA } from "../storyUtils.svelte"
 import { generateItems } from "./itemGenerator"
@@ -15,7 +13,6 @@ const HP_SCALE_FACTOR = DEFENSE_SCALE_FACTOR
 const HIGH_SPECIAL_SCALE_FACTOR = 1.25
 const LOW_SPECIAL_SCALE_FACTOR = 0.80
 const DEFAULT_VAL = 1
-const BASE_HP = 1
 type Affinity = "attack" | "defense" | "hp" | "speed" | "crit" | "accuracy"
 
 export interface EnemyDisplay {
@@ -126,7 +123,7 @@ const applyModifiers = (entity: LivingEntity, left: number) : EnemyDisplay => {
 }
 
 const canGenerateSpecialEnemy = (coords: Coordinates, left: number) => {
-    if (coords.zone === 3 && left === 1) {
+    if (coords.zone === 3 && left === 1 && coords.sidePathPosition === 0) {
         return true
     }
     return false

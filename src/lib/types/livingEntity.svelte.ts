@@ -32,6 +32,9 @@ export default class LivingEntity implements BaseEntity {
     }
     onDefaultKill() {
         const player = playerStore.get("player")
+        const soul = new Soul()
+        soul.add(1)
+        this.inventory.push(soul)
         this.inventory.forEach(i => player?.awardItem(i))
     }
     

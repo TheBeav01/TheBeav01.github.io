@@ -2,7 +2,7 @@
     import { resourceStore } from "../stores/resourceStore.svelte";
 
     let { name }: {name: string} = $props()
-    let resource = $state(resourceStore.get(name))
+    let resource = $derived(resourceStore.get(name))
 </script>
 
 <div>

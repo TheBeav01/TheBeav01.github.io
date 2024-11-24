@@ -1,19 +1,20 @@
 <script lang="ts">
     import { saveGame } from "../stores/gameSave.svelte";
-    import { log } from "../stores/messageList.svelte";
+    import { resourceStore } from "../stores/resourceStore.svelte";
     import { getDate } from "../utils/dateUtils";
     import {onFrameCooldown} from "../utils/gameUtils.svelte";
     import Resource from "./resourceText.svelte";
     let date = $state(getDate())
     onFrameCooldown(30, () => date = getDate())
+    const item = $derived(resourceStore)
 </script>
 <div class="top-bar-container">
     <span class="top-bar-flex-item center-item">{date}</span>
     <div class="top-bar-flex-item">
         <div>
-            <Resource name="Souls"/>
-            <Resource name="Mana"/>
-            <Resource name="Metal"/>
+            {#each item.keys() as key }
+            <Resource name={key}/>
+            {/each}
         </div>
     </div>
     <div class="button-container center-item">
