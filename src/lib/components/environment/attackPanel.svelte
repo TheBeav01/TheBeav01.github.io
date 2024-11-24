@@ -16,9 +16,23 @@
         onTravel(-1)
     }
 </script>
-<div>
-    <button onclick={attack}>Attack</button> ~{damagerPerAttack} damage
+<div class="attack-button-container">
+    <div>
+        <button onclick={attack}>Attack</button> ~{damagerPerAttack} damage
+    </div>
     {#if isDead.playerDead}
-        <button onclick={abort}>Abort</button>
+        <button class="outline" onclick={abort}>Abort</button>
     {/if}
 </div>
+
+<style>
+    .attack-button-container {
+        display: flex;
+        flex-direction: column;
+        width: fit-content;
+        gap: 5px;
+    }
+    .outline {
+        border-color: #b81616;
+    }
+</style>
