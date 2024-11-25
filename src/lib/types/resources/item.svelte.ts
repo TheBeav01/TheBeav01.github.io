@@ -1,7 +1,7 @@
 import { playerStore } from "../../stores/playerStore.svelte";
 import { resourceStore } from "../../stores/resourceStore.svelte";
 import type BaseEntity from "../baseEntity";
-import type LivingEntity from "../livingEntity.svelte";
+import type Player from "../player";
 import { Resource } from "./resource.svelte";
 
 export class Item extends Resource implements BaseEntity {
@@ -16,15 +16,39 @@ export class Item extends Resource implements BaseEntity {
     attackSpeed: number = 0;
     critRate: number = 0;
     maxHp = 0
-    scalingFactor = 1
-    baseCost = 0
-    public equip<T extends BaseEntity>(entity: T) : T {
+    private maxDeconstructionTimer = 10 * 1000
+    private deconstructTimer = this.maxDeconstructionTimer
+    private deconstructAmount = 1
+    public add(amt: number): void {
+        super.add(amt)
+        this.currentCost = this.calculateNextCost()
+    }
+    private _scalingFactor = 1
+    get scalingFactor() : number {
+        return this._scalingFactor
+    }
+
+    set scalingFactor(factor: number) {
+        this._scalingFactor = factor
+        this.currentCost = this.calculateNextCost()
+    }
+    private _baseCost = 0
+    get baseCost() : number {
+        return this._baseCost
+    }
+    set baseCost(cost: number) {
+        this._baseCost = cost
+        this.currentCost = this.calculateNextCost()
+    }
+    currentCost = $state(0)
+    public equip(entity: Player) : Player {
         entity.attack += this.attack
         entity.defense += this.defense
         entity.attackSpeed += this.attackSpeed
         entity.critRate += this.critRate
         entity.maxHp += this.maxHp
-        this.add(1)
+        entity.awardItem(this, 1)
+        console.log(entity.inventory)
         return entity
     }
     public from(res: Resource): Resource {
@@ -76,9 +100,20 @@ export class Item extends Resource implements BaseEntity {
         }
         const mana = resourceStore.get("Mana")!
         console.log(this.amt)
-        if (mana?._amt >= (this.calculateNextCost()) / 2) {
+        if (mana?._amt >= this.currentCost / 2) {
             return true
         }
         return false
+    }
+
+    public addDeconstructJob(amountToDeconstruct = 1) {
+        this.deconstructAmount = amountToDeconstruct < 0 ? 1 : amountToDeconstruct
+        this.deconstructTimer = this.maxDeconstructionTimer
+    }
+
+    public deconstructTick(delta: number) {
+        this.deconstructTimer -= delta
+        const amountToRemove = (delta / this.maxDeconstructionTimer) * this.deconstructAmount
+        this.remove(amountToRemove)
     }
 }

@@ -5,31 +5,33 @@
     import { gameSave } from "../../types/gameSave.svelte";
     import { Item } from "../../types/resources/item.svelte";
     import StoryUtils, { PRE_EQUIPMENT_ERA } from "../../utils/storyUtils.svelte";
+    import type Player from "../../types/player";
+    import type Mana from "../../types/resources/mana.svelte";
+    import { encounterState } from "../../stores/encounter.svelte";
 
-    const mana = $derived(resourceStore.get("Mana"))
-    const player = $derived(playerStore.get("player"))
-    const displayable = $derived.by(() => {
-        const disp = StoryUtils.getAvailablePlayerUpgrades().filter((item, idx) => {
-            console.log("A")
+    const mana = $derived(resourceStore.get("Mana"))!
+    const player = $derived(encounterState.state.player)!
+    const allUpgrades = $derived(getAvailablePlayerUpgrades(player, mana))
+    const equip = (item: Item) => {
+        const newPlayer = item.equip(player)
+        playerStore.set("player", newPlayer)
+        encounterState.state.player = newPlayer
+    }
+
+    function getAvailablePlayerUpgrades(player: Player, mana: Mana) {
+        return StoryUtils.allUpgrades.filter((u, idx) => {
             if (idx == 0) {
                 return true
             }
-            const hasItem = player!.inventory.find(i => i.name === item.name) !== undefined
+            const hasItem = player.inventory.find(i => i.name === u.name) !== undefined
             if (hasItem) {
                 return true
             }
-            const next = untrack(() => item.calculateNextCost())
-            if (mana!._amt >= (next / 2)) {
+            if (mana._amt >= u.currentCost / 2) {
                 return true
             }
             return false
         })
-        console.log("----")
-        return disp
-    })
-    const equip = (item: Item) => {
-        const newPlayer = item.equip(playerStore.get("player")!)
-        playerStore.set("player", newPlayer)
     }
 </script>
 
@@ -37,13 +39,13 @@
     <div class="upgrade-container">
         <h3>Player Upgrades</h3>
         <div>
-            {#each displayable.filter(d => d.attack > 0) as upgrade}
+            {#each allUpgrades.filter(d => d.attack > 0) as upgrade}
                 <button class="upgrade-button" onclick={() => equip(upgrade)}>
                     <div>
                         {upgrade.name} - Rank {upgrade.amt}
                     </div>
                     <div>
-                        {upgrade.calculateNextCost().toFixed(0)} Mana
+                        {upgrade.currentCost.toFixed(0)} Mana
                     </div>
                     <div>
                         {upgrade.getUpgradeText()}
@@ -52,7 +54,7 @@
             {/each}
         </div>
         <div>
-            {#each displayable.filter(d => d.defense > 0) as upgrade}
+            {#each allUpgrades.filter(d => d.defense > 0) as upgrade}
                 <button class="upgrade-button" onclick={() => equip(upgrade)}>
                     <div>
                         {upgrade.name} - Rank {upgrade.amt}

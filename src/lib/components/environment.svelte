@@ -32,8 +32,6 @@
         entity: new LivingEntity(0),
         labels: []
     });
-    const currentPlayer = $derived(playerStore.get("player") ?? new Player());
-    const currentPartner = $derived(playerStore.get("partner") ?? new Player(true));
     const encounter = $derived(encounterState.state)
     const coords = $derived(gameSave.save.coordinates)
     $effect(() => {

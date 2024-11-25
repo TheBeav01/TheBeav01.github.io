@@ -2,7 +2,9 @@ import * as Constants from "../constants/constants"
 import { saveGame } from "../stores/gameSave.svelte"
 import { log } from "../stores/messageList.svelte"
 import { gameSave } from "../types/gameSave.svelte"
+import type Player from "../types/player"
 import { Item } from "../types/resources/item.svelte"
+import type Mana from "../types/resources/mana.svelte"
 import type SaveObject from "../types/saveObject.svelte"
 import { generateRandomNumber } from "./gameUtils.svelte"
 
@@ -25,6 +27,13 @@ export const POST_EQUIPMENT_ERA = 6
 export const DRONE_POS = 7
 export default class StoryUtils {
     private static partnerNames = ["Zephyr", "Aluca", "Ruby", "Zircon", "Topaz", "Orion", "Zatha", "Ba'kan", "Azl'ka", "Xa'ahn"]
+    static allUpgrades = [
+        this.createAttackItem("Sharpen Dagger", 10, 0.25, 1.08),
+        this.createAttackItem("+1 Dagger",25, 1, 1.25),
+        this.createDefenseItem("Improve Boots", 10, 0.5, 1.10),
+        this.createDefenseItem("Improve Gloves", 15, 0.5, 1.10),
+        this.createDefenseItem("Improve Cloak Fibers",40, 2, 1.25)
+    ]
     static generatePartnerName() {
         let idx = generateRandomNumber(this.partnerNames.length, 0, false)
         idx = Math.min(idx, this.partnerNames.length - 1)
@@ -70,23 +79,20 @@ export default class StoryUtils {
                 }
             }
     }
-    public static getAvailablePlayerUpgrades() {
-        const d = [
-            this.createAttackItem("Sharpen Dagger", 10, 0.25, 1.08),
-            this.createAttackItem("+1 Dagger",25, 1, 1.25),
-            this.createDefenseItem("Improve Boots", 10, 0.5, 1.10),
-            this.createDefenseItem("Improve Gloves", 15, 0.5, 1.10),
-            this.createDefenseItem("Improve Cloak Fibers",40, 2, 1.25)
-        ]
-        return d
-    }
-
-    public static getOffensiveUpgrades() {
-        return this.getAvailablePlayerUpgrades().filter((up) => up.defense > 0).filter((up, idx) => up.displayItem(idx))
-    }
-
-    public static getDefensiveUpgrades() {
-        return this.getAvailablePlayerUpgrades().filter((up) => up.defense > 0).filter((up, idx) => up.displayItem(idx))
+    public static getAvailablePlayerUpgrades(player: Player, mana: Mana) {
+        return this.allUpgrades.filter((u, idx) => {
+            if (idx == 0) {
+                return true
+            }
+            const hasItem = player.inventory.find(i => i.name === this.name) !== undefined
+            if (hasItem) {
+                return true
+            }
+            if (mana._amt >= u.currentCost / 2) {
+                return true
+            }
+            return false
+        })
     }
 
     private static createAttackItem(name: string, baseCost: number, attack: number, scalingFactor: number) {
