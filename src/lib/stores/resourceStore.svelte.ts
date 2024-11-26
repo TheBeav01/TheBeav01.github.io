@@ -45,11 +45,19 @@ export const addResource = (resource: Resource) => {
         writeResourcesToSave()
         return
     }
-    if (resourceStore.has(resource.name)) {
-        const res = resourceStore.get(resource.name)!
-        res.add(resource._amt)
-        resourceStore.set(res.name, res)
+    const res = resourceStore.get(resource.name)!
+    res.add(resource._amt)
+    resourceStore.set(res.name, res)
+    writeResourcesToSave()
+}
+
+export const addXToResource = (resource: string, amt: number) => {
+    if (!resourceStore.has(resource)) {
+        return
     }
+    const res = resourceStore.get(resource)!
+    res.add(amt)
+    resourceStore.set(res.name, res)
     writeResourcesToSave()
 }
 export let resources : Map<string, Resource> = createDefaultMap()

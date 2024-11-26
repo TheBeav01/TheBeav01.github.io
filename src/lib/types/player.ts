@@ -1,7 +1,6 @@
 import { onDeath } from "../stores/gameState.svelte";
 import { addResource } from "../stores/resourceStore.svelte";
 import LivingEntity from "./livingEntity.svelte";
-import type { Item } from "./resources/item.svelte";
 import type { Resource } from "./resources/resource.svelte";
 
 export default class Player extends LivingEntity {

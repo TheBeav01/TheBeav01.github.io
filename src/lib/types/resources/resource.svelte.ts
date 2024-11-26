@@ -1,4 +1,4 @@
-import { removeResource, tick } from "../../resource/resourceManager.svelte"
+import { removeResource } from "../../resource/resourceManager.svelte"
 
 export abstract class Resource {
     
@@ -52,8 +52,13 @@ export abstract class Resource {
 
     public remove(amt: number) {
         let amtToRemove = amt ?? 0
-        amtToRemove = amtToRemove > 0 ? 0 : amtToRemove
-        amtToRemove = Math.max(this.amt - amtToRemove, 0)
+        amtToRemove = amtToRemove > 0 ? amtToRemove : 0
+        amtToRemove = Math.max(amtToRemove, 0)
+        if (amtToRemove >= this.amt) {
+            this.amt = 0
+            this._amt = 0
+            return
+        }
         this.amt -= amtToRemove
         this._amt -= amtToRemove
     }

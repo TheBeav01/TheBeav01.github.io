@@ -34,6 +34,7 @@ export default class StoryUtils {
         this.createDefenseItem("Improve Gloves", 15, 0.5, 1.10),
         this.createDefenseItem("Improve Cloak Fibers",40, 2, 1.25)
     ]
+    static cached : Item[] = []
     static generatePartnerName() {
         let idx = generateRandomNumber(this.partnerNames.length, 0, false)
         idx = Math.min(idx, this.partnerNames.length - 1)
@@ -80,7 +81,8 @@ export default class StoryUtils {
             }
     }
     public static getAvailablePlayerUpgrades(player: Player, mana: Mana) {
-        return this.allUpgrades.filter((u, idx) => {
+        const highestCall = this.cached
+        const newList = this.allUpgrades.filter((u, idx) => {
             if (idx == 0) {
                 return true
             }
@@ -88,11 +90,16 @@ export default class StoryUtils {
             if (hasItem) {
                 return true
             }
-            if (mana._amt >= u.currentCost / 2) {
+            if (mana.amt >= u.currentCost / 2) {
                 return true
             }
             return false
         })
+        if (newList.length > highestCall.length) {
+            this.cached = newList
+            return newList
+        }
+        return this.cached
     }
 
     private static createAttackItem(name: string, baseCost: number, attack: number, scalingFactor: number) {

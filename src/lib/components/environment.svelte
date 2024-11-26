@@ -1,15 +1,13 @@
 <script lang="ts">
-    import { attackManually, cloneEncounter, encounterState, setEncounter, simulateDamage, tick } from "../stores/encounter.svelte";
-    import { getPartnerName, playerStore } from "../stores/playerStore.svelte";
+    import { cloneEncounter, encounterState, setEncounter, simulateDamage, tick } from "../stores/encounter.svelte";
+    import { getPartnerName } from "../stores/playerStore.svelte";
     import { gameSave } from "../types/gameSave.svelte";
-    import Player from "../types/player";
     import { untrack } from "svelte";
     import {
         generateEnemy,
         type EnemyDisplay,
     } from "../utils/generators/enemyGenerator";
     import StoryUtils, { AFTER_INITIAL_COMBAT, INITIAL_NAVIGATION_POS, INITIAL_SCAN_POS } from "../utils/storyUtils.svelte";
-    import StatBar from "./bars/statBar.svelte";
     import InfoTabs from "./infoTabs.svelte";
     import LivingEntity from "../types/livingEntity.svelte";
     import { Coordinates } from "../types/saveObject.svelte";
@@ -18,6 +16,7 @@
     import AttackPanel from "./environment/attackPanel.svelte";
     import EncounterEntity from "./environment/encounterEntity.svelte";
     import UpgradePane from "./upgrades/upgradePane.svelte";
+    import { resourceStore } from "../stores/resourceStore.svelte";
     let message = $derived(StoryUtils.getStoryState(gameSave.save));
     let save = $derived(gameSave.save);
     let pos = $derived(gameSave.save.storyPos);
