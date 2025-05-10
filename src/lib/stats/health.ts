@@ -25,9 +25,20 @@ export default class HealthStat implements BaseStat<number> {
         if (val == null || val < 0) {
             val = 0
         }
-        // TODO: HP val - HP to defender
+        defendingEntity.hpStat.subtract(val)
         return defendingEntity
     };
+
+    subtract(num: number) {
+        if (num <= 0) {
+            return
+        }
+        this.value -= num
+    }
+
+    isEmpty() {
+        return this.value <= 0 && this.maxValue > 0
+    }
     
     
 

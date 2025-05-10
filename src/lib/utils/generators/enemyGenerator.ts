@@ -1,4 +1,5 @@
 import * as Enemy from "../../constants/enemyConstants"
+import HealthStat from "../../stats/health"
 import { gameSave } from "../../types/gameSave.svelte"
 import LivingEntity from "../../types/livingEntity.svelte"
 import type { Coordinates } from "../../types/saveObject.svelte"
@@ -87,8 +88,8 @@ const zones7To10 : EnemyTemplate[] = [ {
 
 export const generateEnemy = (left: number) : EnemyDisplay => {
     const le = new LivingEntity()
-    le.attackSpeed = 0.25
-    le.critRate = 0.05
+    le.attackSpeedStat.value = 0.25
+    le.critRateStat.value = 0.05
     le.inventory = []
     return applyModifiers(le, left)
 }
@@ -110,13 +111,12 @@ const applyModifiers = (entity: LivingEntity, left: number) : EnemyDisplay => {
         enemy = pickItemFromWeightedList(zones1To6)
     }
     entity.name = enemy.name
-    entity.attack = Math.round(DEFAULT_VAL + Math.pow(zone, pickModifier(enemy.name, "attack")))
-    entity.defense = Math.round(DEFAULT_VAL + Math.pow(zone, pickModifier(enemy.name, "defense")))
-    entity.maxHp = Math.round(DEFAULT_VAL + Math.pow(zone, pickModifier(enemy.name, "hp")))
-    entity.currentHp = entity.maxHp
+    entity.attackStat.value = Math.round(DEFAULT_VAL + Math.pow(zone, pickModifier(enemy.name, "attack")))
+    entity.defenseStat.value = Math.round(DEFAULT_VAL + Math.pow(zone, pickModifier(enemy.name, "defense")))
+    entity.hpStat = new HealthStat(Math.round(DEFAULT_VAL + Math.pow(zone, pickModifier(enemy.name, "hp"))))
     const baseAttackSpeed = entity.coordinates.zone <= 5 ? 0.25 : 1
-    entity.attackSpeed = baseAttackSpeed * pickModifier(enemy.name, "speed")
-    entity.critRate = pickModifier(enemy.name, "crit")
+    entity.attackSpeedStat.value = baseAttackSpeed * pickModifier(enemy.name, "speed")
+    entity.critRateStat.value = pickModifier(enemy.name, "crit")
     entity.resetAttackTime()
     entity.inventory = generateItems(entity.coordinates.zone)
     return {entity, labels: generateLabels(enemy.name)}
@@ -131,12 +131,12 @@ const canGenerateSpecialEnemy = (coords: Coordinates, left: number) => {
 
 const generateSpecialEnemy = (coords: Coordinates, entity: LivingEntity) : EnemyDisplay => {
     entity.name = "Homing Pidgeon"
-    entity.attack = 1
-    entity.defense = 1
-    entity.attackSpeed = 0.5
-    entity.critRate = 0
-    entity.maxHp = Math.round(DEFAULT_VAL + Math.pow(coords.zone, HP_SCALE_FACTOR))
-    entity.currentHp = entity.maxHp
+    entity.attackStat.value = 1
+    entity.defenseStat.value = 1
+    entity.attackSpeedStat.value = 0.5
+    entity.critRateStat.value = 0
+    const maxHp = Math.round(DEFAULT_VAL + Math.pow(coords.zone, HP_SCALE_FACTOR))
+    entity.hpStat = new HealthStat(maxHp)
     if (coords.zone === 3) {
         entity.onKill = () => {
             entity.onDefaultKill()

@@ -1,3 +1,8 @@
+import AttackStat, { AttackUtils } from "../stats/attack";
+import AttackSpeedStat from "../stats/attackSpeed";
+import CritRateStat from "../stats/critRate";
+import DefenseStat from "../stats/defense";
+import HealthStat from "../stats/health";
 import { log } from "../stores/messageList.svelte";
 import { playerStore } from "../stores/playerStore.svelte";
 import type BaseEntity from "./baseEntity";
@@ -9,23 +14,22 @@ import { Coordinates } from "./saveObject.svelte";
 
 export default class LivingEntity implements BaseEntity {
     constructor(maxHp = 0) {
-        this.maxHp = maxHp
-        this.currentHp = this.currentHp
+        this.hpStat = new HealthStat(maxHp)
     }
     name: string = "";
-    attack: number = 0;
-    defense: number = 0;
+    attackStat = new AttackStat();
+    defenseStat = new DefenseStat();
     // Attacks / s
-    attackSpeed: number = 1;
-    critRate: number = 0.0;
-    maxHp: number = 0;
-    currentHp: number = 0
+    attackSpeedStat = new AttackSpeedStat();
+    critRateStat = new CritRateStat();
+    hpStat = new HealthStat(0, 0)
+    readonly currentHp: number = this.hpStat.value
     inventory: Resource[] = []
     timeToAttack: number = $state(0)
     dead = false
     coordinates: Coordinates = new Coordinates(0, 0, 0)
     isDead() {
-        return this.currentHp <= 0 && this.maxHp > 0
+        return this.hpStat.isEmpty()
     }
     onKill() {
         this.onDefaultKill()
@@ -39,42 +43,44 @@ export default class LivingEntity implements BaseEntity {
     }
     
     getBaseDamage (other: LivingEntity) {
-        const defense = other.defense ?? 1
-        // Big pos diff = small attack. Small diff = attack does ~ x hp. Big neg diff = more damage
-        const attackDefenseDifferential = (this.attack / defense).toFixed(2)
-        
-        let finalAttack = this.attack * Number.parseFloat(attackDefenseDifferential)
-        
-        if (finalAttack < 1) {
-            finalAttack = 1
-        }
-        
-        return Math.round(finalAttack)
+        return AttackUtils.calculateDamage(this, other)
     }
     
     canAttack() {
-        return this.attackSpeed !== 0 && this.attack !== 0
+        return this.attackSpeedStat.value !== 0 && this.attackStat.value !== 0
+    }
+
+    shouldAttack(isManualAttack: boolean) {
+        if (isManualAttack) {
+            return true
+        }
+        if (!this.canAttack()) {
+            return false
+        }
+        if (this.timeToAttack > 0) {
+            return false;
+        }
+        return true
     }
     
     attackEntity(other: LivingEntity, manual = false) {
-        if (other.dead || this.dead) {
+        const attackResult = this.attackStat.applyTo(this, other, {
+            manual
+        })
+        if (!attackResult) {
             return other
         }
-        if (!manual && (this.timeToAttack > 0 || !this.canAttack())) {
-            return other
-        }
+        other = attackResult
         const rounded = this.getBaseDamage(other)
         log(`${this.name} attacks ${other.name} for ${rounded} damage`)
         
-        if (other.currentHp <= rounded) {
-            other.currentHp = 0
+        if (other.hpStat.value <= rounded) {
             other.dead = true
             other.onKill()
             log(`${this.name} kills ${other.name}`)
             this.resetAttackTime()
             return other
         }
-        other.currentHp -= rounded
         if(manual) {
             return other
         }
@@ -83,7 +89,7 @@ export default class LivingEntity implements BaseEntity {
     }
     
     resetAttackTime(){
-        this.timeToAttack = 1000 / (this.attackSpeed ?? 1)
+        this.timeToAttack = 1000 / (this.attackSpeedStat.value ?? 1)
     }
     
     tick(diff: number){
@@ -95,16 +101,15 @@ export default class LivingEntity implements BaseEntity {
     }
 
     fromBase(being: LivingEntity) {
-        this.attack = being.attack
+        this.attackStat.value = being.attackStat.value
         this.name = being.name
-        this.attackSpeed = being.attackSpeed
+        this.attackSpeedStat.value = being.attackSpeedStat.value
         const c = being.coordinates
         this.coordinates = new Coordinates(c.zone, c.sidePathPosition, c.world)
-        this.critRate = being.critRate
-        this.currentHp = being.currentHp
-        this.maxHp = being.maxHp
+        this.critRateStat = being.critRateStat
+        this.hpStat = new HealthStat(being.hpStat.value, being.hpStat.maxValue)
         this.dead = being.dead
-        this.defense = being.defense
+        this.defenseStat = being.defenseStat
         this.inventory = being.inventory.map(i => {
             if (i instanceof Soul) {
                 return new Soul().from(i)

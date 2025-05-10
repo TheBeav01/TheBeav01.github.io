@@ -1,8 +1,14 @@
+import type AttackStat from "../stats/attack"
+import type AttackSpeedStat from "../stats/attackSpeed"
+import type CritRateStat from "../stats/critRate"
+import type DefenseStat from "../stats/defense"
+import type HealthStat from "../stats/health"
+
 export default interface BaseEntity {
     name: string,
-    attack: number
-    defense: number,
-    attackSpeed: number,
-    critRate: number,
-    maxHp: number
+    attackStat: AttackStat
+    defenseStat: DefenseStat,
+    attackSpeedStat: AttackSpeedStat,
+    critRateStat: CritRateStat,
+    hpStat: HealthStat
 }

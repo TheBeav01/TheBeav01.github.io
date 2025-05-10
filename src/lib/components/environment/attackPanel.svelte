@@ -10,8 +10,8 @@
         attackManually()
     }
     function abort() {
-        const maxHp = encounterState.state.player.maxHp
-        encounterState.state.player.currentHp = Math.floor(maxHp / 4)
+        const maxHp = encounterState.state.player.hpStat.maxValue
+        encounterState.state.player.hpStat.value = Math.floor(maxHp / 4)
         encounterState.state.player.dead = false
         onTravel(-1)
     }

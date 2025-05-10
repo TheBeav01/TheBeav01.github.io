@@ -4,7 +4,7 @@ import type BaseStat from "./base/baseStat";
 export default class AttackSpeedStat implements BaseStat<number> {
     private CAP = 5
     private FLOOR = 0.1
-    constructor(num: number) {
+    constructor(num: number = 1) {
         let newNum = num
         if (num > this.CAP) {
             newNum = this.CAP

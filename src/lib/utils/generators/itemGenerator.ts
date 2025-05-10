@@ -25,10 +25,10 @@ const ITEM_POOL_2 : BaseItem[] = [{
 export const generateItems = (zone: number) => {
     const item = new Item()
     item.consumable = false
-    item.attack = 0
-    item.defense = 0
-    item.attackSpeed = 0
-    item.critRate = 0
+    item.attackStat.value = 0
+    item.defenseStat.value = 0
+    item.attackSpeedStat.value = 0
+    item.critRateStat.value = 0
     let gennedItem = null
     if (zone > 0 && zone <= 8) {
         gennedItem = pickItemFromWeightedList(ITEM_POOL_1)

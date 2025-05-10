@@ -105,7 +105,7 @@ export default class StoryUtils {
     private static createAttackItem(name: string, baseCost: number, attack: number, scalingFactor: number) {
         const item = new Item()
         item.name = name
-        item.attack = attack
+        item.attackStat.value = attack
         item.baseCost = baseCost
         item.scalingFactor = scalingFactor
         return item
@@ -114,7 +114,7 @@ export default class StoryUtils {
     private static createDefenseItem(name: string, baseCost: number, defense: number, scalingFactor: number) {
         const item = new Item()
         item.name = name
-        item.defense = defense
+        item.defenseStat.value = defense
         item.baseCost = baseCost
         item.scalingFactor = scalingFactor
         return item

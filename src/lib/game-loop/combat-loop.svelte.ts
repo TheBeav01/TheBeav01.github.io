@@ -1,3 +1,4 @@
+import { AttackUtils } from "../stats/attack";
 import { encounterState, onTurnFinish } from "../stores/encounter.svelte";
 import type LivingEntity from "../types/livingEntity.svelte";
 import type Player from "../types/player";
@@ -14,18 +15,22 @@ export class CombatLoop {
         }
         const partnerUpdate = partner.tick(diff)
         const foeUpdate = currentFoe.tick(diff)
-        //If expired, select target and attack
-        partner.attackEntity(currentFoe)
-        const willAttackPlayer = this.willAttack(player, currentFoe)
-        if (willAttackPlayer) {
-            currentFoe.attackEntity(player)
-        } else {
-            // Random for now
-            const random = generateRandomNumber(100, 1)
-            if (random < 50) {
+        if (partnerUpdate) {
+            //If expired, select target and attack
+            partner.attackEntity(currentFoe)
+        }
+        if (foeUpdate) {
+            const willAttackPlayer = this.willAttack(player, currentFoe)
+            if (willAttackPlayer) {
                 currentFoe.attackEntity(player)
             } else {
-                currentFoe.attackEntity(partner)
+                // Random for now
+                const random = generateRandomNumber(100, 1)
+                if (random < 50) {
+                    currentFoe.attackEntity(player)
+                } else {
+                    currentFoe.attackEntity(partner)
+                }
             }
         }
         if (partnerUpdate || foeUpdate) {
@@ -34,6 +39,6 @@ export class CombatLoop {
     }
 
     private static willAttack (player: Player, currentFoe: LivingEntity) {
-        return currentFoe.getBaseDamage(player) >= player.currentHp
+        return AttackUtils.calculateDamage(currentFoe, player) >= player.hpStat.value
     }
 }

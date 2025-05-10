@@ -26,7 +26,7 @@
     <div class="upgrade-container">
         <h3>Player Upgrades</h3>
         <div>
-            {#each item.filter(d => d.attack > 0) as upgrade}
+            {#each item.filter(d => d.attackStat.value > 0) as upgrade}
                 <button class="upgrade-button" onclick={() => equip(upgrade)}>
                     <div>
                         {upgrade.name} - Rank {upgrade.amt}
@@ -41,7 +41,7 @@
             {/each}
         </div>
         <div>
-            {#each item.filter(d => d.defense > 0) as upgrade}
+            {#each item.filter(d => d.defenseStat.value > 0) as upgrade}
                 <button class="upgrade-button" onclick={() => equip(upgrade)}>
                     <div>
                         {upgrade.name} - Rank {upgrade.amt}

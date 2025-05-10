@@ -4,5 +4,5 @@ export default interface BaseStat<T> {
     name: string,
     description: string,
     value: T
-    applyTo: (attackingEntity: LivingEntity, defendingEntity: LivingEntity, amt?: T) => LivingEntity
+    applyTo: (attackingEntity: LivingEntity, defendingEntity: LivingEntity, other?: any) => any
 }

@@ -1,3 +1,8 @@
+import AttackStat from "../../stats/attack";
+import AttackSpeedStat from "../../stats/attackSpeed";
+import CritRateStat from "../../stats/critRate";
+import DefenseStat from "../../stats/defense";
+import HealthStat from "../../stats/health";
 import { playerStore } from "../../stores/playerStore.svelte";
 import { resourceStore } from "../../stores/resourceStore.svelte";
 import type BaseEntity from "../baseEntity";
@@ -11,11 +16,16 @@ export class Item extends Resource implements BaseEntity {
     public consumable: boolean = false;
     public isKey: boolean = false;
     public isItem: boolean = true;
-    attack: number = 0;
-    defense: number = 0;
-    attackSpeed: number = 0;
-    critRate: number = 0;
-    maxHp = 0
+    attackStat = new AttackStat(0);
+    readonly attack = this.attackStat.value
+    defenseStat = new DefenseStat(0);
+    readonly defense = this.defenseStat.value
+    attackSpeedStat = new AttackSpeedStat(0);
+    readonly attackSpeed = this.attackSpeedStat.value
+    critRateStat = new CritRateStat(0);
+    readonly critRate = this.critRateStat.value
+    readonly maxHp = 0
+    hpStat = new HealthStat(0)
     private maxDeconstructionTimer = 10 * 1000
     private deconstructTimer = this.maxDeconstructionTimer
     private deconstructAmount = 1
@@ -42,11 +52,11 @@ export class Item extends Resource implements BaseEntity {
     }
     currentCost = $state(0)
     public equip(entity: Player) : Player {
-        entity.attack += this.attack
-        entity.defense += this.defense
-        entity.attackSpeed += this.attackSpeed
-        entity.critRate += this.critRate
-        entity.maxHp += this.maxHp
+        entity.attackStat.value += this.attackStat.value
+        entity.defenseStat.value += this.defenseStat.value
+        entity.attackSpeedStat.value += this.attackSpeedStat.value
+        entity.critRateStat.value += this.critRateStat.value
+        entity.hpStat.maxValue += this.maxHp
         entity.awardItem(this, 1)
         console.log(entity.inventory)
         return entity
@@ -59,16 +69,16 @@ export class Item extends Resource implements BaseEntity {
         const thisItem = new Item()
         thisItem.fromBase(cloneFrom)
         thisItem.add(cloneFrom._amt)
-        thisItem.attack = cloneFrom.attack
-        thisItem.attackSpeed = cloneFrom.attackSpeed
+        thisItem.attackStat = cloneFrom.attackStat
+        thisItem.attackSpeedStat = cloneFrom.attackSpeedStat
         thisItem.consumable = cloneFrom.consumable
-        thisItem.critRate = cloneFrom.critRate
-        thisItem.defense = cloneFrom.defense
+        thisItem.critRateStat = cloneFrom.critRateStat
+        thisItem.defenseStat = cloneFrom.defenseStat
         thisItem.description = cloneFrom.description
         thisItem.genRatePerSecond = cloneFrom.genRatePerSecond
         thisItem.isItem = true
         thisItem.isKey = cloneFrom.isKey
-        thisItem.maxHp = cloneFrom.maxHp
+        thisItem.hpStat = cloneFrom.hpStat
         thisItem.name = cloneFrom.name
         thisItem.removeOnAscent = cloneFrom.removeOnAscent
         thisItem.scalingFactor = cloneFrom.scalingFactor
@@ -82,10 +92,10 @@ export class Item extends Resource implements BaseEntity {
     }
 
     public getUpgradeText() {
-        if (this.defense > 0) {
-            return `+${this.defense} Defense`
+        if (this.defenseStat.value > 0) {
+            return `+${this.defenseStat.value} Defense`
         }
-        return `+${this.attack} Attack`
+        return `+${this.attackStat.value} Attack`
     }
 
     public displayItem(idx: number) {
