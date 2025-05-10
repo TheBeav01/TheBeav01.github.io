@@ -3,8 +3,6 @@ import AttackSpeedStat from "../../stats/attackSpeed";
 import CritRateStat from "../../stats/critRate";
 import DefenseStat from "../../stats/defense";
 import HealthStat from "../../stats/health";
-import { playerStore } from "../../stores/playerStore.svelte";
-import { resourceStore } from "../../stores/resourceStore.svelte";
 import type BaseEntity from "../baseEntity";
 import type Player from "../player";
 import { Resource } from "./resource.svelte";
@@ -98,23 +96,23 @@ export class Item extends Resource implements BaseEntity {
         return `+${this.attackStat.value} Attack`
     }
 
-    public displayItem(idx: number) {
-        if (idx == 0) {
-            return true
-        }
-        const hasItem = playerStore.get("player")!.inventory.find(i => i.name === this.name) !== undefined
-        const partnerHasItem = playerStore.get("partner")!.inventory.find(i => i.name === this.name) !== undefined
-        console.log(hasItem, partnerHasItem)
-        if (hasItem || partnerHasItem) {
-            return true
-        }
-        const mana = resourceStore.get("Mana")!
-        console.log(this.amt)
-        if (mana?._amt >= this.currentCost / 2) {
-            return true
-        }
-        return false
-    }
+    // public displayItem(idx: number) {
+    //     if (idx == 0) {
+    //         return true
+    //     }
+    //     const hasItem = playerStore.get("player")!.inventory.find(i => i.name === this.name) !== undefined
+    //     const partnerHasItem = playerStore.get("partner")!.inventory.find(i => i.name === this.name) !== undefined
+    //     console.log(hasItem, partnerHasItem)
+    //     if (hasItem || partnerHasItem) {
+    //         return true
+    //     }
+    //     const mana = resourceStore.get("Mana")!
+    //     console.log(this.amt)
+    //     if (mana?._amt >= this.currentCost / 2) {
+    //         return true
+    //     }
+    //     return false
+    // }
 
     public addDeconstructJob(amountToDeconstruct = 1) {
         this.deconstructAmount = amountToDeconstruct < 0 ? 1 : amountToDeconstruct

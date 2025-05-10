@@ -1,7 +1,7 @@
 <script lang="ts">
     import { resourceStore } from "../stores/resourceStore.svelte";
 
-    let { name }: {name: string} = $props()
+    let { name }: {name: string } = $props()
     let resource = $derived(resourceStore.get(name))
 </script>
 

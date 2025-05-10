@@ -3,7 +3,7 @@
     import { addXToResource, resourceStore } from "../stores/resourceStore.svelte";
     import { getDate } from "../utils/dateUtils";
     import {onFrameCooldown} from "../utils/gameUtils.svelte";
-    import Resource from "./resourceText.svelte";
+    import ResourceList from "./resources/resourceList.svelte";
     let date = $state(getDate())
     onFrameCooldown(30, () => date = getDate())
     const item = $derived(resourceStore)
@@ -15,12 +15,7 @@
     <span class="top-bar-flex-item center-item">{date}</span>
     <div class="top-bar-flex-item">
         <div>
-            {#each item.keys() as key }
-            <Resource name={key}/>
-            <!-- TODO: sort out how to do dev stuff and move this there -->
-            <!-- <button onclick={() => awardResource(key)}>Award 10</button> -->
-
-            {/each}
+            <ResourceList type="Resource"/>
         </div>
     </div>
     <div class="button-container center-item">

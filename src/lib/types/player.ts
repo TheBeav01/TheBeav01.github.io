@@ -31,6 +31,7 @@ export default class Player extends LivingEntity {
         } else {
             this.inventory[found].add(amountToAdd)
         }
+        addResource(item, amountToAdd)
     }
     static fromPartner(partner: Player) {
         const p = new Player(true)

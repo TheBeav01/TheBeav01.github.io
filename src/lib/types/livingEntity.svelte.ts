@@ -40,6 +40,7 @@ export default class LivingEntity implements BaseEntity {
         soul.add(1)
         this.inventory.push(soul)
         this.inventory.forEach(i => player?.awardItem(i))
+        console.log(this.inventory)
     }
     
     getBaseDamage (other: LivingEntity) {

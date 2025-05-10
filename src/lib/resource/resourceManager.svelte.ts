@@ -13,6 +13,9 @@ export const removeResource = (name: string) => {
 }
 
 export const tick = (resource: Resource, tick: number = 0) => {
+    if (resource.isItem) {
+        return
+    }
     if (tick) {
         const seconds = tick / 1000
         const amountToAdd = seconds * resource.genRatePerSecond

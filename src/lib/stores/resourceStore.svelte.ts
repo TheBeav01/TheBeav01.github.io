@@ -3,6 +3,7 @@ import Mana from "../types/resources/mana.svelte";
 import Soul from "../types/resources/souls.svelte";
 import type SaveObject from "../types/saveObject.svelte";
 import { gameSave } from "../types/gameSave.svelte";
+import { Item } from "../types/resources/item.svelte";
 
 const createDefaultMap = () => {
     const map: Map<string, Resource> = new Map()
@@ -15,7 +16,10 @@ export const createResourcesFromSave = (save: SaveObject) => {
     const map: Map<string, Resource> = new Map()
     save.resources.forEach(r => {
         if (!resourceStore.has(r.name)) {
-            console.error("Unable to find resource. This shouldn't happen")
+            if (r.isItem) {
+                r = new Item().from(r)
+            }
+            resourceStore.set(r.name, r)
             return
         }
         const res = resourceStore.get(r.name)!
@@ -36,17 +40,14 @@ function writeResourcesToSave() : void {
 
 }
 
-export const addResource = (resource: Resource) => {
-    if (resource.isItem) {
-        return
-    }
+export const addResource = (resource: Resource, amountToAdd = resource._amt) => {
     if (!resourceStore.has(resource.name)) {
         resourceStore.set(resource.name, resource)
         writeResourcesToSave()
         return
     }
     const res = resourceStore.get(resource.name)!
-    res.add(resource._amt)
+    res.add(amountToAdd)
     resourceStore.set(res.name, res)
     writeResourcesToSave()
 }

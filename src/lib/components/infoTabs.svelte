@@ -2,6 +2,7 @@
     import { getPartnerName, getPlayer } from "../stores/playerStore.svelte";
     import { gameSave } from "../types/gameSave.svelte";
     import StoryUtils from "../utils/storyUtils.svelte";
+    import ResourceList from "./resources/resourceList.svelte";
 
     let message = $derived(StoryUtils.getStoryState(gameSave.save));
     let hasMessage = $derived(message.text.length > 0 && message.text[0].text != "")
@@ -18,12 +19,7 @@
 <div>
     {#if !hasMessage}
         <div>Inventory:</div>
-        {#if getPlayer().inventory.length === 0}
-            <span>No items</span>
-        {/if}
-        {#each getPlayer().inventory as item}
-            <div>{item.name} x{item.amt}</div>
-        {/each}
+        <ResourceList type="Inventory" emptyText="No items"/>
     {/if}
     {#if hasMessage}
         {#each message.text as textItem}
