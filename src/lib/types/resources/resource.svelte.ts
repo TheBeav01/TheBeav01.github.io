@@ -37,6 +37,8 @@ export abstract class Resource {
 
     public abstract isItem : boolean
 
+    public isUpgrade : boolean = false
+
     public abstract from(res: Resource) : Resource
 
     public removeFromStore = () => {

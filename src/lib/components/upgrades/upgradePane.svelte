@@ -5,54 +5,25 @@
     import { Item } from "../../types/resources/item.svelte";
     import StoryUtils, { PRE_EQUIPMENT_ERA } from "../../utils/storyUtils.svelte";
     import { encounterState } from "../../stores/encounter.svelte";
+    import type Upgrade from "../../types/resources/upgrade.svelte";
+    import UpgradeItem from "./upgradeItem.svelte";
 
     let item = $derived.by(() => {
-        const x = resourceStore.get("Mana")
-        const player = playerStore.get("player")!
-        return StoryUtils.getAvailablePlayerUpgrades(player, x!)
+        return StoryUtils.getAvailablePlayerUpgrades(resourceStore)
     })
-    const equip = (item: Item) => {
-        console.log(item)
-        const player = playerStore.get("player")
-        const newPlayer = item.equip(player!)
-        playerStore.set("player", newPlayer)
-        encounterState.state.player = newPlayer
-        const mana = resourceStore.get("Mana")
-        mana?.remove(Math.floor(item.currentCost))
-    }
 </script>
 
 {#if gameSave.save.storyPos > PRE_EQUIPMENT_ERA}
     <div class="upgrade-container">
         <h3>Player Upgrades</h3>
         <div>
-            {#each item.filter(d => d.attackStat.value > 0) as upgrade}
-                <button class="upgrade-button" onclick={() => equip(upgrade)}>
-                    <div>
-                        {upgrade.name} - Rank {upgrade.amt}
-                    </div>
-                    <div>
-                        {upgrade.currentCost.toFixed(0)} Mana
-                    </div>
-                    <div>
-                        {upgrade.getUpgradeText()}
-                    </div>
-                </button>
+            {#each item.filter(d => d.attackStat.value > 0) as u}
+                <UpgradeItem upgrade={u}/>
             {/each}
         </div>
         <div>
-            {#each item.filter(d => d.defenseStat.value > 0) as upgrade}
-                <button class="upgrade-button" onclick={() => equip(upgrade)}>
-                    <div>
-                        {upgrade.name} - Rank {upgrade.amt}
-                    </div>
-                    <div>
-                        {upgrade.calculateNextCost().toFixed(0)} Mana
-                    </div>
-                    <div>
-                        {upgrade.getUpgradeText()}
-                    </div>
-                </button>
+            {#each item.filter(d => d.defenseStat.value > 0) as u}
+                <UpgradeItem upgrade={u}/>
             {/each}
             
         </div>
@@ -62,8 +33,5 @@
 <style>
     .upgrade-container {
         grid-column: 1/3;
-    }
-    .upgrade-button {
-        height: fit-content;
     }
 </style>

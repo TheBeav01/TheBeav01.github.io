@@ -1,12 +1,16 @@
 import * as Constants from "../constants/constants"
 import { saveGame } from "../stores/gameSave.svelte"
 import { log } from "../stores/messageList.svelte"
+import { resourceStore } from "../stores/resourceStore.svelte"
 import { gameSave } from "../types/gameSave.svelte"
 import type Player from "../types/player"
 import { Item } from "../types/resources/item.svelte"
 import type Mana from "../types/resources/mana.svelte"
+import type { Resource } from "../types/resources/resource.svelte"
+import Upgrade from "../types/resources/upgrade.svelte"
 import type SaveObject from "../types/saveObject.svelte"
 import { generateRandomNumber } from "./gameUtils.svelte"
+import { CHEST_BONE } from "./generators/itemGenerator"
 
 interface StoryHandler {
     text: StoryText[]
@@ -28,13 +32,14 @@ export const DRONE_POS = 7
 export default class StoryUtils {
     private static partnerNames = ["Zephyr", "Aluca", "Ruby", "Zircon", "Topaz", "Orion", "Zatha", "Ba'kan", "Azl'ka", "Xa'ahn"]
     static allUpgrades = [
+        this.createAttackItem("Reinforce Bone", 1, 0.25, 1.08, CHEST_BONE),
         this.createAttackItem("Sharpen Dagger", 10, 0.25, 1.08),
         this.createAttackItem("+1 Dagger",25, 1, 1.25),
         this.createDefenseItem("Improve Boots", 10, 0.5, 1.10),
         this.createDefenseItem("Improve Gloves", 15, 0.5, 1.10),
         this.createDefenseItem("Improve Cloak Fibers",40, 2, 1.25)
     ]
-    static cached : Item[] = []
+    static cached : Upgrade[] = []
     static generatePartnerName() {
         let idx = generateRandomNumber(this.partnerNames.length, 0, false)
         idx = Math.min(idx, this.partnerNames.length - 1)
@@ -69,10 +74,11 @@ export default class StoryUtils {
                     onNext: () => this.setStoryPosition(PRE_EQUIPMENT_ERA),
                     onNextText: "-->"
                 }
-            case EQUIPMENT_ERA:
+            case PRE_EQUIPMENT_ERA:
                 return {
-                    text: Constants.STORY_MESSAGE_EQUIPMENT,
-                    onNext: () => this.setStoryPosition(POST_EQUIPMENT_ERA)
+                    text: Constants.STORY_MESSAGE_5,
+                    onNext: () => this.setStoryPosition(POST_EQUIPMENT_ERA),
+                    onNextText: "-->"
                 }
             default:
                 return {
@@ -80,14 +86,16 @@ export default class StoryUtils {
                 }
             }
     }
-    public static getAvailablePlayerUpgrades(player: Player, mana: Mana) {
+    
+    public static getAvailablePlayerUpgrades(resourceStore: Map<string, Resource>) {
         const highestCall = this.cached
+        const mana = resourceStore.get("Mana")!
         const newList = this.allUpgrades.filter((u, idx) => {
             if (idx == 0) {
                 return true
             }
-            const hasItem = player.inventory.find(i => i.name === this.name) !== undefined
-            if (hasItem) {
+            const hasResource = resourceStore.get(u.name)
+            if (hasResource) {
                 return true
             }
             if (mana.amt >= u.currentCost / 2) {
@@ -102,8 +110,9 @@ export default class StoryUtils {
         return this.cached
     }
 
-    private static createAttackItem(name: string, baseCost: number, attack: number, scalingFactor: number) {
-        const item = new Item()
+    private static createAttackItem(name: string, baseCost: number, attack: number, scalingFactor: number, resourceUsed = "Mana") {
+        const item = new Upgrade()
+        item.resourceUsed = resourceUsed
         item.name = name
         item.attackStat.value = attack
         item.baseCost = baseCost
@@ -111,8 +120,9 @@ export default class StoryUtils {
         return item
     }
 
-    private static createDefenseItem(name: string, baseCost: number, defense: number, scalingFactor: number) {
-        const item = new Item()
+    private static createDefenseItem(name: string, baseCost: number, defense: number, scalingFactor: number, resourceUsed = "Mana") {
+        const item = new Upgrade()
+        item.resourceUsed = resourceUsed
         item.name = name
         item.defenseStat.value = defense
         item.baseCost = baseCost

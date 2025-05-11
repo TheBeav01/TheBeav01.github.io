@@ -3,6 +3,8 @@ import AttackSpeedStat from "../../stats/attackSpeed";
 import CritRateStat from "../../stats/critRate";
 import DefenseStat from "../../stats/defense";
 import HealthStat from "../../stats/health";
+import { playerStore } from "../../stores/playerStore.svelte";
+import { resourceStore } from "../../stores/resourceStore.svelte";
 import type BaseEntity from "../baseEntity";
 import type Player from "../player";
 import { Resource } from "./resource.svelte";
@@ -13,7 +15,7 @@ export class Item extends Resource implements BaseEntity {
     public removeOnAscent: boolean = true;
     public consumable: boolean = false;
     public isKey: boolean = false;
-    public isItem: boolean = true;
+    public readonly isItem: boolean = true;
     attackStat = new AttackStat(0);
     readonly attack = this.attackStat.value
     defenseStat = new DefenseStat(0);
@@ -50,14 +52,7 @@ export class Item extends Resource implements BaseEntity {
     }
     currentCost = $state(0)
     public equip(entity: Player) : Player {
-        entity.attackStat.value += this.attackStat.value
-        entity.defenseStat.value += this.defenseStat.value
-        entity.attackSpeedStat.value += this.attackSpeedStat.value
-        entity.critRateStat.value += this.critRateStat.value
-        entity.hpStat.maxValue += this.maxHp
-        entity.awardItem(this, 1)
-        console.log(entity.inventory)
-        return entity
+        return ItemUtils.equipItem(this, entity)
     }
     public from(res: Resource): Resource {
         if (!res.isItem) {
@@ -74,7 +69,6 @@ export class Item extends Resource implements BaseEntity {
         thisItem.defenseStat = cloneFrom.defenseStat
         thisItem.description = cloneFrom.description
         thisItem.genRatePerSecond = cloneFrom.genRatePerSecond
-        thisItem.isItem = true
         thisItem.isKey = cloneFrom.isKey
         thisItem.hpStat = cloneFrom.hpStat
         thisItem.name = cloneFrom.name
@@ -96,24 +90,6 @@ export class Item extends Resource implements BaseEntity {
         return `+${this.attackStat.value} Attack`
     }
 
-    // public displayItem(idx: number) {
-    //     if (idx == 0) {
-    //         return true
-    //     }
-    //     const hasItem = playerStore.get("player")!.inventory.find(i => i.name === this.name) !== undefined
-    //     const partnerHasItem = playerStore.get("partner")!.inventory.find(i => i.name === this.name) !== undefined
-    //     console.log(hasItem, partnerHasItem)
-    //     if (hasItem || partnerHasItem) {
-    //         return true
-    //     }
-    //     const mana = resourceStore.get("Mana")!
-    //     console.log(this.amt)
-    //     if (mana?._amt >= this.currentCost / 2) {
-    //         return true
-    //     }
-    //     return false
-    // }
-
     public addDeconstructJob(amountToDeconstruct = 1) {
         this.deconstructAmount = amountToDeconstruct < 0 ? 1 : amountToDeconstruct
         this.deconstructTimer = this.maxDeconstructionTimer
@@ -123,5 +99,18 @@ export class Item extends Resource implements BaseEntity {
         this.deconstructTimer -= delta
         const amountToRemove = (delta / this.maxDeconstructionTimer) * this.deconstructAmount
         this.remove(amountToRemove)
+    }
+}
+
+export class ItemUtils {
+    static equipItem(item: Item, ontoEntity: Player) : Player {
+        ontoEntity.attackStat.value += item.attackStat.value
+        ontoEntity.defenseStat.value += item.defenseStat.value
+        ontoEntity.attackSpeedStat.value += item.attackSpeedStat.value
+        ontoEntity.critRateStat.value += item.critRateStat.value
+        ontoEntity.hpStat.maxValue += item.maxHp
+        ontoEntity.awardItem(item, 1)
+        console.log(ontoEntity.inventory)
+        return ontoEntity
     }
 }

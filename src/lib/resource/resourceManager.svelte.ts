@@ -13,7 +13,7 @@ export const removeResource = (name: string) => {
 }
 
 export const tick = (resource: Resource, tick: number = 0) => {
-    if (resource.isItem) {
+    if (resource.isItem || resource.isUpgrade) {
         return
     }
     if (tick) {

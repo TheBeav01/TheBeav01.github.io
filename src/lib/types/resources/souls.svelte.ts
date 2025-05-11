@@ -5,7 +5,7 @@ export default class Soul extends Resource {
     public removeOnAscent: boolean = true;
     public consumable: boolean = true;
     public isKey: boolean = false;
-    public isItem: boolean = false;
+    public readonly isItem: boolean = false;
     public name: string = "Soul";
     public description: string = `An etheral essence all creatures possess. ${getPartnerName()} reacts strongly to it.`;
     public from(_res: Resource): Resource {

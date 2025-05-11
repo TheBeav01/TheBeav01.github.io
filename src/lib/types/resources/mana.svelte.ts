@@ -5,7 +5,7 @@ export default class Mana extends Resource {
     public description: string = "Its energy calls to you for your use."
     public consumable: boolean = true
     public isKey: boolean = false
-    public isItem: boolean = false
+    public readonly isItem: boolean = false
     public removeOnAscent: boolean = true
     public from(res: Resource): Resource {
         if (!(res instanceof Mana)) {

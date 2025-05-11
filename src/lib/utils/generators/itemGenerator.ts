@@ -8,13 +8,15 @@ interface BaseItem extends Spawnable {
     baseAmount?: number
 }
 
+export const CHEST_BONE = "Chest Bone"
+
 const ITEM_POOL_1 : BaseItem[] = [{
-    name: "Chest Bone",
+    name: CHEST_BONE,
     description: "The chest bone of an animal. Better than nothing.",
 }]
 
 const ITEM_POOL_2 : BaseItem[] = [{
-    name: "Chest Bone",
+    name: CHEST_BONE,
     description: "The chest bone of an animal. Better than nothing.",
     baseAmount: 2
 }, {

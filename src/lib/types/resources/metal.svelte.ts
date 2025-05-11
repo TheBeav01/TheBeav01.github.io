@@ -6,7 +6,7 @@ export default class Metal extends Resource {
     public removeOnAscent: boolean = true;
     public consumable: boolean = true;
     public isKey: boolean = false;
-    public isItem: boolean = false;
+    public readonly isItem: boolean = false;
     public from(res: Resource): Resource {
         if (!(res instanceof Metal)) {
             return res
