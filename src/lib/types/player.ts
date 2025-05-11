@@ -24,14 +24,7 @@ export default class Player extends LivingEntity {
             addResource(item, amount)
             return
         }
-        const found = this.inventory.findIndex(x => x.name === item.name)
         const amountToAdd = amount === undefined ? item._amt : amount
-        if (found < 0) {
-            item.add(amountToAdd)
-            this.inventory.push(item)
-        } else {
-            this.inventory[found].add(amountToAdd)
-        }
         addResource(item, amountToAdd)
     }
     static fromPartner(partner: Player) {

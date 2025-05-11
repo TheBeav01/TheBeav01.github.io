@@ -74,7 +74,7 @@ export default class LivingEntity implements BaseEntity {
         const rounded = this.getBaseDamage(other)
         log(`${this.name} attacks ${other.name} for ${rounded} damage`)
         
-        if (other.hpStat.value <= rounded) {
+        if (other.hpStat.value <= 0) {
             other.dead = true
             other.onKill()
             log(`${this.name} kills ${other.name}`)
