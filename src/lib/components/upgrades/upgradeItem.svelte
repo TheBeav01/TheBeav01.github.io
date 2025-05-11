@@ -4,7 +4,7 @@
     import { encounterState } from "../../stores/encounter.svelte";
     import type Upgrade from "../../types/resources/upgrade.svelte";
     import { name } from "@melt-ui/svelte";
-    import { equipOrTogglePassive, gameSave } from "../../types/gameSave.svelte";
+    import { equipOrTogglePassive, gameSave, getPassiveValue } from "../../types/gameSave.svelte";
 
     const {upgrade, passive} : {upgrade: Upgrade, passive?: boolean} = $props()
     const equip = () => {
@@ -35,7 +35,7 @@
             {upgrade.name} - Rank {upgrade.amt}
         {/if}
     </div>
-    {#if !passive}
+    {#if !passive || (passive && getPassiveValue(upgrade.name) == null)}
         <div>
             {upgrade.currentCost.toFixed(0)} {upgrade.resourceUsed}
         </div>
@@ -43,7 +43,7 @@
             {upgrade.getUpgradeText()}
         </div>
     {/if}
-    {#if passive}
+    {#if passive && getPassiveValue(upgrade.name) != null}
         {upgrade.upgradeToggled ? "Active" : "Inactive"}
     {/if}
 </button>

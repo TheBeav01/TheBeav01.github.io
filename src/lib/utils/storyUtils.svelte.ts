@@ -1,6 +1,7 @@
 import * as Constants from "../constants/constants"
 import { saveGame } from "../stores/gameSave.svelte"
 import { log } from "../stores/messageList.svelte"
+import { resourceStore } from "../stores/resourceStore.svelte"
 import { gameSave, getPassive } from "../types/gameSave.svelte"
 import type { Resource } from "../types/resources/resource.svelte"
 import Upgrade from "../types/resources/upgrade.svelte"
@@ -63,14 +64,6 @@ export default class StoryUtils {
     }
     
     public static getStoryState(s: SaveObject) : StoryHandler {
-        let ulk = this.showPassiveUnlockStory("Swoop", "AAAAA")
-        if (ulk) {
-            return ulk
-        }
-        ulk = this.showPassiveUnlockStory("Rescue", "BBBBBB")
-        if (ulk) {
-            return ulk
-        }
         switch (s.storyPos) {
             case INITIAL_STORY:
                 return {
@@ -99,15 +92,25 @@ export default class StoryUtils {
                     onNextText: "-->"
                 }
             default:
-                return {
+                break
+        }
+        let ulk = this.showPassiveUnlockStory("Swoop", "AAAAA")
+        if (ulk) {
+            return ulk
+        }
+        ulk = this.showPassiveUnlockStory("Rescue", "BBBBBB")
+        if (ulk) {
+            return ulk
+        }
+        return {
                     text: Constants.STORY_MESSAGE_DEFAULT
                 }
-            }
     }
 
     private static showPassiveUnlockStory(passiveName: string, text: string) {
         const swoop = getPassive(passiveName)
-        if (!swoop || !swoop.storyShown) {
+        const resourceListPassive = resourceStore.get(passiveName) as Upgrade
+        if ((swoop && !swoop.storyShown) || (resourceListPassive && resourceListPassive.isUnlocked())) {
             return {
                 text: [
                     {
