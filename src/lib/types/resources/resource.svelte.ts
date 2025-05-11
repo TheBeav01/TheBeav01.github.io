@@ -1,7 +1,12 @@
 import { removeResource } from "../../resource/resourceManager.svelte"
 
 export abstract class Resource {
-    
+    constructor(from?: Resource) {
+        if (!from) {
+            return
+        } 
+        this.genRatePerSecond = from.genRatePerSecond
+    }
     /**
      * The name of the resource
      */
@@ -38,8 +43,6 @@ export abstract class Resource {
     public abstract isItem : boolean
 
     public isUpgrade : boolean = false
-
-    public abstract from(res: Resource) : Resource
 
     public removeFromStore = () => {
         removeResource(this.name)

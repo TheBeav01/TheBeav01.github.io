@@ -4,6 +4,8 @@ import Soul from "../types/resources/souls.svelte";
 import type SaveObject from "../types/saveObject.svelte";
 import { gameSave } from "../types/gameSave.svelte";
 import { Item } from "../types/resources/item.svelte";
+import Upgrade from "../types/resources/upgrade.svelte";
+import StoryUtils from "../utils/storyUtils.svelte";
 
 const createDefaultMap = () => {
     const map: Map<string, Resource> = new Map()
@@ -16,10 +18,25 @@ export const createResourcesFromSave = (save: SaveObject) => {
     const map: Map<string, Resource> = new Map()
     save.resources.forEach(r => {
         if (!resourceStore.has(r.name)) {
-            if (r.isItem) {
-                r = new Item().from(r)
+            let res = null
+            if (r.isUpgrade) {
+                res = new Upgrade(r as Upgrade)
+                const upgrade = StoryUtils.allUpgrades.find(u => u.name === r.name)
+                if (upgrade) {
+                    res.scalingFactor = upgrade.scalingFactor
+                    res.baseCost = upgrade.baseCost
+                    res.resourceUsed = upgrade.resourceUsed
+                    res.attackStat = upgrade.attackStat
+                    res.defenseStat = upgrade.defenseStat
+                }
             }
-            resourceStore.set(r.name, r)
+            else if (r.isItem) {
+                res = new Item(r as Item)
+            }
+            if (!res) {
+                return
+            }
+            resourceStore.set(res.name, res)
             return
         }
         const res = resourceStore.get(r.name)!

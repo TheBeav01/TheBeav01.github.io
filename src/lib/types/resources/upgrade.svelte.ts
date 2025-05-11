@@ -1,10 +1,19 @@
 import { Item } from "./item.svelte";
+import type { Resource } from "./resource.svelte";
 
 export default class Upgrade extends Item {
     public isUpgrade: boolean = true;
     public readonly isItem = false
     public resourceUsed = "Mana"
-    constructor() {
-        super()
+    constructor(from?: Upgrade) {
+        super(from as Item)
+        if (!from) {
+            return
+        }
+        this.resourceUsed = from.resourceUsed
+    }
+
+    public add(amt: number): void {
+        super.add(amt)
     }
 }

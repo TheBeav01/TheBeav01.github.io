@@ -1,5 +1,6 @@
 import { onDeath } from "../stores/gameState.svelte";
-import { addResource } from "../stores/resourceStore.svelte";
+import { addResource, resourceStore } from "../stores/resourceStore.svelte";
+import StoryUtils from "../utils/storyUtils.svelte";
 import LivingEntity from "./livingEntity.svelte";
 import type { Resource } from "./resources/resource.svelte";
 
@@ -40,8 +41,12 @@ export default class Player extends LivingEntity {
         return p
     }
     static from(player: Player) {
+        const upgrades = StoryUtils.getAvailablePlayerUpgrades(resourceStore)
         const p = new Player()
         p.fromBase(player)
+        upgrades.forEach(u => {
+            u.equip(p, u.amt)
+        })
         return p
     }
 }

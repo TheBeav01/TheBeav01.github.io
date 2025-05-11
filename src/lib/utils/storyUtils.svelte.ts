@@ -102,7 +102,7 @@ export default class StoryUtils {
                 return true
             }
             return false
-        })
+        }).map(u => resourceStore.get(u.name) as Upgrade ?? u)
         if (newList.length > highestCall.length) {
             this.cached = newList
             return newList

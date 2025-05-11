@@ -118,7 +118,7 @@ export default class LivingEntity implements BaseEntity {
                 return new Mana().from(i)
             }
             else {
-                return new Item().from(i)
+                return new Item(i as Item)
             }
         })
     }

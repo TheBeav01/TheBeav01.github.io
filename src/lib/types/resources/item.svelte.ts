@@ -10,6 +10,27 @@ import type Player from "../player";
 import { Resource } from "./resource.svelte";
 
 export class Item extends Resource implements BaseEntity {
+    constructor(from?: Item) {
+        super(from as Resource)
+        if (!from) {
+            return
+        }
+        this.attackStat = from.attackStat
+        this.attackSpeedStat = from.attackSpeedStat
+        this.consumable = from.consumable
+        this.critRateStat = from.critRateStat
+        this.defenseStat = from.defenseStat
+        this.description = from.description
+        this.genRatePerSecond = from.genRatePerSecond
+        this.isKey = from.isKey
+        this.hpStat = from.hpStat
+        this.name = from.name
+        this.removeOnAscent = from.removeOnAscent
+        this.scalingFactor = from.scalingFactor
+        this.baseCost = from.baseCost
+        this.add(from._amt)
+
+    }
     public name: string = "";
     public description: string = "";
     public removeOnAscent: boolean = true;
@@ -51,31 +72,11 @@ export class Item extends Resource implements BaseEntity {
         this.currentCost = this.calculateNextCost()
     }
     currentCost = $state(0)
-    public equip(entity: Player) : Player {
-        return ItemUtils.equipItem(this, entity)
-    }
-    public from(res: Resource): Resource {
-        if (!res.isItem) {
-            return res
+    public equip(entity: Player, amt?: number) : Player {
+        if (amt != null) {
+            return ItemUtils.equipBulk(this, entity)
         }
-        const cloneFrom = res as Item
-        const thisItem = new Item()
-        thisItem.fromBase(cloneFrom)
-        thisItem.add(cloneFrom._amt)
-        thisItem.attackStat = cloneFrom.attackStat
-        thisItem.attackSpeedStat = cloneFrom.attackSpeedStat
-        thisItem.consumable = cloneFrom.consumable
-        thisItem.critRateStat = cloneFrom.critRateStat
-        thisItem.defenseStat = cloneFrom.defenseStat
-        thisItem.description = cloneFrom.description
-        thisItem.genRatePerSecond = cloneFrom.genRatePerSecond
-        thisItem.isKey = cloneFrom.isKey
-        thisItem.hpStat = cloneFrom.hpStat
-        thisItem.name = cloneFrom.name
-        thisItem.removeOnAscent = cloneFrom.removeOnAscent
-        thisItem.scalingFactor = cloneFrom.scalingFactor
-        thisItem.baseCost = cloneFrom.baseCost
-        return thisItem
+        return ItemUtils.equipItem(this, entity)
     }
 
     public calculateNextCost() {
@@ -110,6 +111,17 @@ export class ItemUtils {
         ontoEntity.critRateStat.value += item.critRateStat.value
         ontoEntity.hpStat.maxValue += item.maxHp
         ontoEntity.awardItem(item, 1)
+        console.log(ontoEntity.inventory)
+        return ontoEntity
+    }
+
+    static equipBulk(item: Item, ontoEntity: Player) : Player {
+        ontoEntity.attackStat.value += item.attackStat.value * item._amt
+        ontoEntity.defenseStat.value += item.defenseStat.value * item._amt
+        ontoEntity.attackSpeedStat.value += item.attackSpeedStat.value * item._amt
+        ontoEntity.critRateStat.value += item.critRateStat.value * item._amt
+        ontoEntity.hpStat.maxValue += item.maxHp * item._amt
+        ontoEntity.inventory.push(item)
         console.log(ontoEntity.inventory)
         return ontoEntity
     }
