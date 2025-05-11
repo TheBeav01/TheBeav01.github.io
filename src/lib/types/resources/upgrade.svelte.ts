@@ -1,9 +1,13 @@
 import { Item } from "./item.svelte";
 
 export default class Upgrade extends Item {
-    public isUpgrade: boolean = true;
+    public isUpgrade = true;
     public readonly isItem = false
     public resourceUsed = "Mana"
+    public readonly upgradeFlag = ""
+    public isPassive = false
+    public upgradeToggled = false
+    public isUnlocked : () => boolean = () => false 
     constructor(from?: Upgrade) {
         super(from as Item)
         if (!from) {
@@ -13,6 +17,9 @@ export default class Upgrade extends Item {
     }
 
     public add(amt: number): void {
+        if (this.upgradeFlag != "") {
+            this.upgradeToggled != this.upgradeToggled
+        }
         super.add(amt)
     }
 }

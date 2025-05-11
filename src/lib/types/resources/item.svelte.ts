@@ -3,6 +3,7 @@ import AttackSpeedStat from "../../stats/attackSpeed";
 import CritRateStat from "../../stats/critRate";
 import DefenseStat from "../../stats/defense";
 import HealthStat from "../../stats/health";
+import { resourceStore } from "../../stores/resourceStore.svelte";
 import type BaseEntity from "../baseEntity";
 import type Player from "../player";
 import { Resource } from "./resource.svelte";
@@ -34,6 +35,7 @@ export class Item extends Resource implements BaseEntity {
     public removeOnAscent: boolean = true;
     public consumable: boolean = false;
     public isKey: boolean = false;
+    public resourceUsed = "Mana"
     public readonly isItem: boolean = true;
     attackStat = new AttackStat(0);
     readonly attack = this.attackStat.value
@@ -71,10 +73,21 @@ export class Item extends Resource implements BaseEntity {
     }
     currentCost = $state(0)
     public equip(entity: Player, amt?: number) : Player {
+        if (!this.canEquip()) {
+            return entity
+        }
         if (amt != null) {
             return ItemUtils.equipBulk(this, entity)
         }
         return ItemUtils.equipItem(this, entity)
+    }
+
+    public canEquip() {
+        const amt = resourceStore.get(this.resourceUsed)
+        if (!amt) {
+            return false
+        }
+        return amt._amt >= Math.floor(this.currentCost)
     }
 
     public calculateNextCost() {

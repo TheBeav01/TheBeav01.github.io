@@ -8,6 +8,8 @@ import { gameSave } from "../types/gameSave.svelte";
 import { ResourceLoop } from "./resource-loop.svelte";
 import { CombatLoop } from "./combat-loop.svelte";
 import { setupEncounter } from "../stores/encounter.svelte";
+import type SaveObject from "../types/saveObject.svelte";
+import { GameStats } from "../types/saveObject.svelte";
 export function load() {
   const saveString = getCookieByKey("save")
   if(saveString != "") {
@@ -58,6 +60,18 @@ function initGame() {
     console.log(`Updated highest: ${gameSave.save.highestArea}`)
   }
   createResourcesFromSave(gameSave.save)
+  handleMigration(gameSave.save)
   setupEncounter(gameSave.save)
   saveGame()
+}
+
+function handleMigration(save: SaveObject) {
+  if (!save.passives) {
+    save.passives = []
+  }
+  if (!save.stats) {
+    save.stats = new GameStats()
+    save.stats.deaths = 0
+  }
+
 }

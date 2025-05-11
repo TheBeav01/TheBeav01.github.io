@@ -23,6 +23,14 @@
             {/each}
             
         </div>
+        <h3>
+            Passives
+        </h3>
+        <div>
+            {#each item.filter(d => d.isPassive) as u}
+                <UpgradeItem upgrade={u} passive/>
+            {/each}
+        </div>
     </div>
 {/if}
 

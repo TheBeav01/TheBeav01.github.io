@@ -60,6 +60,14 @@ export default class SaveObject {
      */
     highestArea = -1
 
+    /**
+     * Passives
+     */
+
+    passives: Passives[] = []
+
+    stats: GameStats = new GameStats()
+
 }
 
 /**
@@ -103,4 +111,20 @@ export class Coordinates {
         }
         return true
     }
+}
+
+/**
+ * Passives
+ */
+export class Passives {
+    name: string = ""
+    toggled: boolean = false
+    constructor(name: string, toggled: boolean) {
+        this.name = name
+        this.toggled = toggled
+    }
+}
+
+export class GameStats {
+    deaths: number = 0
 }

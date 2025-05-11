@@ -1,6 +1,7 @@
 import { onDeath } from "../stores/gameState.svelte";
 import { addResource, resourceStore } from "../stores/resourceStore.svelte";
 import StoryUtils from "../utils/storyUtils.svelte";
+import { gameSave } from "./gameSave.svelte";
 import LivingEntity from "./livingEntity.svelte";
 import type { Resource } from "./resources/resource.svelte";
 
@@ -16,6 +17,7 @@ export default class Player extends LivingEntity {
             return
         }
         onDeath.value = {...onDeath.value, playerDead: true}
+        gameSave.save.stats.deaths += 1
         return
     };
     

@@ -1,7 +1,7 @@
 <script lang="ts">
     import { resourceStore } from "../../stores/resourceStore.svelte";
     import Upgrade from "../../types/resources/upgrade.svelte";
-    type ResourceKey = "Inventory" | "Resource" | "Upgrade" | "All" 
+    type ResourceKey = "Inventory" | "Resource" | "Upgrade" | "Passive" | "All" 
     const { type, emptyText } : {type: ResourceKey, emptyText?: string} = $props()
     function getList() {
         return resourceStore.values().filter(e => {
@@ -14,6 +14,12 @@
                     return !e.isItem && !e.isUpgrade
                 case "Upgrade":
                     return e.isUpgrade
+                case "Passive":
+                    if (!e.isUpgrade) {
+                        return false
+                    }
+                    const upg = e as Upgrade
+                    return upg.isPassive
             }
         })
     }

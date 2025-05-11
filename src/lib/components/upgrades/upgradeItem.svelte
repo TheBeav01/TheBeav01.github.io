@@ -3,9 +3,13 @@
     import { resourceStore } from "../../stores/resourceStore.svelte";
     import { encounterState } from "../../stores/encounter.svelte";
     import type Upgrade from "../../types/resources/upgrade.svelte";
+    import { name } from "@melt-ui/svelte";
 
-    const {upgrade} : {upgrade: Upgrade} = $props()
+    const {upgrade, passive} : {upgrade: Upgrade, passive?: boolean} = $props()
     const equip = () => {
+        if (!upgrade.canEquip()) {
+            return
+        }
         console.log(upgrade)
         const player = playerStore.get("player")
         const newPlayer = upgrade.equip(player!)
@@ -18,7 +22,12 @@
 
 <button class="upgrade-button" onclick={() => equip()}>
     <div>
-        {upgrade.name} - Rank {upgrade.amt}
+        {#if passive}
+            {upgrade.name}
+        {/if}
+        {#if !passive}
+            {upgrade.name} - Rank {upgrade.amt}
+        {/if}
     </div>
     <div>
         {upgrade.currentCost.toFixed(0)} Mana

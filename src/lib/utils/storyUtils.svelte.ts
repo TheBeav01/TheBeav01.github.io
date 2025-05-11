@@ -1,7 +1,7 @@
 import * as Constants from "../constants/constants"
 import { saveGame } from "../stores/gameSave.svelte"
 import { log } from "../stores/messageList.svelte"
-import { gameSave } from "../types/gameSave.svelte"
+import { gameSave, getPassive } from "../types/gameSave.svelte"
 import type { Resource } from "../types/resources/resource.svelte"
 import Upgrade from "../types/resources/upgrade.svelte"
 import type SaveObject from "../types/saveObject.svelte"
@@ -33,7 +33,8 @@ export default class StoryUtils {
         this.createAttackItem("+1 Dagger",25, 1, 1.25),
         this.createDefenseItem("Improve Boots", 10, 0.5, 1.10),
         this.createDefenseItem("Improve Gloves", 15, 0.5, 1.10),
-        this.createDefenseItem("Improve Cloak Fibers",40, 2, 1.25)
+        this.createDefenseItem("Improve Cloak Fibers",40, 2, 1.25),
+        this.createPassive("Swoop", "[[partnername]] takes the hit when an attack would down you", 25, CHEST_BONE, this.hasUnlockedSwoop)
     ]
     static cached : Upgrade[] = []
     static generatePartnerName() {
@@ -82,11 +83,21 @@ export default class StoryUtils {
                 }
             }
     }
+
+    private static hasUnlockedSwoop() {
+        if (getPassive("Swoop") != null) {
+            return true
+        }
+        return gameSave.save.stats.deaths > 0
+    }
     
     public static getAvailablePlayerUpgrades(resourceStore: Map<string, Resource>) {
         const highestCall = this.cached
         const mana = resourceStore.get("Mana")!
         const newList = this.allUpgrades.filter((u, idx) => {
+            if (u.isUnlocked()) {
+                return true
+            }
             if (idx == 0) {
                 return true
             }
@@ -124,5 +135,18 @@ export default class StoryUtils {
         item.baseCost = baseCost
         item.scalingFactor = scalingFactor
         return item
+    }
+
+    private static createPassive(name: string, desc: string, cost: number, resourceUsed = "Mana", unlocked: () => boolean) {
+        const passive = new Upgrade()
+        passive.isPassive = true
+        passive.name = name
+        passive.description = desc
+        passive.resourceUsed = resourceUsed
+        passive.upgradeToggled = false
+        passive.baseCost = cost
+        passive.scalingFactor = 0.0
+        passive.isUnlocked = unlocked
+        return passive
     }
 }
