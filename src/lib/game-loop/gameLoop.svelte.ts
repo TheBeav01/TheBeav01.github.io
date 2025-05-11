@@ -10,6 +10,7 @@ import { CombatLoop } from "./combat-loop.svelte";
 import { setupEncounter } from "../stores/encounter.svelte";
 import type SaveObject from "../types/saveObject.svelte";
 import { GameStats } from "../types/saveObject.svelte";
+import Upgrade from "../types/resources/upgrade.svelte";
 export function load() {
   const saveString = getCookieByKey("save")
   if(saveString != "") {
@@ -60,9 +61,22 @@ function initGame() {
     console.log(`Updated highest: ${gameSave.save.highestArea}`)
   }
   createResourcesFromSave(gameSave.save)
+  createPassivesFromSave(gameSave.save)
   handleMigration(gameSave.save)
   setupEncounter(gameSave.save)
   saveGame()
+}
+
+function createPassivesFromSave(save: SaveObject) {
+  save.passives.forEach(p => {
+    const pass = StoryUtils.allUpgrades.find(u => u.name === p.name)
+    if (!pass) {
+      return
+    }
+    const upgrade = new Upgrade(pass)
+    upgrade.isPassive = true
+    upgrade.upgradeToggled = p.toggled
+  })
 }
 
 function handleMigration(save: SaveObject) {
@@ -72,6 +86,7 @@ function handleMigration(save: SaveObject) {
   if (!save.stats) {
     save.stats = new GameStats()
     save.stats.deaths = 0
+    save.stats.partnerDeaths = 0
   }
 
 }

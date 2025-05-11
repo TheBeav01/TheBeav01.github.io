@@ -5,6 +5,8 @@ import DefenseStat from "../stats/defense";
 import HealthStat from "../stats/health";
 import { log } from "../stores/messageList.svelte";
 import { playerStore } from "../stores/playerStore.svelte";
+import { resourceStore } from "../stores/resourceStore.svelte";
+import StoryUtils from "../utils/storyUtils.svelte";
 import type BaseEntity from "./baseEntity";
 import { Item } from "./resources/item.svelte";
 import Mana from "./resources/mana.svelte";
@@ -78,6 +80,7 @@ export default class LivingEntity implements BaseEntity {
             other.dead = true
             other.onKill()
             log(`${this.name} kills ${other.name}`)
+            StoryUtils.getAvailablePlayerUpgrades(resourceStore)
             this.resetAttackTime()
             return other
         }

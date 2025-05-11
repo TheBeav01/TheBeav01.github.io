@@ -5,6 +5,7 @@ import { gameSave, getPassive } from "../types/gameSave.svelte"
 import type { Resource } from "../types/resources/resource.svelte"
 import Upgrade from "../types/resources/upgrade.svelte"
 import type SaveObject from "../types/saveObject.svelte"
+import { Passives } from "../types/saveObject.svelte"
 import { generateRandomNumber } from "./gameUtils.svelte"
 import { CHEST_BONE } from "./generators/itemGenerator"
 
@@ -34,7 +35,8 @@ export default class StoryUtils {
         this.createDefenseItem("Improve Boots", 10, 0.5, 1.10),
         this.createDefenseItem("Improve Gloves", 15, 0.5, 1.10),
         this.createDefenseItem("Improve Cloak Fibers",40, 2, 1.25),
-        this.createPassive("Swoop", "[[partnername]] takes the hit when an attack would down you", 25, CHEST_BONE, this.hasUnlockedSwoop)
+        this.createPassive("Swoop", "[[partnername]] takes the hit when an attack would down you", 25, CHEST_BONE, this.hasUnlockedSwoop),
+        this.createPassive("Rescue", "You take the hit when an attack would down [[partnername]]", 25, CHEST_BONE, this.hasUnlockedRescue)
     ]
     static cached : Upgrade[] = []
     static generatePartnerName() {
@@ -48,8 +50,27 @@ export default class StoryUtils {
         saveGame()
         log("Saved!")
     }
+
+    private static attachPassive(name: string) {
+        const swoop = getPassive(name)
+        if (!swoop) {
+            const np = new Passives(name, false)
+            np.storyShown = true
+            gameSave.save.passives.push(np)
+            return
+        }
+        swoop.storyShown = true
+    }
     
     public static getStoryState(s: SaveObject) : StoryHandler {
+        let ulk = this.showPassiveUnlockStory("Swoop", "AAAAA")
+        if (ulk) {
+            return ulk
+        }
+        ulk = this.showPassiveUnlockStory("Rescue", "BBBBBB")
+        if (ulk) {
+            return ulk
+        }
         switch (s.storyPos) {
             case INITIAL_STORY:
                 return {
@@ -84,11 +105,32 @@ export default class StoryUtils {
             }
     }
 
+    private static showPassiveUnlockStory(passiveName: string, text: string) {
+        const swoop = getPassive(passiveName)
+        if (!swoop || !swoop.storyShown) {
+            return {
+                text: [
+                    {
+                        text: text,
+                    }
+                ],
+                onNext: () => this.attachPassive(passiveName)
+            }
+        }
+    }
+
     private static hasUnlockedSwoop() {
         if (getPassive("Swoop") != null) {
             return true
         }
         return gameSave.save.stats.deaths > 0
+    }
+
+    private static hasUnlockedRescue() {
+        if (getPassive("Rescue") != null) {
+            return true
+        }
+        return gameSave.save.stats.partnerDeaths > 0
     }
     
     public static getAvailablePlayerUpgrades(resourceStore: Map<string, Resource>) {

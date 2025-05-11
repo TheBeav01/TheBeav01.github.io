@@ -10,6 +10,13 @@
         attackManually()
     }
     function abort() {
+        if (isDead.partnerDead) {
+            const maxHp = encounterState.state.partner.hpStat.maxValue
+            encounterState.state.partner.hpStat.value = Math.floor(maxHp / 4)
+            encounterState.state.partner.dead = false
+            onTravel(-1)
+            return
+        }
         const maxHp = encounterState.state.player.hpStat.maxValue
         encounterState.state.player.hpStat.value = Math.floor(maxHp / 4)
         encounterState.state.player.dead = false
@@ -20,7 +27,7 @@
     <div>
         <button onclick={attack}>Attack</button> ~{damagerPerAttack} damage
     </div>
-    {#if isDead.playerDead}
+    {#if isDead.playerDead || isDead.partnerDead}
         <button class="outline" onclick={abort}>Abort</button>
     {/if}
 </div>

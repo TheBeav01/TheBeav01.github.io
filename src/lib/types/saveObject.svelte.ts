@@ -119,6 +119,7 @@ export class Coordinates {
 export class Passives {
     name: string = ""
     toggled: boolean = false
+    storyShown: boolean = false
     constructor(name: string, toggled: boolean) {
         this.name = name
         this.toggled = toggled
@@ -127,4 +128,5 @@ export class Passives {
 
 export class GameStats {
     deaths: number = 0
+    partnerDeaths: number = 0
 }

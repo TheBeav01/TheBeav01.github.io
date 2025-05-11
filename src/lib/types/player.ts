@@ -14,6 +14,7 @@ export default class Player extends LivingEntity {
     onKill() {
         if (this.isPartner) {
             onDeath.value = {...onDeath.value, partnerDead: true}
+            gameSave.save.stats.partnerDeaths += 1
             return
         }
         onDeath.value = {...onDeath.value, playerDead: true}
