@@ -31,6 +31,8 @@ export const equipOrTogglePassive = (passive: Upgrade) => {
         saveGame()
     } else {
         pass.toggled = !pass.toggled
+        const idx = gameSave.save.passives.findIndex(p => p.name === passive.name)
+        gameSave.save.passives[idx] = $state.snapshot(pass)
         saveGame()
     }
     passive.add(0)

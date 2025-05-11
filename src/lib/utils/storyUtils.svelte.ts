@@ -63,7 +63,6 @@ export default class StoryUtils {
                 np.storyShown = true
             }
             gameSave.save.passives.push(np)
-            saveGame()
             return
         }
         swoop.storyShown = true
@@ -71,7 +70,6 @@ export default class StoryUtils {
             swoop.storyShown = true
         }
         gameSave.save.passives[idx] = swoop
-        saveGame()
     }
     
     /**

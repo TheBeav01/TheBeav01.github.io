@@ -11,6 +11,7 @@
         if (message.onNext) {
             message.onNext()
         }
+        gameSave.save = {...gameSave.save}
         saveGame()
     }
 
