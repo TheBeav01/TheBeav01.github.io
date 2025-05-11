@@ -7,7 +7,8 @@ export default class Upgrade extends Item {
     public readonly upgradeFlag = ""
     public isPassive = false
     public upgradeToggled = $state(false)
-    public isUnlocked : () => boolean = () => false 
+    public isUnlocked : () => boolean = () => false
+    public preStoryShown = false
     constructor(from?: Upgrade) {
         super(from as Item)
         if (!from) {
@@ -22,6 +23,14 @@ export default class Upgrade extends Item {
     public add(amt: number): void {
         if (this.isPassive) {
             this.upgradeToggled = getPassiveValue(this.name) ?? false
+            if (this._amt != 1) {
+                this.amt = 1
+                this._amt = 1
+                const idx = gameSave.save.passives.findIndex(p => p.name === this.name)
+                const s = gameSave.save.passives[idx]
+                s.bought = true
+                gameSave.save.passives[idx] = s
+            }
             return
         }
         super.add(amt)

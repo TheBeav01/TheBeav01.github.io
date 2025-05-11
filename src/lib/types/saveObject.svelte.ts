@@ -120,6 +120,8 @@ export class Passives {
     name: string = ""
     toggled: boolean = false
     storyShown: boolean = false
+    preStoryShown: boolean = false
+    bought = false
     constructor(name: string, toggled: boolean) {
         this.name = name
         this.toggled = toggled

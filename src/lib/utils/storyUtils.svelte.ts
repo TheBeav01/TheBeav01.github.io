@@ -52,17 +52,33 @@ export default class StoryUtils {
         log("Saved!")
     }
 
-    private static attachPassive(name: string) {
+    private static updatePassiveStory(name: string, value: "Pre" | "Post") {
         const swoop = getPassive(name)
+        const idx = gameSave.save.passives.findIndex(p => p.name === name)
+        const updateBoth = value == "Post"
         if (!swoop) {
             const np = new Passives(name, false)
-            np.storyShown = true
+            np.preStoryShown = true
+            if (updateBoth) {
+                np.storyShown = true
+            }
             gameSave.save.passives.push(np)
+            saveGame()
             return
         }
         swoop.storyShown = true
+        if (updateBoth) {
+            swoop.storyShown = true
+        }
+        gameSave.save.passives[idx] = swoop
+        saveGame()
     }
     
+    /**
+     * Gets the story state after the game is saved
+     * @param s The new save object
+     * @returns An array of story objects
+     */
     public static getStoryState(s: SaveObject) : StoryHandler {
         switch (s.storyPos) {
             case INITIAL_STORY:
@@ -94,30 +110,45 @@ export default class StoryUtils {
             default:
                 break
         }
-        let ulk = this.showPassiveUnlockStory("Swoop", "AAAAA")
+        let ulk = this.showPassiveUnlockStory("Swoop", "[[partnername]] looks more confident now that you're getting a hold of yourself", "[[partnername]] looks at you worriedly.")
         if (ulk) {
             return ulk
         }
-        ulk = this.showPassiveUnlockStory("Rescue", "BBBBBB")
+        ulk = this.showPassiveUnlockStory("Rescue", "You sigh and twiddle your weaponry.", "You look at [[partnername]] worriedly.")
         if (ulk) {
             return ulk
         }
         return {
-                    text: Constants.STORY_MESSAGE_DEFAULT
-                }
+            text: Constants.STORY_MESSAGE_DEFAULT
+        }
     }
 
-    private static showPassiveUnlockStory(passiveName: string, text: string) {
+    private static showPassiveUnlockStory(passiveName: string, postText: string, preText: string) {
+        const item = StoryUtils.getAvailablePlayerUpgrades(resourceStore, false).find(p => p.name === passiveName)
         const swoop = getPassive(passiveName)
-        const resourceListPassive = resourceStore.get(passiveName) as Upgrade
-        if ((swoop && !swoop.storyShown) || (resourceListPassive && resourceListPassive.isUnlocked())) {
+        if (item && !swoop) {
             return {
                 text: [
                     {
-                        text: text,
+                        text: preText,
                     }
                 ],
-                onNext: () => this.attachPassive(passiveName)
+                onNext: () => {
+                    item.preStoryShown = true
+                    resourceStore.set(item.name, item)
+                    this.updatePassiveStory(passiveName, "Pre")
+                }
+            }
+        }
+        const resourceListPassive = resourceStore.get(passiveName) as Upgrade
+        if (item && item._amt > 0 && (swoop && !swoop.storyShown)) {
+            return {
+                text: [
+                    {
+                        text: postText,
+                    }
+                ],
+                onNext: () => this.updatePassiveStory(passiveName, "Post")
             }
         }
     }
@@ -136,7 +167,7 @@ export default class StoryUtils {
         return gameSave.save.stats.partnerDeaths > 0
     }
     
-    public static getAvailablePlayerUpgrades(resourceStore: Map<string, Resource>) {
+    public static getAvailablePlayerUpgrades(resourceStore: Map<string, Resource>, cached = true) {
         const highestCall = this.cached
         const mana = resourceStore.get("Mana")!
         const newList = this.allUpgrades.filter((u, idx) => {
@@ -155,7 +186,8 @@ export default class StoryUtils {
             }
             return false
         }).map(u => resourceStore.get(u.name) as Upgrade ?? u)
-        if (newList.length > highestCall.length) {
+        console.log(newList, cached)
+        if (newList.length > highestCall.length || !cached) {
             this.cached = newList
             return newList
         }

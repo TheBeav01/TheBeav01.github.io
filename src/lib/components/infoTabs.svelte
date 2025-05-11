@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { saveGame } from "../stores/gameSave.svelte";
     import { getPartnerName, getPlayer } from "../stores/playerStore.svelte";
     import { gameSave } from "../types/gameSave.svelte";
     import StoryUtils from "../utils/storyUtils.svelte";
@@ -10,6 +11,7 @@
         if (message.onNext) {
             message.onNext()
         }
+        saveGame()
     }
 
     const substituteText = (text: string) => {

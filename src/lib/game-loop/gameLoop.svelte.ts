@@ -76,6 +76,9 @@ function createPassivesFromSave(save: SaveObject) {
     const upgrade = new Upgrade(pass)
     upgrade.isPassive = true
     upgrade.upgradeToggled = p.toggled
+    if (p.bought) {
+      upgrade.add(0)
+    }
   })
 }
 

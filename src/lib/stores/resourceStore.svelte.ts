@@ -20,7 +20,10 @@ export const createResourcesFromSave = (save: SaveObject) => {
         if (!resourceStore.has(r.name)) {
             let res = null
             if (r.isUpgrade) {
-                res = new Upgrade(r as Upgrade)
+                const rau = r as Upgrade
+                res = new Upgrade(rau)
+                res.isPassive = rau.isPassive
+                res.upgradeToggled = rau.upgradeToggled
                 const upgrade = StoryUtils.allUpgrades.find(u => u.name === r.name)
                 if (upgrade) {
                     res.scalingFactor = upgrade.scalingFactor

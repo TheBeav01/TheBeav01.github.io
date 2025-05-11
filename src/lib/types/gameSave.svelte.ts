@@ -25,7 +25,9 @@ export const getPassiveValue = (name: string) => {
 export const equipOrTogglePassive = (passive: Upgrade) => {
     const pass = getPassive(passive.name)
     if (pass == null) {
-        gameSave.save.passives.push(new Passives(passive.name, true))
+        const p = new Passives(passive.name, true)
+        p.bought = true
+        gameSave.save.passives.push(p)
         saveGame()
     } else {
         pass.toggled = !pass.toggled

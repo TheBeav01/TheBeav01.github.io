@@ -1,3 +1,4 @@
+import { saveGame } from "../stores/gameSave.svelte";
 import { onDeath } from "../stores/gameState.svelte";
 import { addResource, resourceStore } from "../stores/resourceStore.svelte";
 import StoryUtils from "../utils/storyUtils.svelte";
@@ -15,10 +16,12 @@ export default class Player extends LivingEntity {
         if (this.isPartner) {
             onDeath.value = {...onDeath.value, partnerDead: true}
             gameSave.save.stats.partnerDeaths += 1
+            saveGame()
             return
         }
         onDeath.value = {...onDeath.value, playerDead: true}
         gameSave.save.stats.deaths += 1
+        saveGame()
         return
     };
     
