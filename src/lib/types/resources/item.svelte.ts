@@ -3,8 +3,6 @@ import AttackSpeedStat from "../../stats/attackSpeed";
 import CritRateStat from "../../stats/critRate";
 import DefenseStat from "../../stats/defense";
 import HealthStat from "../../stats/health";
-import { playerStore } from "../../stores/playerStore.svelte";
-import { resourceStore } from "../../stores/resourceStore.svelte";
 import type BaseEntity from "../baseEntity";
 import type Player from "../player";
 import { Resource } from "./resource.svelte";

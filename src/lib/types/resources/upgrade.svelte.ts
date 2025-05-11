@@ -1,5 +1,4 @@
 import { Item } from "./item.svelte";
-import type { Resource } from "./resource.svelte";
 
 export default class Upgrade extends Item {
     public isUpgrade: boolean = true;

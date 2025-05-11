@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { cloneEncounter, encounterState, setEncounter, simulateDamage, tick } from "../stores/encounter.svelte";
+    import { cloneEncounter, encounterState, setEncounter, tick } from "../stores/encounter.svelte";
     import { getPartnerName } from "../stores/playerStore.svelte";
     import { gameSave } from "../types/gameSave.svelte";
     import { untrack } from "svelte";
@@ -16,7 +16,6 @@
     import AttackPanel from "./environment/attackPanel.svelte";
     import EncounterEntity from "./environment/encounterEntity.svelte";
     import UpgradePane from "./upgrades/upgradePane.svelte";
-    import { resourceStore } from "../stores/resourceStore.svelte";
     let message = $derived(StoryUtils.getStoryState(gameSave.save));
     let save = $derived(gameSave.save);
     let pos = $derived(gameSave.save.storyPos);
