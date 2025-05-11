@@ -138,7 +138,6 @@ export default class StoryUtils {
                 }
             }
         }
-        const resourceListPassive = resourceStore.get(passiveName) as Upgrade
         if (item && item._amt > 0 && (swoop && !swoop.storyShown)) {
             return {
                 text: [

@@ -1,6 +1,6 @@
 import { getCookieByKey } from "../utils/cookieUtils";
 import { saveGame, decodeSave } from "../stores/gameSave.svelte";
-import { createResourcesFromSave } from "../stores/resourceStore.svelte";
+import { createResourcesFromSave, resourceStore } from "../stores/resourceStore.svelte";
 import { writable } from "svelte/store";
 import StoryUtils from "../utils/storyUtils.svelte";
 import { createPlayersFromSave, playerStore } from "../stores/playerStore.svelte";
@@ -79,6 +79,7 @@ function createPassivesFromSave(save: SaveObject) {
     if (p.bought) {
       upgrade.add(0)
     }
+    resourceStore.set(upgrade.name, upgrade)
   })
 }
 
