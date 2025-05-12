@@ -30,6 +30,7 @@ export default class LivingEntity implements BaseEntity {
     timeToAttack: number = $state(0)
     dead = false
     coordinates: Coordinates = new Coordinates(0, 0, 0)
+    entityType : "Player" | 'Partner' | 'Foe' = "Foe"
     isDead() {
         return this.hpStat.isEmpty()
     }

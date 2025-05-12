@@ -7,7 +7,8 @@
 
     const {upgrade, passive} : {upgrade: Upgrade, passive?: boolean} = $props()
     const equip = () => {
-        if (!upgrade.canEquip()) {
+        const equippable = (upgrade.isPassive && upgrade.amt > 0) || upgrade.canEquip()
+        if (!equippable) {
             return
         }
         const res = resourceStore.get(upgrade.resourceUsed)

@@ -10,6 +10,7 @@ export default class Player extends LivingEntity {
     constructor(isPartner: boolean = false) {
         super(0)
         this.isPartner = isPartner
+        this.entityType = isPartner ? "Partner" : "Player"
     }
     isPartner: boolean
     onKill() {
