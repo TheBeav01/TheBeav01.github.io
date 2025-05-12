@@ -23,21 +23,23 @@ export const INITIAL_STORY = 0
 export const INITIAL_SCAN_POS = 1
 export const INITIAL_NAVIGATION_POS = 2
 export const AFTER_INITIAL_COMBAT = 3
-export const PRE_EQUIPMENT_ERA = 4
-export const EQUIPMENT_ERA = 5
-export const POST_EQUIPMENT_ERA = 6
+export const EQUIPMENT_ERA = 4
+export const PIDGEON_ONE_DOWN = 5
+export const DECONSTRUCTION_UNLOCKED = 6
 export const DRONE_POS = 7
 export default class StoryUtils {
     private static partnerNames = ["Zephyr", "Aluca", "Ruby", "Zircon", "Topaz", "Orion", "Zatha", "Ba'kan", "Azl'ka", "Xa'ahn"]
     static allUpgrades = [
         this.createAttackItem("Reinforce Bone", 1, 0.25, 1.08, CHEST_BONE),
-        this.createAttackItem("Sharpen Dagger", 10, 0.25, 1.08),
-        this.createAttackItem("+1 Dagger",25, 1, 1.25),
-        this.createDefenseItem("Improve Boots", 10, 0.5, 1.10),
-        this.createDefenseItem("Improve Gloves", 15, 0.5, 1.10),
+        // TODO: Bring these back
+        // this.createAttackItem("Sharpen Dagger", 10, 0.25, 1.08),
+        // this.createAttackItem("+1 Dagger",25, 1, 1.25),
+        this.createDefenseItem("Improve Boots", 10, 0.5, 1.08),
+        this.createDefenseItem("Improve Gloves", 15, 0.5, 1.08),
         this.createDefenseItem("Improve Cloak Fibers",40, 2, 1.25),
         this.createPassive("Swoop", "[[partnername]] takes the hit when an attack would down you", 25, CHEST_BONE, this.hasUnlockedSwoop),
-        this.createPassive("Rescue", "You take the hit when an attack would down [[partnername]]", 25, CHEST_BONE, this.hasUnlockedRescue)
+        this.createPassive("Rescue", "You take the hit when an attack would down [[partnername]]", 25, CHEST_BONE, this.hasUnlockedRescue),
+        this.createPassive("Deconstruction", "Deconstruct drops with the power of your mind", 0, "Mana", () => gameSave.save.storyPos >= DECONSTRUCTION_UNLOCKED, false)
     ]
     static cached : Upgrade[] = []
     static generatePartnerName() {
@@ -50,6 +52,7 @@ export default class StoryUtils {
         gameSave.save = {...gameSave.save, storyPos: pos}
         saveGame()
         log("Saved!")
+        console.log("Set story position to " + pos)
     }
 
     private static updatePassiveStory(name: string, value: "Pre" | "Post") {
@@ -96,14 +99,13 @@ export default class StoryUtils {
             case AFTER_INITIAL_COMBAT:
                 return {
                     text: Constants.STORY_MESSAGE_4,
-                    onNext: () => this.setStoryPosition(PRE_EQUIPMENT_ERA),
+                    onNext: () => this.setStoryPosition(EQUIPMENT_ERA),
                     onNextText: "-->"
                 }
-            case PRE_EQUIPMENT_ERA:
+            case PIDGEON_ONE_DOWN:
                 return {
-                    text: Constants.STORY_MESSAGE_5,
-                    onNext: () => this.setStoryPosition(POST_EQUIPMENT_ERA),
-                    onNextText: "-->"
+                    text: Constants.STORY_MESSAGE_DECONSTRUCTION,
+                    onNext: () => this.setStoryPosition(DECONSTRUCTION_UNLOCKED)
                 }
             default:
                 break
@@ -183,7 +185,6 @@ export default class StoryUtils {
             }
             return false
         }).map(u => resourceStore.get(u.name) as Upgrade ?? u)
-        console.log(newList, cached)
         if (newList.length > highestCall.length || !cached) {
             this.cached = newList
             return newList
@@ -211,7 +212,7 @@ export default class StoryUtils {
         return item
     }
 
-    private static createPassive(name: string, desc: string, cost: number, resourceUsed = "Mana", unlocked: () => boolean) {
+    private static createPassive(name: string, desc: string, cost: number, resourceUsed = "Mana", unlocked: () => boolean, togglable = true) {
         const passive = new Upgrade()
         passive.isPassive = true
         passive.name = name
@@ -220,6 +221,9 @@ export default class StoryUtils {
         passive.upgradeToggled = false
         passive.baseCost = cost
         passive.scalingFactor = 0.0
+        if (!togglable) {
+            passive.togglable = false
+        }
         passive.isUnlocked = unlocked
         return passive
     }

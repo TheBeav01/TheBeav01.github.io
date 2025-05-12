@@ -61,6 +61,11 @@ export default class SaveObject {
     highestArea = -1
 
     /**
+     * Represents how fast enemies can attack
+     */
+    difficultyFactor = 0
+
+    /**
      * Passives
      */
 

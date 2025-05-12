@@ -6,6 +6,7 @@ export default class Upgrade extends Item {
     public readonly isItem = false
     public readonly upgradeFlag = ""
     public isPassive = false
+    public togglable = true
     public upgradeToggled = $state(false)
     public isUnlocked : () => boolean = () => false
     public preStoryShown = false

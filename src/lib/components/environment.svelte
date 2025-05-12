@@ -57,12 +57,10 @@
             generateEncounter()
         }
         if (encounter.foe.coordinates.zone != gameSave.save.coordinates.zone) {
-            console.log("Skipping update")
             return
         }
         if (remaining <= 0) {
             gameSave.save.highestArea = gameSave.save.coordinates.zone + 1
-            console.log(`Updated highest: ${gameSave.save.highestArea}`)
         } 
     }
     const onTravel = (dir: number) => {
@@ -110,7 +108,6 @@
             StoryUtils.setStoryPosition(INITIAL_SCAN_POS + 1);
         }
         if (resetCount) {
-            console.log(`Highest: ${highest} and current: ${coords.zone}`)
             const newEPZ = highest > coords.zone ? 0 : epz
             tick(newEPZ)
         }

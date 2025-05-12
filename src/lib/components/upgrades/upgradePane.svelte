@@ -1,7 +1,8 @@
 <script lang="ts">
+    import { toggle } from "@melt-ui/svelte/internal/helpers";
     import { resourceStore } from "../../stores/resourceStore.svelte";
     import { gameSave } from "../../types/gameSave.svelte";
-    import StoryUtils, { PRE_EQUIPMENT_ERA } from "../../utils/storyUtils.svelte";
+    import StoryUtils, { EQUIPMENT_ERA } from "../../utils/storyUtils.svelte";
     import UpgradeItem from "./upgradeItem.svelte";
 
     let item = $derived.by(() => {
@@ -9,7 +10,7 @@
     })
 </script>
 
-{#if gameSave.save.storyPos > PRE_EQUIPMENT_ERA}
+{#if gameSave.save.storyPos >= EQUIPMENT_ERA}
     <div class="upgrade-container">
         <h3>Player Upgrades</h3>
         <div>
@@ -27,7 +28,7 @@
             Passives
         </h3>
         <div>
-            {#each item.filter(d => d.isPassive) as u}
+            {#each item.filter(d => d.isPassive && (d.togglable || (!d.togglable && d.amt == 0))) as u}
                 <UpgradeItem upgrade={u} passive/>
             {/each}
         </div>

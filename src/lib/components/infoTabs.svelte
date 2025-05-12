@@ -20,21 +20,21 @@
     }
 </script>
 <div>
-    {#if !hasMessage}
-        <div>Inventory:</div>
-        <ResourceList type="Inventory" emptyText="No items"/>
-    {/if}
+    <div>Inventory:</div>
+    <ResourceList type="Inventory" emptyText="No items"/>
     {#if hasMessage}
-        {#each message.text as textItem}
-            {substituteText(textItem.text)}
-            <br /><br />
-        {/each}
-        {#if message.onNext}
-            <div>
-                <button class="progress-button" onclick={onNext}
-                    >{message.onNextText ?? "Next"}</button
-                >
-            </div>
-        {/if}
+        <div>
+            {#each message.text as textItem}
+                {substituteText(textItem.text)}
+                <br /><br />
+            {/each}
+            {#if message.onNext}
+                <div>
+                    <button class="progress-button" onclick={onNext}
+                        >{message.onNextText ?? "Next"}</button
+                    >
+                </div>
+            {/if}
+        </div>
     {/if}
 </div>

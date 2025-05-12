@@ -1,5 +1,6 @@
 import * as Enemy from "../../constants/enemyConstants"
 import HealthStat from "../../stats/health"
+import { log } from "../../stores/messageList.svelte"
 import { gameSave } from "../../types/gameSave.svelte"
 import LivingEntity from "../../types/livingEntity.svelte"
 import type { Coordinates } from "../../types/saveObject.svelte"
@@ -114,7 +115,7 @@ const applyModifiers = (entity: LivingEntity, left: number) : EnemyDisplay => {
     entity.attackStat.value = Math.round(DEFAULT_VAL + Math.pow(zone, pickModifier(enemy.name, "attack")))
     entity.defenseStat.value = Math.round(DEFAULT_VAL + Math.pow(zone, pickModifier(enemy.name, "defense")))
     entity.hpStat = new HealthStat(Math.round(DEFAULT_VAL + Math.pow(zone, pickModifier(enemy.name, "hp"))))
-    const baseAttackSpeed = entity.coordinates.zone <= 5 ? 0.25 : 1
+    const baseAttackSpeed = calculateAttackSpeed()
     entity.attackSpeedStat.value = baseAttackSpeed * pickModifier(enemy.name, "speed")
     entity.critRateStat.value = pickModifier(enemy.name, "crit")
     entity.resetAttackTime()
@@ -122,8 +123,12 @@ const applyModifiers = (entity: LivingEntity, left: number) : EnemyDisplay => {
     return {entity, labels: generateLabels(enemy.name)}
 }
 
+const calculateAttackSpeed = () => {
+    return 0.25 * (Math.pow(1.25,gameSave.save.difficultyFactor))
+}
+
 const canGenerateSpecialEnemy = (coords: Coordinates, left: number) => {
-    if (coords.zone === 3 && left === 1 && coords.sidePathPosition === 0 && gameSave.save.storyPos < EQUIPMENT_ERA) {
+    if (coords.zone === 5 && left === 1 && coords.sidePathPosition === 0 && gameSave.save.storyPos <= EQUIPMENT_ERA) {
         return true
     }
     return false
@@ -137,13 +142,23 @@ const generateSpecialEnemy = (coords: Coordinates, entity: LivingEntity) : Enemy
     entity.critRateStat.value = 0
     const maxHp = Math.round(DEFAULT_VAL + Math.pow(coords.zone, HP_SCALE_FACTOR))
     entity.hpStat = new HealthStat(maxHp)
-    if (coords.zone === 3) {
+    if (coords.zone === 5) {
         entity.onKill = () => {
             entity.onDefaultKill()
-            StoryUtils.setStoryPosition(EQUIPMENT_ERA)
+            onSpecialKill()
+            StoryUtils.setStoryPosition(EQUIPMENT_ERA + 1)
+        }
+    } else {
+        entity.onKill = () => {
+            onSpecialKill()
         }
     }
     return {entity, labels: []}
+}
+
+const onSpecialKill = () => {
+    gameSave.save.difficultyFactor += 1
+    log("The world around you seems more menacing...")
 }
 
 const generateLabels = (name: string) => {

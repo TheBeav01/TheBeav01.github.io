@@ -41,7 +41,7 @@ export abstract class Resource {
     public abstract isKey : boolean
 
     public abstract isItem : boolean
-
+    public tickEnabled = false
     public isUpgrade : boolean = false
 
     public removeFromStore = () => {
@@ -56,7 +56,7 @@ export abstract class Resource {
     }
 
     public remove(amt: number) {
-        let amtToRemove = amt ?? 0
+        let amtToRemove = Math.abs(amt ?? 0)
         amtToRemove = amtToRemove > 0 ? amtToRemove : 0
         amtToRemove = Math.max(amtToRemove, 0)
         if (amtToRemove >= this.amt) {

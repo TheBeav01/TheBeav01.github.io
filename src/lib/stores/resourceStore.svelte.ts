@@ -6,6 +6,7 @@ import { gameSave } from "../types/gameSave.svelte";
 import { Item } from "../types/resources/item.svelte";
 import Upgrade from "../types/resources/upgrade.svelte";
 import StoryUtils from "../utils/storyUtils.svelte";
+import { genRateMap } from "../resource/resourceManager.svelte";
 
 const createDefaultMap = () => {
     const map: Map<string, Resource> = new Map()
@@ -24,6 +25,7 @@ export const createResourcesFromSave = (save: SaveObject) => {
                 res = new Upgrade(rau)
                 res.isPassive = rau.isPassive
                 res.upgradeToggled = rau.upgradeToggled
+                res.togglable = rau.togglable
                 const upgrade = StoryUtils.allUpgrades.find(u => u.name === r.name)
                 if (upgrade) {
                     res.scalingFactor = upgrade.scalingFactor
@@ -39,6 +41,7 @@ export const createResourcesFromSave = (save: SaveObject) => {
             if (!res) {
                 return
             }
+            res.genRatePerSecond = genRateMap.get(res.name) ?? 0.0
             resourceStore.set(res.name, res)
             return
         }

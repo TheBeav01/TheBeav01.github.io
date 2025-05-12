@@ -122,7 +122,6 @@ export class ItemUtils {
         ontoEntity.critRateStat.value += item.critRateStat.value
         ontoEntity.hpStat.maxValue += item.maxHp
         ontoEntity.awardItem(item, 1)
-        console.log(ontoEntity.inventory)
         return ontoEntity
     }
 
@@ -133,7 +132,6 @@ export class ItemUtils {
         ontoEntity.critRateStat.value += item.critRateStat.value * item._amt
         ontoEntity.hpStat.maxValue += item.maxHp * item._amt
         ontoEntity.inventory.push(item)
-        console.log(ontoEntity.inventory)
         return ontoEntity
     }
 }

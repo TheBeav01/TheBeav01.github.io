@@ -1,7 +1,8 @@
 <script lang="ts">
     import { resourceStore } from "../../stores/resourceStore.svelte";
     import Upgrade from "../../types/resources/upgrade.svelte";
-    type ResourceKey = "Inventory" | "Resource" | "Upgrade" | "Passive" | "All" 
+    import DeconstructButton from "../deconstructButton.svelte";
+    export type ResourceKey = "Inventory" | "Resource" | "Upgrade" | "Passive" | "All" 
     const { type, emptyText } : {type: ResourceKey, emptyText?: string} = $props()
     function getList() {
         return resourceStore.values().filter(e => {
@@ -31,7 +32,7 @@
         <!-- TODO: sort out how to do dev stuff and move this there -->
         <!-- <button onclick={() => awardResource(key)}>Award 10</button> -->
         <div>
-            {res?.name}: {res?.amt ?? 0}
+            <span>{res?.name}: {res?.amt ? res.amt.toFixed(1) : 0} <DeconstructButton res={res} type={type}/></span>
         </div>
     {/each}
 </div>

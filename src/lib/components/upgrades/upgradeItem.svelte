@@ -22,7 +22,6 @@
             return
         }
         res?.remove(Math.floor(upgrade.currentCost))
-        console.log(upgrade)
         const player = playerStore.get("player")
         const newPlayer = upgrade.equip(player!)
         playerStore.set("player", newPlayer)

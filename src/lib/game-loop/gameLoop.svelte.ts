@@ -58,7 +58,6 @@ function initGame() {
   createPlayersFromSave(gameSave.save)
   if (gameSave.save.highestArea == -1) {
     gameSave.save.highestArea = playerStore.get("player")!.coordinates.zone
-    console.log(`Updated highest: ${gameSave.save.highestArea}`)
   }
   createResourcesFromSave(gameSave.save)
   createPassivesFromSave(gameSave.save)
@@ -76,6 +75,7 @@ function createPassivesFromSave(save: SaveObject) {
     const upgrade = new Upgrade(pass)
     upgrade.isPassive = true
     upgrade.upgradeToggled = p.toggled
+    upgrade.togglable = pass.togglable
     if (p.bought) {
       upgrade.add(0)
     }
@@ -91,6 +91,14 @@ function handleMigration(save: SaveObject) {
     save.stats = new GameStats()
     save.stats.deaths = 0
     save.stats.partnerDeaths = 0
+  }
+
+  if (save.difficultyFactor == null) {
+    save.difficultyFactor = 0
+    if (save.highestArea > 5) {
+      save.difficultyFactor = 1
+    }
+    console.log("DIFF: " + save.difficultyFactor)
   }
 
 }
