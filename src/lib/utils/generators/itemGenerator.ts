@@ -1,3 +1,4 @@
+import { genRateMap } from "../../resource/resourceManager.svelte"
 import { Item } from "../../types/resources/item.svelte"
 import { pickItemFromWeightedList, type Spawnable } from "./sharedGenerator"
 
@@ -47,6 +48,7 @@ export const generateItems = (zone: number) => {
     const mult = gennedItem.multiplier ?? 1
     item.amt = base
     item._amt = base
-    item.genRatePerSecond = 0.5 * mult
+    item.genRatePerSecond = genRateMap.get(item.name) ?? 0.0
+    
     return [item]
 }

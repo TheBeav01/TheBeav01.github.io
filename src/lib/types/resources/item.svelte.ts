@@ -72,8 +72,8 @@ export class Item extends Resource implements BaseEntity {
         this.currentCost = this.calculateNextCost()
     }
     currentCost = $state(0)
-    public equip(entity: Player, amt?: number) : Player {
-        if (!this.canEquip()) {
+    public equip(entity: Player, amt?: number, coldStart = false) : Player {
+        if (!this.canEquip() && !coldStart) {
             return entity
         }
         if (amt != null) {

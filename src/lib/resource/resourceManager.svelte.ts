@@ -3,7 +3,7 @@ import { resources, resourceStore } from "../stores/resourceStore.svelte";
 
 const setGenRates = () => {
     const map = new Map()
-    map.set("Chest Bone", -0.5)
+    map.set("Chest Bone", -1)
     return map
 }
 export const genRateMap = setGenRates()
@@ -26,7 +26,10 @@ export const tick = (resource: Resource, tick: number = 0) => {
     if (tick && resource.tickEnabled) {
         const seconds = tick / 1000
         amountToAdd = seconds * resource.genRatePerSecond
-        if (amountToAdd < 0) {
+        if (amountToAdd < 0 && Math.abs(amountToAdd) > resource._amt) {
+            amountToAdd = 0
+        }
+        if (amountToAdd <= 0) {
             resource.remove(amountToAdd)
         } else {
             resource.add(amountToAdd)

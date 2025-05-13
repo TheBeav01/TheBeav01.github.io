@@ -30,12 +30,12 @@ export const DRONE_POS = 7
 export default class StoryUtils {
     private static partnerNames = ["Zephyr", "Aluca", "Ruby", "Zircon", "Topaz", "Orion", "Zatha", "Ba'kan", "Azl'ka", "Xa'ahn"]
     static allUpgrades = [
-        this.createAttackItem("Reinforce Bone", 1, 0.25, 1.08, CHEST_BONE),
+        this.createAttackItem("Reinforce Bone", 1, 0.5, 1.08, CHEST_BONE),
         // TODO: Bring these back
         // this.createAttackItem("Sharpen Dagger", 10, 0.25, 1.08),
         // this.createAttackItem("+1 Dagger",25, 1, 1.25),
         this.createDefenseItem("Improve Boots", 10, 0.5, 1.08),
-        this.createDefenseItem("Improve Gloves", 15, 0.5, 1.08),
+        this.createDefenseItem("Improve Gloves", 15, 1, 1.08),
         this.createDefenseItem("Improve Cloak Fibers",40, 2, 1.25),
         this.createPassive("Swoop", "[[partnername]] takes the hit when an attack would down you", 25, CHEST_BONE, this.hasUnlockedSwoop),
         this.createPassive("Rescue", "You take the hit when an attack would down [[partnername]]", 25, CHEST_BONE, this.hasUnlockedRescue),
@@ -170,17 +170,17 @@ export default class StoryUtils {
         const highestCall = this.cached
         const mana = resourceStore.get("Mana")!
         const newList = this.allUpgrades.filter((u, idx) => {
-            if (u.isUnlocked()) {
-                return true
-            }
+            const hasResource = resourceStore.get(u.name)
             if (idx == 0) {
                 return true
             }
-            const hasResource = resourceStore.get(u.name)
-            if (hasResource) {
+            else if (hasResource) {
                 return true
             }
-            if (mana.amt >= u.currentCost / 2) {
+            else if (u.isUnlocked != null) {
+                return u.isUnlocked()
+            }
+            else if (mana.amt >= u.currentCost / 2) {
                 return true
             }
             return false

@@ -7,9 +7,10 @@ import { Item } from "../types/resources/item.svelte";
 import Upgrade from "../types/resources/upgrade.svelte";
 import StoryUtils from "../utils/storyUtils.svelte";
 import { genRateMap } from "../resource/resourceManager.svelte";
+import { SvelteMap } from "svelte/reactivity";
 
 const createDefaultMap = () => {
-    const map: Map<string, Resource> = new Map()
+    const map: SvelteMap<string, Resource> = new SvelteMap()
     map.set("Mana", new Mana())
     map.set("Soul", new Soul())
     return map
@@ -84,5 +85,5 @@ export const addXToResource = (resource: string, amt: number) => {
     resourceStore.set(res.name, res)
     writeResourcesToSave()
 }
-export let resources : Map<string, Resource> = createDefaultMap()
+export let resources : SvelteMap<string, Resource> = createDefaultMap()
 export let resourceStore = $state(resources)

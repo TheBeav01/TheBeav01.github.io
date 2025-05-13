@@ -45,7 +45,7 @@ export default class Player extends LivingEntity {
         const p = new Player()
         p.fromBase(player)
         upgrades.forEach(u => {
-            u.equip(p, u.amt)
+            u.equip(p, u.amt, true)
         })
         return p
     }

@@ -10,6 +10,7 @@
                 case "All":
                     return true
                 case "Inventory":
+                    console.log(e)
                     return e.isItem
                 case "Resource":
                     return !e.isItem && !e.isUpgrade
@@ -24,7 +25,27 @@
             }
         })
     }
-    let resources = $derived(getList())
+    let resources = $derived.by(() => {
+        return resourceStore.values().filter(e => {
+            switch (type) {
+                case "All":
+                    return true
+                case "Inventory":
+                    console.log(e)
+                    return e.isItem
+                case "Resource":
+                    return !e.isItem && !e.isUpgrade
+                case "Upgrade":
+                    return e.isUpgrade
+                case "Passive":
+                    if (!e.isUpgrade) {
+                        return false
+                    }
+                    const upg = e as Upgrade
+                    return upg.isPassive
+            }
+        })
+    })
 </script>
 
 <div>

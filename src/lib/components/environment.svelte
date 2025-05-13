@@ -59,7 +59,7 @@
         if (encounter.foe.coordinates.zone != gameSave.save.coordinates.zone) {
             return
         }
-        if (remaining <= 0) {
+        if (remaining <= 0 && gameSave.save.highestArea <= gameSave.save.coordinates.zone) {
             gameSave.save.highestArea = gameSave.save.coordinates.zone + 1
         } 
     }
