@@ -137,6 +137,7 @@
             message.onNext()
         }
         StoryUtils.setFlagAsRead()
+        gameSave.save.storyPos = 1
         gameSave.save = {...gameSave.save}
         saveGame()
     }
