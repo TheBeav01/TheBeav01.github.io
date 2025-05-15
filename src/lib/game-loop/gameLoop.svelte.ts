@@ -101,4 +101,6 @@ function handleMigration(save: SaveObject) {
     console.log("DIFF: " + save.difficultyFactor)
   }
 
+  StoryUtils.setStoryFlags(save)
+
 }

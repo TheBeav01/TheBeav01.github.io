@@ -1,4 +1,5 @@
 import type { Encounter } from "../stores/encounter.svelte"
+import type { StoryFlags } from "../utils/storyUtils.svelte"
 import type { Resource } from "./resources/resource.svelte"
 
 export default class SaveObject {
@@ -73,6 +74,7 @@ export default class SaveObject {
 
     stats: GameStats = new GameStats()
 
+    storyFlags: StoryFlags = {}
 }
 
 /**

@@ -146,7 +146,8 @@ const generateSpecialEnemy = (coords: Coordinates, entity: LivingEntity) : Enemy
         entity.onKill = () => {
             entity.onDefaultKill()
             onSpecialKill()
-            StoryUtils.setStoryPosition(EQUIPMENT_ERA + 1)
+            StoryUtils.setFlag("deconstructionUnlocked")
+            // StoryUtils.setStoryPosition(EQUIPMENT_ERA + 1)
         }
     } else {
         entity.onKill = () => {

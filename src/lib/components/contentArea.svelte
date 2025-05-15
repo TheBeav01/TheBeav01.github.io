@@ -7,7 +7,7 @@
         elements: {root, list, trigger, content},
         states: { value }
     } = createTabs({ defaultValue: "Environment", orientation: "vertical"})
-    const upgradesUnlocked = gameSave.save.storyPos >= DRONE_POS
+    const upgradesUnlocked = false
     const tabHeaders = [
         { id: "Environment", title: "Environment"},
         { id: "Upgrades", title: "Upgrades", visible: upgradesUnlocked}

@@ -11,6 +11,7 @@
         if (message.onNext) {
             message.onNext()
         }
+        StoryUtils.setFlagAsRead()
         gameSave.save = {...gameSave.save}
         saveGame()
     }
@@ -28,13 +29,11 @@
                 {substituteText(textItem.text)}
                 <br /><br />
             {/each}
-            {#if message.onNext}
-                <div>
-                    <button class="progress-button" onclick={onNext}
-                        >{message.onNextText ?? "Next"}</button
-                    >
-                </div>
-            {/if}
+            <div>
+                <button class="progress-button" onclick={onNext}
+                    >{message.onNextText ?? "Next"}</button
+                >
+            </div>
         </div>
     {/if}
 </div>

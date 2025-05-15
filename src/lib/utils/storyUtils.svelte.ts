@@ -28,7 +28,10 @@ export const PIDGEON_ONE_DOWN = 5
 export const DECONSTRUCTION_UNLOCKED = 6
 export const DRONE_POS = 7
 export default class StoryUtils {
+    private static storyflags : StoryFlags = {}
+    private static shownStory: keyof StoryFlags
     private static partnerNames = ["Zephyr", "Aluca", "Ruby", "Zircon", "Topaz", "Orion", "Zatha", "Ba'kan", "Azl'ka", "Xa'ahn"]
+    private static storyList = new Map()
     static allUpgrades = [
         this.createAttackItem("Reinforce Bone", 1, 0.5, 1.08, CHEST_BONE),
         // TODO: Bring these back
@@ -42,6 +45,68 @@ export default class StoryUtils {
         this.createPassive("Deconstruction", "Deconstruct drops with the power of your mind", 0, "Mana", () => gameSave.save.storyPos >= DECONSTRUCTION_UNLOCKED, false)
     ]
     static cached : Upgrade[] = []
+
+    static buildStoryList() {
+        const map = new Map<string, StoryHandler>()
+        map.set("unlockedNavigation",{
+            text: Constants.STORY_MESSAGE_INITIAL,
+            onNextText: "Scan?"
+        })
+        map.set("unlockedCombat",{
+            text: Constants.STORY_MESSAGE_2
+        })
+        map.set("unlockedFirstWeapon",{
+            text: Constants.STORY_MESSAGE_3
+        })
+        map.set("equipmentUnlocked",{
+            text: Constants.STORY_MESSAGE_4
+        })
+        map.set("deconstructionUnlocked",{
+            text: Constants.STORY_MESSAGE_DECONSTRUCTION
+        })
+        map.set("passiveCombatUnlocked",{
+            text: Constants.STORY_MESSAGE_INITIAL
+        })
+        this.storyList = map
+        
+    }
+    static setStoryFlags(save: SaveObject) {
+        this.buildStoryList()
+        if (!save.storyFlags || Object.keys(save.storyFlags).length == 0) {
+            this.migrateSave(save)
+            save.storyFlags = StoryUtils.storyflags
+            console.log(save.storyFlags)
+            return
+        }
+        StoryUtils.storyflags = save.storyFlags
+        console.log(StoryUtils.storyflags)
+    }
+
+    private static migrateSave(save: SaveObject) {
+        const defaultValue = {
+            entered: true,
+            storyShown: true
+        }
+        switch(save.storyPos) {
+            case DRONE_POS:
+                this.storyflags.passiveCombatUnlocked = defaultValue
+            case DECONSTRUCTION_UNLOCKED:
+                this.storyflags.deconstructionUnlocked = defaultValue
+            case PIDGEON_ONE_DOWN:
+            case EQUIPMENT_ERA:
+                this.storyflags.equipmentUnlocked = defaultValue
+            case AFTER_INITIAL_COMBAT:
+                this.storyflags.unlockedFirstWeapon = defaultValue
+            case INITIAL_NAVIGATION_POS:
+                this.storyflags.unlockedCombat = defaultValue
+            case INITIAL_SCAN_POS:
+                this.storyflags.unlockedNavigation = defaultValue
+                break
+            case INITIAL_STORY:
+                this.setFlag("unlockedNavigation")
+                break
+        }
+    }
     static generatePartnerName() {
         let idx = generateRandomNumber(this.partnerNames.length, 0, false)
         idx = Math.min(idx, this.partnerNames.length - 1)
@@ -81,35 +146,41 @@ export default class StoryUtils {
      * @returns An array of story objects
      */
     public static getStoryState(s: SaveObject) : StoryHandler {
-        switch (s.storyPos) {
-            case INITIAL_STORY:
-                return {
-                    text: Constants.STORY_MESSAGE_INITIAL,
-                    onNext: () => this.setStoryPosition(1),
-                    onNextText: "Scan?"
-                }
-            case INITIAL_SCAN_POS:
-                return {
-                    text: Constants.STORY_MESSAGE_2
-                }
-            case INITIAL_NAVIGATION_POS:
-                return {
-                    text: Constants.STORY_MESSAGE_3
-                }
-            case AFTER_INITIAL_COMBAT:
-                return {
-                    text: Constants.STORY_MESSAGE_4,
-                    onNext: () => this.setStoryPosition(EQUIPMENT_ERA),
-                    onNextText: "-->"
-                }
-            case PIDGEON_ONE_DOWN:
-                return {
-                    text: Constants.STORY_MESSAGE_DECONSTRUCTION,
-                    onNext: () => this.setStoryPosition(DECONSTRUCTION_UNLOCKED)
-                }
-            default:
-                break
+        const ready: {key: keyof StoryFlags, value: StoryHandler}[] = Object.keys(s.storyFlags).filter((s) => this.isStoryReady(s)).map(x => {return {key: x, value: this.storyList.get(x)}})
+        console.log("READY: " + ready)
+        if (ready.length > 0) {
+            StoryUtils.shownStory = ready[0].key
+            return ready[0].value
         }
+        // switch (s.storyPos) {
+        //     case INITIAL_STORY:
+        //         return {
+        //             text: Constants.STORY_MESSAGE_INITIAL,
+        //             onNext: () => this.setStoryPosition(1),
+        //             onNextText: "Scan?"
+        //         }
+        //     case INITIAL_SCAN_POS:
+        //         return {
+        //             text: Constants.STORY_MESSAGE_2
+        //         }
+        //     case INITIAL_NAVIGATION_POS:
+        //         return {
+        //             text: Constants.STORY_MESSAGE_3
+        //         }
+        //     case AFTER_INITIAL_COMBAT:
+        //         return {
+        //             text: Constants.STORY_MESSAGE_4,
+        //             onNext: () => this.setStoryPosition(EQUIPMENT_ERA),
+        //             onNextText: "-->"
+        //         }
+        //     case PIDGEON_ONE_DOWN:
+        //         return {
+        //             text: Constants.STORY_MESSAGE_DECONSTRUCTION,
+        //             onNext: () => this.setStoryPosition(DECONSTRUCTION_UNLOCKED)
+        //         }
+        //     default:
+        //         break
+        // }
         let ulk = this.showPassiveUnlockStory("Swoop", "[[partnername]] looks more confident now that you're getting a hold of yourself", "[[partnername]] looks at you worriedly.")
         if (ulk) {
             return ulk
@@ -121,6 +192,10 @@ export default class StoryUtils {
         return {
             text: Constants.STORY_MESSAGE_DEFAULT
         }
+    }
+
+    private static isStoryReady(name: keyof StoryFlags) {
+        return this.storyflags[name].entered && !this.storyflags[name].storyShown
     }
 
     private static showPassiveUnlockStory(passiveName: string, postText: string, preText: string) {
@@ -226,5 +301,53 @@ export default class StoryUtils {
         }
         passive.isUnlocked = unlocked
         return passive
+    }
+
+    public static setFlag(name: string) {
+        StoryUtils.storyflags[name] = {
+            storyShown: false,
+            entered: true
+        }
+        StoryUtils.shownStory = name
+        gameSave.save.storyFlags = StoryUtils.storyflags
+        saveGame()
+    }
+
+    public static setFlagAsRead() {
+        if (!StoryUtils.shownStory || StoryUtils.shownStory == "") {
+            return
+        }
+        StoryUtils.storyflags[StoryUtils.shownStory] = {
+            storyShown: true,
+            entered: true
+        }
+        gameSave.save.storyFlags = StoryUtils.storyflags
+        StoryUtils.shownStory = ""
+        saveGame()
+    }
+
+    public static getFlags() {
+        return Object.freeze(StoryUtils.storyflags)
+    }
+
+    public static getFlagComplete(name: string) {
+        const currentFlags = StoryUtils.storyflags[name]
+        if (!currentFlags) {
+            return false
+        }
+        return currentFlags.entered && currentFlags.storyShown
+    }
+
+    public static displayStoryMessage() {
+
+    }
+
+
+}
+
+export type StoryFlags = {
+    [key: string]: {
+        entered: boolean
+        storyShown: boolean
     }
 }

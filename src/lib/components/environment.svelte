@@ -19,6 +19,7 @@
     let message = $derived(StoryUtils.getStoryState(gameSave.save));
     let save = $derived(gameSave.save);
     let pos = $derived(gameSave.save.storyPos);
+    let combatUnlocked = $derived(pos >= 1)
     const divClass = $derived(pos == 1 ? "intermediate-panel" : null);
     const battleClass = $derived(
         pos == 1 ? "intermediate-panel" : "battle-panel",
@@ -44,8 +45,8 @@
         }
     })
     const onEnemyKill = () => {
-        if (pos === INITIAL_NAVIGATION_POS) {
-            StoryUtils.setStoryPosition(AFTER_INITIAL_COMBAT)
+        if (StoryUtils.getFlagComplete("unlockedCombat") && !StoryUtils.getFlagComplete("unlockedFirstWeapon")) {
+            StoryUtils.setFlag("unlockedFirstWeapon")
         }
         if (save.coordinates.sidePathPosition != 0) {
             generateEncounter()
@@ -104,8 +105,9 @@
         }
         
         gameSave.save = { ...gameSave.save, coordinates: coords};
-        if (pos == INITIAL_SCAN_POS) {
-            StoryUtils.setStoryPosition(INITIAL_SCAN_POS + 1);
+        if (StoryUtils.getFlagComplete("unlockedNavigation") && !StoryUtils.getFlagComplete("unlockedCombat")) {
+            StoryUtils.setFlag("unlockedCombat")
+            // StoryUtils.setStoryPosition(INITIAL_SCAN_POS + 1);
         }
         if (resetCount) {
             const newEPZ = highest > coords.zone ? 0 : epz
@@ -129,9 +131,18 @@
     const substituteText = (text: string) => {
         return text.replaceAll("[[partnername]]", getPartnerName() ?? "Zephyr")
     }
+
+    const onNext = (_e: any) => {
+        if (message.onNext) {
+            message.onNext()
+        }
+        StoryUtils.setFlagAsRead()
+        gameSave.save = {...gameSave.save}
+        saveGame()
+    }
 </script>
 
-{#if pos == 0}
+{#if !combatUnlocked}
     <div class="initial-progress">
         {#each message.text as textItem}
             {substituteText(textItem.text)}
@@ -139,11 +150,11 @@
         {/each}
         <button
             class="progress-button initial-progress-button"
-            onclick={message.onNext}>{message.onNextText ?? "Next"}</button
+            onclick={onNext}>{message.onNextText ?? "Next"}</button
         >
     </div>
 {/if}
-{#if pos > 0}
+{#if combatUnlocked}
     <div class="environment-container">
         <div>
             Area {coords.zone} - {encounter.remaining <= 0 ? "No" : encounter.remaining} Creatures Remain
@@ -169,7 +180,7 @@
                 </div>
             </div>
         </div>
-        {#if pos > 1}
+        {#if combatUnlocked}
             <div class={`${battleClass} fit-height`}>
                 {#if encounter.remaining <= 0 && coords.sidePathPosition === 0}
                     <div>No entities found in area</div>
