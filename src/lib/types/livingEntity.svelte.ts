@@ -1,4 +1,4 @@
-import AttackStat, { AttackUtils } from "../stats/attack";
+import AttackStat from "../stats/attack";
 import AttackSpeedStat from "../stats/attackSpeed";
 import CritRateStat from "../stats/critRate";
 import DefenseStat from "../stats/defense";
@@ -6,7 +6,8 @@ import HealthStat from "../stats/health";
 import { log } from "../stores/messageList.svelte";
 import { playerStore } from "../stores/playerStore.svelte";
 import { resourceStore } from "../stores/resourceStore.svelte";
-import StoryUtils from "../utils/storyUtils.svelte";
+import { AttackUtils } from "../utils/attackUtils";
+import UpgradeUtils from "../utils/upgradeUtils";
 import type BaseEntity from "./baseEntity";
 import { Item } from "./resources/item.svelte";
 import Mana from "./resources/mana.svelte";
@@ -81,7 +82,7 @@ export default class LivingEntity implements BaseEntity {
             other.dead = true
             other.onKill()
             log(`${this.name} kills ${other.name}`)
-            StoryUtils.getAvailablePlayerUpgrades(resourceStore)
+            UpgradeUtils.getAvailablePlayerUpgrades(resourceStore)
             this.resetAttackTime()
             return other
         }

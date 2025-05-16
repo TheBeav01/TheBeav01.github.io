@@ -1,11 +1,11 @@
 <script lang="ts">
     import { message_list } from "../stores/messageList.svelte";
-
+    import { getPartnerName } from "../stores/playerStore.svelte";
     const messages = message_list.value ?? []
 </script>
 <div class="message-container">
     {#each messages.reverse() as message}
-        <div class="message">{message}</div>
+        <div class="message">{message.replaceAll("[[partnername]]", getPartnerName() ?? "Zephyr")}</div>
     {/each}
 </div>
 

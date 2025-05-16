@@ -1,8 +1,8 @@
 <script lang="ts">
-    import { saveGame } from "../stores/gameSave.svelte";
+    import { onFrameCooldown } from "../game-loop/gameLoop.svelte";
     import { addXToResource, resourceStore } from "../stores/resourceStore.svelte";
+    import { saveGame } from "../types/gameSave.svelte";
     import { getDate } from "../utils/dateUtils";
-    import {onFrameCooldown} from "../utils/gameUtils.svelte";
     import ResourceList from "./resources/resourceList.svelte";
     let date = $state(getDate())
     onFrameCooldown(30, () => date = getDate())

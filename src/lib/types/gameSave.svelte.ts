@@ -1,10 +1,36 @@
-import { saveGame } from "../stores/gameSave.svelte"
+import { setCookie } from "../utils/cookieUtils"
 import type Upgrade from "./resources/upgrade.svelte"
 import SaveObject, { Passives } from "./saveObject.svelte"
 
 export const gameSave = $state({
     save: new SaveObject()
 })
+
+export function saveGame(s: SaveObject = gameSave.save) {
+  const saveString = encodeSave(s)
+  setCookie("save", saveString, 365)
+}
+
+
+
+/**
+ * Translates the string from a series of ints and '|' to something that is implementable by the game.
+ * As the creator is too lazy to properly implement a base-32 string, the '|' acts as a splitter for the various fields.
+ * @param {*} stringToDecode The save string retrieved from the cookie 
+ */
+export function decodeSave(stringToDecode: string) {
+  const newSave = JSON.parse(atob(stringToDecode))
+  gameSave.save = newSave
+}
+
+/**
+ * Translates a variety of game features into a save string that will likely grow over time.
+ */
+export function encodeSave(s: any) {
+  var encString = JSON.stringify(s);
+  var ret = btoa(encString);
+  return ret;
+}
 
 export const getPassive = (name: string) => {
     const passive = gameSave.save.passives.find(p => p.name == name)

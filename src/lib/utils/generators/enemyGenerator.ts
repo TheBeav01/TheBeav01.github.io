@@ -1,10 +1,11 @@
+import { EQUIPMENT_ERA } from "../../constants/constants"
 import * as Enemy from "../../constants/enemyConstants"
 import HealthStat from "../../stats/health"
 import { log } from "../../stores/messageList.svelte"
 import { gameSave } from "../../types/gameSave.svelte"
 import LivingEntity from "../../types/livingEntity.svelte"
 import type { Coordinates } from "../../types/saveObject.svelte"
-import StoryUtils, { EQUIPMENT_ERA } from "../storyUtils.svelte"
+import StoryUtils from "../storyUtils.svelte"
 import { generateItems } from "./itemGenerator"
 import { pickItemFromWeightedList, type Spawnable } from "./sharedGenerator"
 const HIGH_AFFINITY_SCALE_FACTOR = 1.20

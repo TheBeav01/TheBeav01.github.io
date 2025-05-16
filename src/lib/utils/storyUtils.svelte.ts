@@ -1,14 +1,12 @@
 import * as Constants from "../constants/constants"
-import { saveGame } from "../stores/gameSave.svelte"
+import { CombatLoop } from "../stores/encounter.svelte"
 import { log } from "../stores/messageList.svelte"
 import { resourceStore } from "../stores/resourceStore.svelte"
-import { gameSave, getPassive } from "../types/gameSave.svelte"
-import type { Resource } from "../types/resources/resource.svelte"
-import Upgrade from "../types/resources/upgrade.svelte"
+import { gameSave, getPassive, saveGame } from "../types/gameSave.svelte"
 import type SaveObject from "../types/saveObject.svelte"
 import { Passives } from "../types/saveObject.svelte"
 import { generateRandomNumber } from "./gameUtils.svelte"
-import { CHEST_BONE } from "./generators/itemGenerator"
+import UpgradeUtils from "./upgradeUtils"
 
 interface StoryHandler {
     text: StoryText[]
@@ -19,44 +17,25 @@ interface StoryHandler {
 interface StoryText {
     text: string
 }
-export const INITIAL_STORY = 0
-export const INITIAL_SCAN_POS = 1
-export const INITIAL_NAVIGATION_POS = 2
-export const AFTER_INITIAL_COMBAT = 3
-export const EQUIPMENT_ERA = 4
-export const PIDGEON_ONE_DOWN = 5
-export const DECONSTRUCTION_UNLOCKED = 6
-export const DRONE_POS = 7
+export let storyflags : StoryFlags = $state({})
 export default class StoryUtils {
-    private static storyflags : StoryFlags = {}
     private static shownStory: keyof StoryFlags
     private static partnerNames = ["Zephyr", "Aluca", "Ruby", "Zircon", "Topaz", "Orion", "Zatha", "Ba'kan", "Azl'ka", "Xa'ahn"]
     private static storyList = new Map()
-    static allUpgrades = [
-        this.createAttackItem("Reinforce Bone", 1, 0.5, 1.08, CHEST_BONE),
-        // TODO: Bring these back
-        // this.createAttackItem("Sharpen Dagger", 10, 0.25, 1.08),
-        // this.createAttackItem("+1 Dagger",25, 1, 1.25),
-        this.createDefenseItem("Improve Boots", 10, 0.5, 1.08),
-        this.createDefenseItem("Improve Gloves", 15, 1, 1.08),
-        this.createDefenseItem("Improve Cloak Fibers",40, 2, 1.25),
-        this.createPassive("Swoop", "[[partnername]] takes the hit when an attack would down you", 25, CHEST_BONE, this.hasUnlockedSwoop),
-        this.createPassive("Rescue", "You take the hit when an attack would down [[partnername]]", 25, CHEST_BONE, this.hasUnlockedRescue),
-        this.createPassive("Deconstruction", "Deconstruct drops with the power of your mind", 0, "Mana", () => gameSave.save.storyPos >= DECONSTRUCTION_UNLOCKED, false)
-    ]
-    static cached : Upgrade[] = []
 
     static buildStoryList() {
         const map = new Map<string, StoryHandler>()
         map.set("unlockedNavigation",{
             text: Constants.STORY_MESSAGE_INITIAL,
-            onNextText: "Scan?"
+            onNextText: "Scan?",
+            onNext: () => StoryUtils.setFlag("unlockedCombat")
         })
         map.set("unlockedCombat",{
             text: Constants.STORY_MESSAGE_2
         })
         map.set("unlockedFirstWeapon",{
-            text: Constants.STORY_MESSAGE_3
+            text: Constants.STORY_MESSAGE_3,
+            onNext: () => CombatLoop.unpause()
         })
         map.set("equipmentUnlocked",{
             text: Constants.STORY_MESSAGE_4
@@ -74,12 +53,18 @@ export default class StoryUtils {
         this.buildStoryList()
         if (!save.storyFlags || Object.keys(save.storyFlags).length == 0) {
             this.migrateSave(save)
-            save.storyFlags = StoryUtils.storyflags
+            this.copyFlags(save)
             console.log(save.storyFlags)
             return
         }
-        StoryUtils.storyflags = save.storyFlags
-        console.log(StoryUtils.storyflags)
+        this.copyFlags(save)
+        console.log(storyflags)
+    }
+
+    private static copyFlags(save: SaveObject) {
+        Object.entries(save.storyFlags).forEach(e => {
+            storyflags[e[0]] = e[1]
+        })
     }
 
     private static migrateSave(save: SaveObject) {
@@ -88,21 +73,21 @@ export default class StoryUtils {
             storyShown: true
         }
         switch(save.storyPos) {
-            case DRONE_POS:
-                this.storyflags.passiveCombatUnlocked = defaultValue
-            case DECONSTRUCTION_UNLOCKED:
-                this.storyflags.deconstructionUnlocked = defaultValue
-            case PIDGEON_ONE_DOWN:
-            case EQUIPMENT_ERA:
-                this.storyflags.equipmentUnlocked = defaultValue
-            case AFTER_INITIAL_COMBAT:
-                this.storyflags.unlockedFirstWeapon = defaultValue
-            case INITIAL_NAVIGATION_POS:
-                this.storyflags.unlockedCombat = defaultValue
-            case INITIAL_SCAN_POS:
-                this.storyflags.unlockedNavigation = defaultValue
+            case Constants.DRONE_POS:
+                storyflags.passiveCombatUnlocked = defaultValue
+            case Constants.DECONSTRUCTION_UNLOCKED:
+                storyflags.deconstructionUnlocked = defaultValue
+            case Constants.PIDGEON_ONE_DOWN:
+            case Constants.EQUIPMENT_ERA:
+                storyflags.equipmentUnlocked = defaultValue
+            case Constants.AFTER_INITIAL_COMBAT:
+                storyflags.unlockedFirstWeapon = defaultValue
+            case Constants.INITIAL_NAVIGATION_POS:
+                storyflags.unlockedCombat = defaultValue
+            case Constants.INITIAL_SCAN_POS:
+                storyflags.unlockedNavigation = defaultValue
                 break
-            case INITIAL_STORY:
+            case Constants.INITIAL_STORY:
                 this.setFlag("unlockedNavigation")
                 break
         }
@@ -195,11 +180,11 @@ export default class StoryUtils {
     }
 
     private static isStoryReady(name: keyof StoryFlags) {
-        return this.storyflags[name].entered && !this.storyflags[name].storyShown
+        return storyflags[name].entered && !storyflags[name].storyShown
     }
 
     private static showPassiveUnlockStory(passiveName: string, postText: string, preText: string) {
-        const item = StoryUtils.getAvailablePlayerUpgrades(resourceStore, false).find(p => p.name === passiveName)
+        const item = UpgradeUtils.getAvailablePlayerUpgrades(resourceStore, false).find(p => p.name === passiveName)
         const swoop = getPassive(passiveName)
         if (item && !swoop) {
             return {
@@ -227,89 +212,13 @@ export default class StoryUtils {
         }
     }
 
-    private static hasUnlockedSwoop() {
-        if (getPassive("Swoop") != null) {
-            return true
-        }
-        return gameSave.save.stats.deaths > 0
-    }
-
-    private static hasUnlockedRescue() {
-        if (getPassive("Rescue") != null) {
-            return true
-        }
-        return gameSave.save.stats.partnerDeaths > 0
-    }
-    
-    public static getAvailablePlayerUpgrades(resourceStore: Map<string, Resource>, cached = true) {
-        const highestCall = this.cached
-        const mana = resourceStore.get("Mana")!
-        const newList = this.allUpgrades.filter((u, idx) => {
-            const hasResource = resourceStore.get(u.name)
-            if (idx == 0) {
-                return true
-            }
-            else if (hasResource) {
-                return true
-            }
-            else if (u.isUnlocked != null) {
-                return u.isUnlocked()
-            }
-            else if (mana.amt >= u.currentCost / 2) {
-                return true
-            }
-            return false
-        }).map(u => resourceStore.get(u.name) as Upgrade ?? u)
-        if (newList.length > highestCall.length || !cached) {
-            this.cached = newList
-            return newList
-        }
-        return this.cached
-    }
-
-    private static createAttackItem(name: string, baseCost: number, attack: number, scalingFactor: number, resourceUsed = "Mana") {
-        const item = new Upgrade()
-        item.resourceUsed = resourceUsed
-        item.name = name
-        item.attackStat.value = attack
-        item.baseCost = baseCost
-        item.scalingFactor = scalingFactor
-        return item
-    }
-
-    private static createDefenseItem(name: string, baseCost: number, defense: number, scalingFactor: number, resourceUsed = "Mana") {
-        const item = new Upgrade()
-        item.resourceUsed = resourceUsed
-        item.name = name
-        item.defenseStat.value = defense
-        item.baseCost = baseCost
-        item.scalingFactor = scalingFactor
-        return item
-    }
-
-    private static createPassive(name: string, desc: string, cost: number, resourceUsed = "Mana", unlocked: () => boolean, togglable = true) {
-        const passive = new Upgrade()
-        passive.isPassive = true
-        passive.name = name
-        passive.description = desc
-        passive.resourceUsed = resourceUsed
-        passive.upgradeToggled = false
-        passive.baseCost = cost
-        passive.scalingFactor = 0.0
-        if (!togglable) {
-            passive.togglable = false
-        }
-        passive.isUnlocked = unlocked
-        return passive
-    }
-
     public static setFlag(name: string) {
-        StoryUtils.storyflags[name] = {
+        storyflags[name] = {
             storyShown: false,
             entered: true
         }
         StoryUtils.shownStory = name
-        gameSave.save.storyFlags = StoryUtils.storyflags
+        gameSave.save.storyFlags = storyflags
         saveGame()
     }
 
@@ -317,21 +226,21 @@ export default class StoryUtils {
         if (!StoryUtils.shownStory || StoryUtils.shownStory == "") {
             return
         }
-        StoryUtils.storyflags[StoryUtils.shownStory] = {
+        storyflags[StoryUtils.shownStory] = {
             storyShown: true,
             entered: true
         }
-        gameSave.save.storyFlags = StoryUtils.storyflags
+        gameSave.save.storyFlags = storyflags
         StoryUtils.shownStory = ""
         saveGame()
     }
 
     public static getFlags() {
-        return Object.freeze(StoryUtils.storyflags)
+        return Object.freeze(storyflags)
     }
 
     public static getFlagComplete(name: string) {
-        const currentFlags = StoryUtils.storyflags[name]
+        const currentFlags = storyflags[name]
         if (!currentFlags) {
             return false
         }

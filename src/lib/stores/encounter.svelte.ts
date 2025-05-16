@@ -1,10 +1,60 @@
-import { gameSave } from "../types/gameSave.svelte";
+import { gameSave, saveGame } from "../types/gameSave.svelte";
 import LivingEntity from "../types/livingEntity.svelte";
 import Player from "../types/player";
 import type SaveObject from "../types/saveObject.svelte";
-import { saveGame } from "./gameSave.svelte";
+import { AttackUtils } from "../utils/attackUtils";
+import { generateRandomNumber } from "../utils/gameUtils.svelte";
 import { getPartner, getPlayer, playerStore } from "./playerStore.svelte";
+export class CombatLoop {
+    private static paused = false
+    static tick(diff: number) {
+        if (CombatLoop.paused) {
+            return
+        }
+        //Subtract all time to attacks. Partner -> Enemies
+        const currentFoe = encounterState.state.foe
+        const partner = encounterState.state.partner
+        const player = encounterState.state.player
+        if (!currentFoe.name || currentFoe.dead || partner.dead || player.dead) {
+            return
+        }
+        const partnerUpdate = partner.tick(diff)
+        const foeUpdate = currentFoe.tick(diff)
+        if (partnerUpdate) {
+            //If expired, select target and attack
+            partner.attackEntity(currentFoe)
+        }
+        if (foeUpdate) {
+            const willAttackPlayer = this.willAttack(player, currentFoe)
+            if (willAttackPlayer) {
+                currentFoe.attackEntity(player)
+            } else {
+                // Random for now
+                const random = generateRandomNumber(100, 1)
+                if (random < 50) {
+                    currentFoe.attackEntity(player)
+                } else {
+                    currentFoe.attackEntity(partner)
+                }
+            }
+        }
+        if (partnerUpdate || foeUpdate) {
+            onTurnFinish(player, partner, currentFoe)
+        }
+    }
 
+    private static willAttack (player: any, currentFoe: any) {
+        return AttackUtils.calculateDamage(currentFoe, player) >= player.hpStat.value
+    }
+
+    static pause() {
+        this.paused = true
+    }
+
+    static unpause() {
+        this.paused = false
+    }
+}
 export interface Encounter {
     player: Player,
     partner: Player,

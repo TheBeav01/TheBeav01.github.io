@@ -1,3 +1,4 @@
+import { CHEST_BONE } from "../../constants/constants"
 import { genRateMap } from "../../resource/resourceManager.svelte"
 import { Item } from "../../types/resources/item.svelte"
 import { pickItemFromWeightedList, type Spawnable } from "./sharedGenerator"
@@ -9,7 +10,6 @@ interface BaseItem extends Spawnable {
     baseAmount?: number
 }
 
-export const CHEST_BONE = "Chest Bone"
 
 const ITEM_POOL_1 : BaseItem[] = [{
     name: CHEST_BONE,

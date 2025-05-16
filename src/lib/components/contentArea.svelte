@@ -1,8 +1,6 @@
 <script lang="ts">
     import { createTabs, melt } from "@melt-ui/svelte";
     import Environment from "./environment.svelte";
-    import { gameSave } from "../types/gameSave.svelte";
-    import { DRONE_POS } from "../utils/storyUtils.svelte";
     const {
         elements: {root, list, trigger, content},
         states: { value }

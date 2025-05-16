@@ -1,8 +1,7 @@
 <script lang="ts">
-    import { saveGame } from "../stores/gameSave.svelte";
-    import { getPartnerName, getPlayer } from "../stores/playerStore.svelte";
-    import { gameSave } from "../types/gameSave.svelte";
-    import StoryUtils from "../utils/storyUtils.svelte";
+    import { getPartnerName } from "../stores/playerStore.svelte";
+    import { gameSave, saveGame } from "../types/gameSave.svelte";
+    import StoryUtils, { storyflags } from "../utils/storyUtils.svelte";
     import ResourceList from "./resources/resourceList.svelte";
 
     let message = $derived(StoryUtils.getStoryState(gameSave.save));
@@ -21,7 +20,9 @@
     }
 </script>
 <div>
-    <div>Inventory:</div>
+    {#if storyflags["unlockedCombat"].storyShown}
+        <div>Inventory:</div>
+    {/if}
     <ResourceList type="Inventory" emptyText="No items"/>
     {#if hasMessage}
         <div>

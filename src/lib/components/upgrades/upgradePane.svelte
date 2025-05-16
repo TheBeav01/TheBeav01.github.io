@@ -1,12 +1,12 @@
 <script lang="ts">
-    import { toggle } from "@melt-ui/svelte/internal/helpers";
     import { resourceStore } from "../../stores/resourceStore.svelte";
     import { gameSave } from "../../types/gameSave.svelte";
-    import StoryUtils, { EQUIPMENT_ERA } from "../../utils/storyUtils.svelte";
     import UpgradeItem from "./upgradeItem.svelte";
+    import { EQUIPMENT_ERA } from "../../constants/constants";
+    import UpgradeUtils from "../../utils/upgradeUtils";
 
     let item = $derived.by(() => {
-        return StoryUtils.getAvailablePlayerUpgrades(resourceStore)
+        return UpgradeUtils.getAvailablePlayerUpgrades(resourceStore)
     })
 </script>
 

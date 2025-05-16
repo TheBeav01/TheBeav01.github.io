@@ -1,16 +1,15 @@
 import { getCookieByKey } from "../utils/cookieUtils";
-import { saveGame, decodeSave } from "../stores/gameSave.svelte";
 import { createResourcesFromSave, resourceStore } from "../stores/resourceStore.svelte";
 import { writable } from "svelte/store";
 import StoryUtils from "../utils/storyUtils.svelte";
 import { createPlayersFromSave, playerStore } from "../stores/playerStore.svelte";
-import { gameSave } from "../types/gameSave.svelte";
+import { gameSave, saveGame, decodeSave } from "../types/gameSave.svelte";
 import { ResourceLoop } from "./resource-loop.svelte";
-import { CombatLoop } from "./combat-loop.svelte";
-import { setupEncounter } from "../stores/encounter.svelte";
 import type SaveObject from "../types/saveObject.svelte";
 import { GameStats } from "../types/saveObject.svelte";
 import Upgrade from "../types/resources/upgrade.svelte";
+import UpgradeUtils from "../utils/upgradeUtils";
+import { setupEncounter, CombatLoop } from "../stores/encounter.svelte";
 export function load() {
   const saveString = getCookieByKey("save")
   if(saveString != "") {
@@ -27,6 +26,13 @@ export function load() {
 }
 
 export let frameID = writable(0)
+export function onFrameCooldown(everyXFrames: number, callback: () => void) {
+    frameID.subscribe(x => {
+        if (x % everyXFrames === 0) {
+            callback()
+        }
+    })
+}
 let date = Date.now()
 let diff = 0
 /**
@@ -68,7 +74,7 @@ function initGame() {
 
 function createPassivesFromSave(save: SaveObject) {
   save.passives.forEach(p => {
-    const pass = StoryUtils.allUpgrades.find(u => u.name === p.name)
+    const pass = UpgradeUtils.allUpgrades.find(u => u.name === p.name)
     if (!pass) {
       return
     }

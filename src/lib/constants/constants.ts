@@ -31,6 +31,15 @@ export const STORY_MESSAGE_4 = [{
     ...STORY_MESSAGE_5
 ]
 
+export const INITIAL_STORY = 0
+export const INITIAL_SCAN_POS = 1
+export const INITIAL_NAVIGATION_POS = 2
+export const AFTER_INITIAL_COMBAT = 3
+export const EQUIPMENT_ERA = 4
+export const PIDGEON_ONE_DOWN = 5
+export const DECONSTRUCTION_UNLOCKED = 6
+export const DRONE_POS = 7
+export const CHEST_BONE = "Chest Bone"
 
 
 export const STORY_MESSAGE_DECONSTRUCTION = [{

@@ -1,29 +1,42 @@
 <script lang="ts">
-    import { cloneEncounter, encounterState, setEncounter, tick } from "../stores/encounter.svelte";
+    import { cloneEncounter, CombatLoop, encounterState, setEncounter, tick } from "../stores/encounter.svelte";
     import { getPartnerName } from "../stores/playerStore.svelte";
-    import { gameSave } from "../types/gameSave.svelte";
+    import { gameSave, saveGame } from "../types/gameSave.svelte";
     import { untrack } from "svelte";
     import {
         generateEnemy,
         type EnemyDisplay,
     } from "../utils/generators/enemyGenerator";
-    import StoryUtils, { AFTER_INITIAL_COMBAT, INITIAL_NAVIGATION_POS, INITIAL_SCAN_POS } from "../utils/storyUtils.svelte";
+    import StoryUtils, { storyflags } from "../utils/storyUtils.svelte";
     import InfoTabs from "./infoTabs.svelte";
     import LivingEntity from "../types/livingEntity.svelte";
     import { Coordinates } from "../types/saveObject.svelte";
     import { getEnemiesPerZone } from "../utils/gameUtils.svelte";
-    import { saveGame } from "../stores/gameSave.svelte";
     import AttackPanel from "./environment/attackPanel.svelte";
     import EncounterEntity from "./environment/encounterEntity.svelte";
     import UpgradePane from "./upgrades/upgradePane.svelte";
     let message = $derived(StoryUtils.getStoryState(gameSave.save));
     let save = $derived(gameSave.save);
-    let pos = $derived(gameSave.save.storyPos);
-    let combatUnlocked = $derived(pos >= 1)
-    const divClass = $derived(pos == 1 ? "intermediate-panel" : null);
-    const battleClass = $derived(
-        pos == 1 ? "intermediate-panel" : "battle-panel",
-    );
+    let navigationUnlocked = $derived.by(() => {
+        if (!storyflags["unlockedNavigation"]) {
+            return false
+        }
+        return storyflags["unlockedNavigation"].storyShown
+    })
+    let combatUnlocked = $derived.by(() => {
+        if (!storyflags["unlockedCombat"]) {
+            return false
+        }
+        return storyflags["unlockedCombat"].storyShown
+
+    })
+    let thirdPhaseUnlocked = $derived.by(() => {
+        if (!storyflags["unlockedFirstWeapon"]) {
+            return false
+        }
+        return storyflags["unlockedFirstWeapon"].storyShown
+    })
+    const divClass = $derived(navigationUnlocked && !combatUnlocked ? "intermediate-panel" : null);
     const epz = $derived(
         getEnemiesPerZone(gameSave.save.coordinates.zone),
     );
@@ -45,9 +58,6 @@
         }
     })
     const onEnemyKill = () => {
-        if (StoryUtils.getFlagComplete("unlockedCombat") && !StoryUtils.getFlagComplete("unlockedFirstWeapon")) {
-            StoryUtils.setFlag("unlockedFirstWeapon")
-        }
         if (save.coordinates.sidePathPosition != 0) {
             generateEncounter()
             return
@@ -105,9 +115,10 @@
         }
         
         gameSave.save = { ...gameSave.save, coordinates: coords};
-        if (StoryUtils.getFlagComplete("unlockedNavigation") && !StoryUtils.getFlagComplete("unlockedCombat")) {
-            StoryUtils.setFlag("unlockedCombat")
-            // StoryUtils.setStoryPosition(INITIAL_SCAN_POS + 1);
+        
+        if (StoryUtils.getFlagComplete("unlockedCombat") && !StoryUtils.getFlagComplete("unlockedFirstWeapon")) {
+            StoryUtils.setFlag("unlockedFirstWeapon")
+            CombatLoop.pause()
         }
         if (resetCount) {
             const newEPZ = highest > coords.zone ? 0 : epz
@@ -133,17 +144,11 @@
     }
 
     const onNext = (_e: any) => {
-        if (message.onNext) {
-            message.onNext()
-        }
         StoryUtils.setFlagAsRead()
-        gameSave.save.storyPos = 1
-        gameSave.save = {...gameSave.save}
-        saveGame()
+        StoryUtils.setFlag("unlockedCombat")
     }
 </script>
-
-{#if !combatUnlocked}
+{#if !navigationUnlocked}
     <div class="initial-progress">
         {#each message.text as textItem}
             {substituteText(textItem.text)}
@@ -155,7 +160,7 @@
         >
     </div>
 {/if}
-{#if combatUnlocked}
+{#if navigationUnlocked}
     <div class="environment-container">
         <div>
             Area {coords.zone} - {encounter.remaining <= 0 ? "No" : encounter.remaining} Creatures Remain
@@ -181,8 +186,8 @@
                 </div>
             </div>
         </div>
-        {#if combatUnlocked}
-            <div class={`${battleClass} fit-height`}>
+        {#if thirdPhaseUnlocked}
+            <div class={`battle-panel fit-height`}>
                 {#if encounter.remaining <= 0 && coords.sidePathPosition === 0}
                     <div>No entities found in area</div>
                 {/if}

@@ -5,9 +5,9 @@ import type SaveObject from "../types/saveObject.svelte";
 import { gameSave } from "../types/gameSave.svelte";
 import { Item } from "../types/resources/item.svelte";
 import Upgrade from "../types/resources/upgrade.svelte";
-import StoryUtils from "../utils/storyUtils.svelte";
 import { genRateMap } from "../resource/resourceManager.svelte";
 import { SvelteMap } from "svelte/reactivity";
+import UpgradeUtils from "../utils/upgradeUtils";
 
 const createDefaultMap = () => {
     const map: SvelteMap<string, Resource> = new SvelteMap()
@@ -27,7 +27,7 @@ export const createResourcesFromSave = (save: SaveObject) => {
                 res.isPassive = rau.isPassive
                 res.upgradeToggled = rau.upgradeToggled
                 res.togglable = rau.togglable
-                const upgrade = StoryUtils.allUpgrades.find(u => u.name === r.name)
+                const upgrade = UpgradeUtils.allUpgrades.find(u => u.name === r.name)
                 if (upgrade) {
                     res.scalingFactor = upgrade.scalingFactor
                     res.baseCost = upgrade.baseCost

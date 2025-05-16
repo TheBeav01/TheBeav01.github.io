@@ -5,7 +5,6 @@ import DefenseStat from "../../stats/defense";
 import HealthStat from "../../stats/health";
 import { resourceStore } from "../../stores/resourceStore.svelte";
 import type BaseEntity from "../baseEntity";
-import type Player from "../player";
 import { Resource } from "./resource.svelte";
 
 export class Item extends Resource implements BaseEntity {
@@ -72,7 +71,7 @@ export class Item extends Resource implements BaseEntity {
         this.currentCost = this.calculateNextCost()
     }
     currentCost = $state(0)
-    public equip(entity: Player, amt?: number, coldStart = false) : Player {
+    public equip(entity: any, amt?: number, coldStart = false) : any {
         if (!this.canEquip() && !coldStart) {
             return entity
         }
@@ -115,7 +114,7 @@ export class Item extends Resource implements BaseEntity {
 }
 
 export class ItemUtils {
-    static equipItem(item: Item, ontoEntity: Player) : Player {
+    static equipItem(item: Item, ontoEntity: any) : any {
         ontoEntity.attackStat.value += item.attackStat.value
         ontoEntity.defenseStat.value += item.defenseStat.value
         ontoEntity.attackSpeedStat.value += item.attackSpeedStat.value
@@ -125,7 +124,7 @@ export class ItemUtils {
         return ontoEntity
     }
 
-    static equipBulk(item: Item, ontoEntity: Player) : Player {
+    static equipBulk(item: Item, ontoEntity: any) : any {
         ontoEntity.attackStat.value += item.attackStat.value * item._amt
         ontoEntity.defenseStat.value += item.defenseStat.value * item._amt
         ontoEntity.attackSpeedStat.value += item.attackSpeedStat.value * item._amt

@@ -2,6 +2,7 @@ import { log } from "../stores/messageList.svelte";
 import { playerStore } from "../stores/playerStore.svelte";
 import { getPassive } from "../types/gameSave.svelte";
 import type LivingEntity from "../types/livingEntity.svelte";
+import { AttackUtils } from "../utils/attackUtils";
 import type BaseStat from "./base/baseStat";
 
 export default class AttackStat implements BaseStat<number> {
@@ -41,16 +42,4 @@ export default class AttackStat implements BaseStat<number> {
         return defendingEntity
     };
     
-}
-
-export class AttackUtils {
-    static calculateDamage(attackingEntity: LivingEntity, defendingEntity: LivingEntity) {
-        const defense = defendingEntity.defenseStat.value ?? 1
-        const attack = attackingEntity.attackStat.value
-        // Big pos diff = small attack. Small diff = attack does ~ x hp. Big neg diff = more damage
-        const attackDefenseDifferential = (attack / defense).toFixed(2)
-        
-        let finalAttack = Math.max(1, attack * Number.parseFloat(attackDefenseDifferential))
-        return Math.round(finalAttack)
-    }
 }
