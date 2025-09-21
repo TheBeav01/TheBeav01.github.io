@@ -1,7 +1,7 @@
 <script lang="ts">
     import { cloneEncounter, CombatLoop, encounterState, setEncounter, tick } from "../stores/encounter.svelte";
     import { getPartnerName } from "../stores/playerStore.svelte";
-    import { gameSave, saveGame } from "../types/gameSave.svelte";
+    import { gameSave, getFlagComplete, saveGame } from "../types/gameSave.svelte";
     import { untrack } from "svelte";
     import {
         generateEnemy,
@@ -15,26 +15,27 @@
     import AttackPanel from "./environment/attackPanel.svelte";
     import EncounterEntity from "./environment/encounterEntity.svelte";
     import UpgradePane from "./upgrades/upgradePane.svelte";
+    import { UNLOCKED_COMBAT, UNLOCKED_NAVIGATION, FIRST_ENEMY_ENCOUNTER, UNLOCKED_FIRST_WEAPON } from "../constants/constants";
     let message = $derived(StoryUtils.getStoryState(gameSave.save));
     let save = $derived(gameSave.save);
     let navigationUnlocked = $derived.by(() => {
-        if (!storyflags["unlockedNavigation"]) {
+        if (!storyflags[UNLOCKED_NAVIGATION]) {
             return false
         }
-        return storyflags["unlockedNavigation"].storyShown
+        return storyflags[UNLOCKED_NAVIGATION].storyShown
     })
     let combatUnlocked = $derived.by(() => {
-        if (!storyflags["unlockedCombat"]) {
+        if (!storyflags[UNLOCKED_COMBAT]) {
             return false
         }
-        return storyflags["unlockedCombat"].storyShown
+        return storyflags[UNLOCKED_COMBAT].storyShown
 
     })
     let thirdPhaseUnlocked = $derived.by(() => {
-        if (!storyflags["unlockedFirstWeapon"]) {
+        if (!storyflags[FIRST_ENEMY_ENCOUNTER]) {
             return false
         }
-        return storyflags["unlockedFirstWeapon"].storyShown
+        return storyflags[FIRST_ENEMY_ENCOUNTER].storyShown
     })
     const divClass = $derived(navigationUnlocked && !combatUnlocked ? "intermediate-panel" : null);
     const epz = $derived(
@@ -72,7 +73,10 @@
         }
         if (remaining <= 0 && gameSave.save.highestArea <= gameSave.save.coordinates.zone) {
             gameSave.save.highestArea = gameSave.save.coordinates.zone + 1
-        } 
+        }
+        if (getFlagComplete(FIRST_ENEMY_ENCOUNTER) && !getFlagComplete(UNLOCKED_FIRST_WEAPON)) {
+            StoryUtils.setFlag(UNLOCKED_FIRST_WEAPON)
+        }
     }
     const onTravel = (dir: number) => {
         const gsc = gameSave.save.coordinates
@@ -116,8 +120,8 @@
         
         gameSave.save = { ...gameSave.save, coordinates: coords};
         
-        if (StoryUtils.getFlagComplete("unlockedCombat") && !StoryUtils.getFlagComplete("unlockedFirstWeapon")) {
-            StoryUtils.setFlag("unlockedFirstWeapon")
+        if (getFlagComplete(UNLOCKED_COMBAT) && !getFlagComplete(FIRST_ENEMY_ENCOUNTER)) {
+            StoryUtils.setFlag(FIRST_ENEMY_ENCOUNTER)
             CombatLoop.pause()
         }
         if (resetCount) {
@@ -145,7 +149,7 @@
 
     const onNext = (_e: any) => {
         StoryUtils.setFlagAsRead()
-        StoryUtils.setFlag("unlockedCombat")
+        StoryUtils.setFlag(UNLOCKED_COMBAT)
     }
 </script>
 {#if !navigationUnlocked}
@@ -169,7 +173,7 @@
                     <button
                     disabled={coords.zone == 0}
                     onclick={() => onTravel(2)}>Previous Zone</button>
-                    <button disabled={encounter.remaining > 0} onclick={() => onTravel(0)}>Next Zone</button>
+                    <button disabled={encounter.remaining > 0 || !getFlagComplete(UNLOCKED_COMBAT)} onclick={() => onTravel(0)}>Next Zone</button>
                     
                 </div>
                 <div>
@@ -234,6 +238,7 @@
     }
     .intermediate-panel {
         grid-column: 2 / 4;
+        padding-left: 1rem;
     }
     .battle-panel {
         display: grid;

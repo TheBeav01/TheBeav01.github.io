@@ -49,6 +49,7 @@ export abstract class Resource {
     }
 
     public add(amt: number) {
+        console.debug(`Resource store: Adding ${amt} to ${this.name}`)
         let amtToAdd = amt ?? 0
         amtToAdd = amtToAdd < 0 ? 0 : amtToAdd
         this.amt += amtToAdd

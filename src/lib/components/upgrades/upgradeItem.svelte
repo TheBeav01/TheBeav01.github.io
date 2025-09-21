@@ -21,9 +21,9 @@
             equipOrTogglePassive(upgrade)
             return
         }
-        res?.remove(Math.floor(upgrade.currentCost))
         const player = playerStore.get("player")
         const newPlayer = upgrade.equip(player!)
+        res?.remove(Math.floor(upgrade.currentCost))
         playerStore.set("player", newPlayer)
         encounterState.state.player = newPlayer
     }

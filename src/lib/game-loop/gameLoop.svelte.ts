@@ -1,15 +1,17 @@
 import { getCookieByKey } from "../utils/cookieUtils";
-import { createResourcesFromSave, resourceStore } from "../stores/resourceStore.svelte";
+import { resourceStore } from "../stores/resourceStore.svelte";
 import { writable } from "svelte/store";
 import StoryUtils from "../utils/storyUtils.svelte";
 import { createPlayersFromSave, playerStore } from "../stores/playerStore.svelte";
 import { gameSave, saveGame, decodeSave } from "../types/gameSave.svelte";
 import { ResourceLoop } from "./resource-loop.svelte";
-import type SaveObject from "../types/saveObject.svelte";
-import { GameStats } from "../types/saveObject.svelte";
+import SaveObject, { GameStats } from "../types/saveObject.svelte";
+import { setupEncounter, CombatLoop } from "../stores/encounter.svelte";
+import { genRateMap } from "../resource/resourceManager.svelte";
+import { Item } from "../types/resources/item.svelte";
+import type { Resource } from "../types/resources/resource.svelte";
 import Upgrade from "../types/resources/upgrade.svelte";
 import UpgradeUtils from "../utils/upgradeUtils";
-import { setupEncounter, CombatLoop } from "../stores/encounter.svelte";
 export function load() {
   const saveString = getCookieByKey("save")
   if(saveString != "") {
@@ -70,6 +72,42 @@ function initGame() {
   handleMigration(gameSave.save)
   setupEncounter(gameSave.save)
   saveGame()
+}
+
+const createResourcesFromSave = (save: SaveObject) => {
+    const map: Map<string, Resource> = new Map()
+    save.resources.forEach(r => {
+        if (!resourceStore.has(r.name)) {
+            let res = null
+            if (r.isUpgrade) {
+                const rau = r as Upgrade
+                res = new Upgrade(rau)
+                res.isPassive = rau.isPassive
+                res.upgradeToggled = rau.upgradeToggled
+                res.togglable = rau.togglable
+                const upgrade = UpgradeUtils.allUpgrades.find(u => u.name === r.name)
+                if (upgrade) {
+                    res.scalingFactor = upgrade.scalingFactor
+                    res.baseCost = upgrade.baseCost
+                    res.resourceUsed = upgrade.resourceUsed
+                    res.attackStat = upgrade.attackStat
+                    res.defenseStat = upgrade.defenseStat
+                }
+            }
+            else if (r.isItem) {
+                res = new Item(r as Item)
+            }
+            if (!res) {
+                return
+            }
+            res.genRatePerSecond = genRateMap.get(res.name) ?? 0.0
+            resourceStore.set(res.name, res)
+            return
+        }
+        const res = resourceStore.get(r.name)!
+        res.add(r._amt)
+        resourceStore.set(r.name, res)
+    })
 }
 
 function createPassivesFromSave(save: SaveObject) {

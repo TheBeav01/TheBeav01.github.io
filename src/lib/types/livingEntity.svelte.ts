@@ -32,6 +32,16 @@ export default class LivingEntity implements BaseEntity {
     dead = false
     coordinates: Coordinates = new Coordinates(0, 0, 0)
     entityType : "Player" | 'Partner' | 'Foe' = "Foe"
+    applyStats(hp: number | null,attack: number, def: number, speed: number, crit: number) {
+        if (hp) {
+            this.hpStat = new HealthStat(hp)
+        }
+        this.attackSpeedStat = new AttackSpeedStat(speed)
+        this.defenseStat = new DefenseStat(def)
+        this.attackStat = new AttackStat(attack)
+        this.critRateStat = new CritRateStat(crit)
+        return this
+    }
     isDead() {
         return this.hpStat.isEmpty()
     }

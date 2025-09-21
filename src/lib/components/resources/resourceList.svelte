@@ -1,5 +1,6 @@
 <script lang="ts">
     import { resourceStore } from "../../stores/resourceStore.svelte";
+    import { getPassive } from "../../types/gameSave.svelte";
     import Upgrade from "../../types/resources/upgrade.svelte";
     import DeconstructButton from "../deconstructButton.svelte";
     export type ResourceKey = "Inventory" | "Resource" | "Upgrade" | "Passive" | "All" 
@@ -31,7 +32,6 @@
                 case "All":
                     return true
                 case "Inventory":
-                    console.log(e)
                     return e.isItem
                 case "Resource":
                     return !e.isItem && !e.isUpgrade
@@ -46,6 +46,12 @@
             }
         })
     })
+
+    // let deconUnlocked = $derived.by(() => {
+    //         const pass = getPassive("Deconstruction")
+    //         console.debug(pass)
+    //         return pass != null
+    //     })
 </script>
 
 <div>
@@ -53,7 +59,11 @@
         <!-- TODO: sort out how to do dev stuff and move this there -->
         <!-- <button onclick={() => awardResource(key)}>Award 10</button> -->
         <div>
-            <span>{res?.name}: {res?.amt ? res.amt.toFixed(1) : 0} <DeconstructButton res={res} type={type}/></span>
+            <span>{res?.name}: {res?.amt ? res.amt.toFixed(1) : 0}
+                <!-- {#if deconUnlocked} -->
+                <DeconstructButton res={res} type={type}/>
+                <!-- {/if} -->
+            </span>
         </div>
     {/each}
 </div>

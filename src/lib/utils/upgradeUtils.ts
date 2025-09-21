@@ -1,5 +1,5 @@
-import { CHEST_BONE, DECONSTRUCTION_UNLOCKED } from "../constants/constants"
-import { gameSave, getPassive } from "../types/gameSave.svelte"
+import { CHEST_BONE } from "../constants/constants"
+import { gameSave, getFlagComplete, getPassive } from "../types/gameSave.svelte"
 import { Resource } from "../types/resources/resource.svelte"
 import Upgrade from "../types/resources/upgrade.svelte"
 export default class UpgradeUtils {
@@ -14,10 +14,9 @@ export default class UpgradeUtils {
             this.createDefenseItem("Improve Cloak Fibers",40, 2, 1.25),
             this.createPassive("Swoop", "[[partnername]] takes the hit when an attack would down you", 25, CHEST_BONE, this.hasUnlockedSwoop),
             this.createPassive("Rescue", "You take the hit when an attack would down [[partnername]]", 25, CHEST_BONE, this.hasUnlockedRescue),
-            this.createPassive("Deconstruction", "Deconstruct drops with the power of your mind", 0, "Mana", () => gameSave.save.storyPos >= DECONSTRUCTION_UNLOCKED, false)
+            this.createPassive("Deconstruction", "Deconstruct drops with the power of your mind", 0, "Mana", this.hasUnlockedDecon, false)
     ]
     public static getAvailablePlayerUpgrades(resourceStore: Map<string, Resource>, cached = true) {
-        const highestCall = this.cached
         const mana = resourceStore.get("Mana")!
         const newList = this.allUpgrades.filter((u, idx) => {
             const hasResource = resourceStore.get(u.name)
@@ -27,19 +26,21 @@ export default class UpgradeUtils {
             else if (hasResource) {
                 return true
             }
-            else if (u.isUnlocked != null) {
-                return u.isUnlocked()
+            if (u.unlocked) {
+                return true
+            }
+            if (!u.unlocked) {
+                const unlocked = u.checkUnlocked()
+                // console.debug(`Checking unlock for ${u.name}: ${unlocked}`)
+                return unlocked
             }
             else if (mana.amt >= u.currentCost / 2) {
                 return true
             }
             return false
         }).map(u => resourceStore.get(u.name) as Upgrade ?? u)
-        if (newList.length > highestCall.length || !cached) {
-            this.cached = newList
-            return newList
-        }
-        return this.cached
+        newList.forEach(l => console.debug(l.name, ": ", l.amt))
+        return newList
     }
 
     private static createAttackItem(name: string, baseCost: number, attack: number, scalingFactor: number, resourceUsed = "Mana") {
@@ -74,7 +75,7 @@ export default class UpgradeUtils {
         if (!togglable) {
             passive.togglable = false
         }
-        passive.isUnlocked = unlocked
+        passive._isUnlocked = unlocked
         return passive
     }
 
@@ -90,5 +91,12 @@ export default class UpgradeUtils {
                 return true
             }
             return gameSave.save.stats.partnerDeaths > 0
+        }
+
+        private static hasUnlockedDecon() {
+            if (getPassive("Deconstruction") != null) {
+                return true
+            }
+            return getFlagComplete("deconstructionUnlocked")
         }
 }

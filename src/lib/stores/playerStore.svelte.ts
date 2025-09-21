@@ -1,7 +1,3 @@
-import AttackStat from "../stats/attack"
-import AttackSpeedStat from "../stats/attackSpeed"
-import CritRateStat from "../stats/critRate"
-import DefenseStat from "../stats/defense"
 import HealthStat from "../stats/health"
 import Player from "../types/player"
 import type SaveObject from "../types/saveObject.svelte"
@@ -40,20 +36,14 @@ const isUnset = (hp: number | undefined) => {
 }
 
 const applyPlayerUpgrades = (save: SaveObject, player: Player) => {
-    player.attackStat = new AttackStat(1)
-    player.defenseStat = new DefenseStat(4)
-    player.attackSpeedStat = new AttackSpeedStat(0)
-    player.critRateStat = new CritRateStat(0)
+    player = player.applyStats(15,1,4,0,0)
     save.playerInv.forEach(i => {
         player.awardItem(i)
     })
 
 }
 const applyPartnerUpgrades = (save: SaveObject, partner: Player) => {
-    partner.attackStat = new AttackStat(0)
-    partner.defenseStat = new DefenseStat(8)
-    partner.attackSpeedStat = new AttackSpeedStat(0)
-    partner.critRateStat = new CritRateStat(0)
+    partner = partner.applyStats(null,0,8,0,0)
     save.playerInv.forEach(i => {
         partner.awardItem(i)
     })

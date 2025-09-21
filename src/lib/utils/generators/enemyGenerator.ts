@@ -1,8 +1,8 @@
-import { EQUIPMENT_ERA } from "../../constants/constants"
+import { EQUIPMENT_ERA, UNLOCKED_EQUIPMENT_PURCHASING } from "../../constants/constants"
 import * as Enemy from "../../constants/enemyConstants"
 import HealthStat from "../../stats/health"
 import { log } from "../../stores/messageList.svelte"
-import { gameSave } from "../../types/gameSave.svelte"
+import { gameSave, getFlagComplete } from "../../types/gameSave.svelte"
 import LivingEntity from "../../types/livingEntity.svelte"
 import type { Coordinates } from "../../types/saveObject.svelte"
 import StoryUtils from "../storyUtils.svelte"
@@ -129,7 +129,7 @@ const calculateAttackSpeed = () => {
 }
 
 const canGenerateSpecialEnemy = (coords: Coordinates, left: number) => {
-    if (coords.zone === 5 && left === 1 && coords.sidePathPosition === 0 && gameSave.save.storyPos <= EQUIPMENT_ERA) {
+    if (coords.zone === 5 && left === 1 && coords.sidePathPosition === 0 && !getFlagComplete(UNLOCKED_EQUIPMENT_PURCHASING)) {
         return true
     }
     return false
@@ -148,7 +148,6 @@ const generateSpecialEnemy = (coords: Coordinates, entity: LivingEntity) : Enemy
             entity.onDefaultKill()
             onSpecialKill()
             StoryUtils.setFlag("deconstructionUnlocked")
-            // StoryUtils.setStoryPosition(EQUIPMENT_ERA + 1)
         }
     } else {
         entity.onKill = () => {

@@ -63,3 +63,13 @@ export const equipOrTogglePassive = (passive: Upgrade) => {
     }
     passive.add(0)
 }
+
+export const getFlagComplete = (name: string) : boolean => {
+    const currentFlags = gameSave.save.storyFlags
+    if (!currentFlags || !(name in currentFlags)) {
+        return false
+    }
+    const flag = currentFlags[name]
+    console.debug(`Checking flag ${name}: Entered -- ${flag.entered}, Shown -- ${flag.storyShown}`)
+    return flag.entered && flag.storyShown
+}

@@ -2,7 +2,7 @@ import * as Constants from "../constants/constants"
 import { CombatLoop } from "../stores/encounter.svelte"
 import { log } from "../stores/messageList.svelte"
 import { resourceStore } from "../stores/resourceStore.svelte"
-import { gameSave, getPassive, saveGame } from "../types/gameSave.svelte"
+import { gameSave, getFlagComplete, getPassive, saveGame } from "../types/gameSave.svelte"
 import type SaveObject from "../types/saveObject.svelte"
 import { Passives } from "../types/saveObject.svelte"
 import { generateRandomNumber } from "./gameUtils.svelte"
@@ -12,6 +12,7 @@ interface StoryHandler {
     text: StoryText[]
     onNext?: () => void
     onNextText?: string
+    progressOnNext?: boolean
 }
 
 interface StoryText {
@@ -23,27 +24,31 @@ export default class StoryUtils {
     private static partnerNames = ["Zephyr", "Aluca", "Ruby", "Zircon", "Topaz", "Orion", "Zatha", "Ba'kan", "Azl'ka", "Xa'ahn"]
     private static storyList = new Map()
 
+
     static buildStoryList() {
         const map = new Map<string, StoryHandler>()
-        map.set("unlockedNavigation",{
+        map.set(Constants.UNLOCKED_NAVIGATION,{
             text: Constants.STORY_MESSAGE_INITIAL,
             onNextText: "Scan?",
-            onNext: () => StoryUtils.setFlag("unlockedCombat")
+            onNext: () => StoryUtils.setFlag(Constants.UNLOCKED_COMBAT)
         })
-        map.set("unlockedCombat",{
+        map.set(Constants.UNLOCKED_COMBAT,{
             text: Constants.STORY_MESSAGE_2
         })
-        map.set("unlockedFirstWeapon",{
+        map.set(Constants.FIRST_ENEMY_ENCOUNTER,{
             text: Constants.STORY_MESSAGE_3,
             onNext: () => CombatLoop.unpause()
         })
-        map.set("equipmentUnlocked",{
+        map.set(Constants.UNLOCKED_FIRST_WEAPON,{
             text: Constants.STORY_MESSAGE_4
         })
-        map.set("deconstructionUnlocked",{
+        map.set(Constants.UNLOCKED_EQUIPMENT_PURCHASING,{
+            text: [{text: "AAAAAA?"}]
+        })
+        map.set(Constants.UNLOCKED_RESOURCE_DECONSTRUCTION,{
             text: Constants.STORY_MESSAGE_DECONSTRUCTION
         })
-        map.set("passiveCombatUnlocked",{
+        map.set(Constants.UNLOCKED_PARTNER_COMBAT,{
             text: Constants.STORY_MESSAGE_INITIAL
         })
         this.storyList = map
@@ -88,7 +93,7 @@ export default class StoryUtils {
                 storyflags.unlockedNavigation = defaultValue
                 break
             case Constants.INITIAL_STORY:
-                this.setFlag("unlockedNavigation")
+                this.setFlag(Constants.UNLOCKED_NAVIGATION)
                 break
         }
     }
@@ -132,7 +137,6 @@ export default class StoryUtils {
      */
     public static getStoryState(s: SaveObject) : StoryHandler {
         const ready: {key: keyof StoryFlags, value: StoryHandler}[] = Object.keys(s.storyFlags).filter((s) => this.isStoryReady(s)).map(x => {return {key: x, value: this.storyList.get(x)}})
-        console.log("READY: " + ready)
         if (ready.length > 0) {
             StoryUtils.shownStory = ready[0].key
             return ready[0].value
@@ -213,12 +217,14 @@ export default class StoryUtils {
     }
 
     public static setFlag(name: string) {
-        storyflags[name] = {
+        const obj = {
             storyShown: false,
             entered: true
         }
+        storyflags[name] = obj
         StoryUtils.shownStory = name
         gameSave.save.storyFlags = storyflags
+        console.debug(`Setting message show: ${name}: ${obj}`)
         saveGame()
     }
 
@@ -226,10 +232,12 @@ export default class StoryUtils {
         if (!StoryUtils.shownStory || StoryUtils.shownStory == "") {
             return
         }
-        storyflags[StoryUtils.shownStory] = {
+        console.debug(`Setting flag as read: ${StoryUtils.shownStory}`)
+        const obj = {
             storyShown: true,
             entered: true
         }
+        storyflags[StoryUtils.shownStory] = obj
         gameSave.save.storyFlags = storyflags
         StoryUtils.shownStory = ""
         saveGame()
@@ -237,14 +245,6 @@ export default class StoryUtils {
 
     public static getFlags() {
         return Object.freeze(storyflags)
-    }
-
-    public static getFlagComplete(name: string) {
-        const currentFlags = storyflags[name]
-        if (!currentFlags) {
-            return false
-        }
-        return currentFlags.entered && currentFlags.storyShown
     }
 
     public static displayStoryMessage() {

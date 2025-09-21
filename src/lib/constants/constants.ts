@@ -25,10 +25,14 @@ export const STORY_MESSAGE_5 = [{
 }]
 export const STORY_MESSAGE_4 = [{
     text: "The skeletal creature leaps out only to be felled by your hands unceremoniously. [[partnername]] dives down into the grass and you feel a bit more energy seep into your bones. They poke their head out of the grass. For a split second, you can see a wisp of white energy swirl around their snout before they lap it up."
-}, {
-    text: "They glance to you and pull off a chest bone, offering it up to you. Initially, you move to slip it into your bag but [[partnername]] stops you."
-},
-    ...STORY_MESSAGE_5
+    }, {
+        text: "They glance to you and pull off a chest bone, offering it up to you. Initially, you move to slip it into your bag but [[partnername]] stops you. They show thir claws and you suddenly understand."
+    },
+    {
+        text: "You give the bone to [[partnername]]. Their sharp claws work the bone until it's sufficiently sharp, then stab it into the dirt. The bone holds, but only just. You pull it out of the dirt and slip it into the holster claimed by your missing weaponry."
+    }, {
+        text: "You can now refine this weapon."
+    }
 ]
 
 export const INITIAL_STORY = 0
@@ -52,3 +56,11 @@ export const STORY_MESSAGE_DEFAULT = [
         text: ""
     }
 ]
+
+export const UNLOCKED_NAVIGATION = "unlockedNavigation"
+export const UNLOCKED_COMBAT = "unlockedCombat"
+export const FIRST_ENEMY_ENCOUNTER = "firstEnemyEncounter"
+export const UNLOCKED_FIRST_WEAPON = "unlockedFirstWeapon"
+export const UNLOCKED_EQUIPMENT_PURCHASING = "equipmentUnlocked"
+export const UNLOCKED_RESOURCE_DECONSTRUCTION = "deconstructionUnlocked"
+export const UNLOCKED_PARTNER_COMBAT = "passiveCombatUnlocked"

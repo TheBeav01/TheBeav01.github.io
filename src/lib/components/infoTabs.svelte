@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { UNLOCKED_COMBAT } from "../constants/constants";
     import { getPartnerName } from "../stores/playerStore.svelte";
     import { gameSave, saveGame } from "../types/gameSave.svelte";
     import StoryUtils, { storyflags } from "../utils/storyUtils.svelte";
@@ -20,7 +21,7 @@
     }
 </script>
 <div>
-    {#if storyflags["unlockedCombat"].storyShown}
+    {#if storyflags[UNLOCKED_COMBAT]?.storyShown}
         <div>Inventory:</div>
     {/if}
     <ResourceList type="Inventory" emptyText="No items"/>

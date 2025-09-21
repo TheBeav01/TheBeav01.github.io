@@ -115,6 +115,7 @@ export class Item extends Resource implements BaseEntity {
 
 export class ItemUtils {
     static equipItem(item: Item, ontoEntity: any) : any {
+        console.log(`Equipping ${item.name} onto ${ontoEntity.name}`)
         ontoEntity.attackStat.value += item.attackStat.value
         ontoEntity.defenseStat.value += item.defenseStat.value
         ontoEntity.attackSpeedStat.value += item.attackSpeedStat.value

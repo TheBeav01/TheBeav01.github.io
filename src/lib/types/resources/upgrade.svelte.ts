@@ -7,8 +7,9 @@ export default class Upgrade extends Item {
     public readonly upgradeFlag = ""
     public isPassive = false
     public togglable = true
+    public unlocked = false
     public upgradeToggled = $state(false)
-    public isUnlocked : () => boolean = () => false
+    public _isUnlocked : () => boolean = () => false
     public preStoryShown = false
     constructor(from?: Upgrade) {
         super(from as Item)
@@ -19,6 +20,16 @@ export default class Upgrade extends Item {
             from.upgradeToggled = getPassiveValue(this.name) ?? false
         }
         this.resourceUsed = from.resourceUsed
+    }
+
+    public checkUnlocked = () => {
+        if (this.unlocked) {
+            return true
+        }
+        if (this._isUnlocked) {
+            this.unlocked = this._isUnlocked()
+            return this.unlocked
+        }
     }
 
     public add(amt: number): void {

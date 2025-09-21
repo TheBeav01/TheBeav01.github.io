@@ -1,16 +1,16 @@
 <script lang="ts">
     import { resourceStore } from "../../stores/resourceStore.svelte";
-    import { gameSave } from "../../types/gameSave.svelte";
+    import { getFlagComplete } from "../../types/gameSave.svelte";
     import UpgradeItem from "./upgradeItem.svelte";
-    import { EQUIPMENT_ERA } from "../../constants/constants";
     import UpgradeUtils from "../../utils/upgradeUtils";
+    import { UNLOCKED_FIRST_WEAPON } from "../../constants/constants";
 
     let item = $derived.by(() => {
         return UpgradeUtils.getAvailablePlayerUpgrades(resourceStore)
     })
 </script>
 
-{#if gameSave.save.storyPos >= EQUIPMENT_ERA}
+{#if getFlagComplete(UNLOCKED_FIRST_WEAPON)}
     <div class="upgrade-container">
         <h3>Player Upgrades</h3>
         <div>

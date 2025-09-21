@@ -1,11 +1,13 @@
 import { onDeath } from "../stores/gameState.svelte";
 import { addResource, resourceStore } from "../stores/resourceStore.svelte";
 import UpgradeUtils from "../utils/upgradeUtils";
+// import UpgradeUtils from "../utils/upgradeUtils";
 import { gameSave, saveGame } from "./gameSave.svelte";
 import LivingEntity from "./livingEntity.svelte";
 import type { Resource } from "./resources/resource.svelte";
 
 export default class Player extends LivingEntity {
+
     constructor(isPartner: boolean = false) {
         super(0)
         this.isPartner = isPartner
