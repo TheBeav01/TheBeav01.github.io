@@ -171,9 +171,10 @@
             <div class="nav-button-group">
                 <div>
                     <button
-                    disabled={coords.zone == 0}
-                    onclick={() => onTravel(2)}>Previous Zone</button>
-                    <button disabled={encounter.remaining > 0 || !getFlagComplete(UNLOCKED_COMBAT)} onclick={() => onTravel(0)}>Next Zone</button>
+                        disabled={coords.zone == 0}
+                        onclick={() => onTravel(2)}>Retreat</button>
+                    <button disabled={encounter.remaining > 0 || !getFlagComplete(UNLOCKED_COMBAT)}
+                        onclick={() => onTravel(0)}>Advance</button>
                     
                 </div>
                 {#if getPassiveValue("Enemy Simulation") != null}

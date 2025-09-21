@@ -3,7 +3,7 @@ import { resourceStore } from "../stores/resourceStore.svelte";
 import { writable } from "svelte/store";
 import StoryUtils from "../utils/storyUtils.svelte";
 import { createPlayersFromSave, playerStore } from "../stores/playerStore.svelte";
-import { gameSave, saveGame, decodeSave } from "../types/gameSave.svelte";
+import { gameSave, saveGame, decodeSave, getPassiveValue, getPassive } from "../types/gameSave.svelte";
 import { ResourceLoop } from "./resource-loop.svelte";
 import SaveObject, { GameStats } from "../types/saveObject.svelte";
 import { setupEncounter, CombatLoop } from "../stores/encounter.svelte";
@@ -141,6 +141,23 @@ function handleMigration(save: SaveObject) {
     save.difficultyFactor = 0
     if (save.highestArea > 5) {
       save.difficultyFactor = 1
+    }
+  }
+
+  // Left/right path migration
+  const pass = getPassive("Enemy Simulation")
+  const inSave = UpgradeUtils.allUpgrades.find(u => u.name === "Enemy Simulation")
+  if (pass == null) {
+    save.coordinates.sidePathPosition = 0
+    if (inSave) {
+      const upgrade = new Upgrade(inSave)
+      upgrade.isPassive = true
+      upgrade.upgradeToggled = false
+      upgrade.togglable = false
+      if (save.highestArea >= 7) {
+        upgrade.add(0)
+      }
+      resourceStore.set(upgrade.name, upgrade)
     }
   }
 
