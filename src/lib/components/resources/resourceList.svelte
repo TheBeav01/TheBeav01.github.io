@@ -47,11 +47,11 @@
         })
     })
 
-    // let deconUnlocked = $derived.by(() => {
-    //         const pass = getPassive("Deconstruction")
-    //         console.debug(pass)
-    //         return pass != null
-    //     })
+    let deconUnlocked = $derived.by(() => {
+            const pass = getPassive("Deconstruction")
+            console.debug(pass)
+            return pass != null
+        })
 </script>
 
 <div>
@@ -60,9 +60,9 @@
         <!-- <button onclick={() => awardResource(key)}>Award 10</button> -->
         <div>
             <span>{res?.name}: {res?.amt ? res.amt.toFixed(1) : 0}
-                <!-- {#if deconUnlocked} -->
+                {#if deconUnlocked}
                 <DeconstructButton res={res} type={type}/>
-                <!-- {/if} -->
+                {/if}
             </span>
         </div>
     {/each}
