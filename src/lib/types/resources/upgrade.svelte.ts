@@ -1,6 +1,7 @@
 import { gameSave, getPassiveValue } from "../gameSave.svelte";
 import { Item } from "./item.svelte";
 
+export type ShowMethod = "Unlock" | "Amount"
 export default class Upgrade extends Item {
     public isUpgrade = true;
     public readonly isItem = false
@@ -9,7 +10,7 @@ export default class Upgrade extends Item {
     public togglable = true
     public unlocked = false
     public upgradeToggled = $state(false)
-    public _isUnlocked : () => boolean = () => false
+    public _isUnlocked : (() => boolean) | null = null
     public preStoryShown = false
     constructor(from?: Upgrade) {
         super(from as Item)
@@ -30,6 +31,7 @@ export default class Upgrade extends Item {
             this.unlocked = this._isUnlocked()
             return this.unlocked
         }
+        return null
     }
 
     public add(amt: number): void {
@@ -46,5 +48,12 @@ export default class Upgrade extends Item {
             return
         }
         super.add(amt)
+    }
+
+    public canAfford() {
+        if (this.isPassive && this.unlocked) {
+            return true
+        }
+        return super.canAfford()
     }
 }

@@ -142,7 +142,6 @@ function handleMigration(save: SaveObject) {
     if (save.highestArea > 5) {
       save.difficultyFactor = 1
     }
-    console.log("DIFF: " + save.difficultyFactor)
   }
 
   StoryUtils.setStoryFlags(save)

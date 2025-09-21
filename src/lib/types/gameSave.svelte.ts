@@ -70,6 +70,9 @@ export const getFlagComplete = (name: string) : boolean => {
         return false
     }
     const flag = currentFlags[name]
-    console.debug(`Checking flag ${name}: Entered -- ${flag.entered}, Shown -- ${flag.storyShown}`)
     return flag.entered && flag.storyShown
+}
+
+export const highestZone = () => {
+    return gameSave.save.highestArea
 }

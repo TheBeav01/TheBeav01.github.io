@@ -1,7 +1,7 @@
 <script lang="ts">
     import { cloneEncounter, CombatLoop, encounterState, setEncounter, tick } from "../stores/encounter.svelte";
     import { getPartnerName } from "../stores/playerStore.svelte";
-    import { gameSave, getFlagComplete, saveGame } from "../types/gameSave.svelte";
+    import { gameSave, getFlagComplete, getPassiveValue, saveGame } from "../types/gameSave.svelte";
     import { untrack } from "svelte";
     import {
         generateEnemy,
@@ -176,7 +176,8 @@
                     <button disabled={encounter.remaining > 0 || !getFlagComplete(UNLOCKED_COMBAT)} onclick={() => onTravel(0)}>Next Zone</button>
                     
                 </div>
-                <div>
+                {#if getPassiveValue("Enemy Simulation") != null}
+                <div hidden={getPassiveValue("Enemy Simulation") == null}>
                     <button
                         disabled={coords.zone == 0 ||
                             coords.sidePathPosition === -1}
@@ -188,6 +189,7 @@
                         onclick={() => onTravel(1)}>Right Path</button
                     >
                 </div>
+                {/if}
             </div>
         </div>
         {#if thirdPhaseUnlocked}

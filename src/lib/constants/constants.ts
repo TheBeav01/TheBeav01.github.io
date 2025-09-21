@@ -46,10 +46,13 @@ export const DRONE_POS = 7
 export const CHEST_BONE = "Chest Bone"
 
 
-export const STORY_MESSAGE_DECONSTRUCTION = [{
-    text: "A piece of parchment flutters down from the first living thing you have ever subdued. On the front are some crude drawings of weaponry and armor. On the back is a spell. [[partnername]] returns to your shoulder and peers at the drawings. They slump in dissapointment."
+export const STORY_MESSAGE_PRE_DECONSTRUCTION = [{
+    text: "A piece of parchment flutters down from the first living thing you have ever subdued. On it some crude drawings of weaponry and armor. [[partnername]] returns to your shoulder and peers at the drawings. They slump in dissapointment."
 }, {
     text: "The pidgeon chitters angrily at you, then flies off."
+}]
+export const STORY_MESSAGE_DECONSTRUCTION = [{
+    text: "You flip over the parchemnt you got from the pidgon 2km ago. On the back is a pair of spells. Perhaps both can be used to refine your armor"
 }]
 export const STORY_MESSAGE_DEFAULT = [
     {

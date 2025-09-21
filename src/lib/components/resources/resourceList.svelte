@@ -49,7 +49,6 @@
 
     let deconUnlocked = $derived.by(() => {
             const pass = getPassive("Deconstruction")
-            console.debug(pass)
             return pass != null
         })
 </script>

@@ -1,4 +1,4 @@
-import { EQUIPMENT_ERA, UNLOCKED_EQUIPMENT_PURCHASING } from "../../constants/constants"
+import { EQUIPMENT_ERA, UNLOCKED_EQUIPMENT_PURCHASING, UNLOCKED_RESOURCE_DECONSTRUCTION } from "../../constants/constants"
 import * as Enemy from "../../constants/enemyConstants"
 import HealthStat from "../../stats/health"
 import { log } from "../../stores/messageList.svelte"
@@ -129,7 +129,11 @@ const calculateAttackSpeed = () => {
 }
 
 const canGenerateSpecialEnemy = (coords: Coordinates, left: number) => {
-    if (coords.zone === 5 && left === 1 && coords.sidePathPosition === 0 && !getFlagComplete(UNLOCKED_EQUIPMENT_PURCHASING)) {
+    const isLastEnemy = left === 1 && coords.sidePathPosition === 0
+    if (coords.zone === 3 && isLastEnemy  && !getFlagComplete(UNLOCKED_EQUIPMENT_PURCHASING)) {
+        return true
+    }
+    if (coords.zone === 5 && isLastEnemy && !getFlagComplete(UNLOCKED_RESOURCE_DECONSTRUCTION)) {
         return true
     }
     return false
@@ -143,16 +147,25 @@ const generateSpecialEnemy = (coords: Coordinates, entity: LivingEntity) : Enemy
     entity.critRateStat.value = 0
     const maxHp = Math.round(DEFAULT_VAL + Math.pow(coords.zone, HP_SCALE_FACTOR))
     entity.hpStat = new HealthStat(maxHp)
-    if (coords.zone === 5) {
-        entity.onKill = () => {
-            entity.onDefaultKill()
-            onSpecialKill()
-            StoryUtils.setFlag("deconstructionUnlocked")
-        }
-    } else {
-        entity.onKill = () => {
-            onSpecialKill()
-        }
+    switch (coords.zone) {
+        case 3:
+            entity.onKill = () => {
+                entity.onDefaultKill()
+                StoryUtils.setFlag(UNLOCKED_EQUIPMENT_PURCHASING)
+            }
+            break
+        case 5:
+            entity.onKill = () => {
+                entity.onDefaultKill()
+                onSpecialKill()
+                StoryUtils.setFlag(UNLOCKED_RESOURCE_DECONSTRUCTION)
+            }
+            break
+        default:
+            entity.onKill = () => {
+                onSpecialKill()
+            }
+            break
     }
     return {entity, labels: []}
 }

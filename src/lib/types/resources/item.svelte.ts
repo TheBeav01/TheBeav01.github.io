@@ -53,6 +53,13 @@ export class Item extends Resource implements BaseEntity {
         super.add(amt)
         this.currentCost = this.calculateNextCost()
     }
+    public canAfford(): boolean | null | undefined {
+        const res = resourceStore.get(this.resourceUsed)
+        if (!res) {
+            return false
+        }
+        return this.currentCost <= res.amt
+    }
     private _scalingFactor = 1
     get scalingFactor() : number {
         return this._scalingFactor

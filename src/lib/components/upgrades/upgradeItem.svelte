@@ -29,7 +29,7 @@
     }
 </script>
 
-<button class="upgrade-button" onclick={() => equip()}>
+<button class="upgrade-button" disabled={!upgrade.canAfford()} onclick={() => equip()}>
     <div>
         {#if passive}
             {upgrade.name}

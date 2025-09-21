@@ -6,7 +6,7 @@ export function generateRandomNumber(max: number, min: number = 0, exclusive = f
 
 export function getEnemiesPerZone(zone: number) {
     return Math.min(
-        zone == 0 ? 1 : zone,
-        5,
+        zone == 0 ? 1 : (2*zone) - 1,
+        100,
     )
 }

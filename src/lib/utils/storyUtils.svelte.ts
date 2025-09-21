@@ -43,7 +43,7 @@ export default class StoryUtils {
             text: Constants.STORY_MESSAGE_4
         })
         map.set(Constants.UNLOCKED_EQUIPMENT_PURCHASING,{
-            text: [{text: "AAAAAA?"}]
+            text: Constants.STORY_MESSAGE_PRE_DECONSTRUCTION
         })
         map.set(Constants.UNLOCKED_RESOURCE_DECONSTRUCTION,{
             text: Constants.STORY_MESSAGE_DECONSTRUCTION
@@ -224,7 +224,6 @@ export default class StoryUtils {
         storyflags[name] = obj
         StoryUtils.shownStory = name
         gameSave.save.storyFlags = storyflags
-        console.debug(`Setting message show: ${name}: ${obj}`)
         saveGame()
     }
 
@@ -232,7 +231,6 @@ export default class StoryUtils {
         if (!StoryUtils.shownStory || StoryUtils.shownStory == "") {
             return
         }
-        console.debug(`Setting flag as read: ${StoryUtils.shownStory}`)
         const obj = {
             storyShown: true,
             entered: true

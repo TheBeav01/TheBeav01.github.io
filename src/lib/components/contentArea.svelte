@@ -57,6 +57,7 @@
     .tab-content {
         padding: 0px 1em;
         height: 100%;
+        overflow-y: auto;
     }
 
     .tab-panel {
