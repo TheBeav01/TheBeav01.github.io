@@ -96,7 +96,8 @@
                 break
             case 0:
                 coords.zone += 1;
-                resetCount = true
+                resetCount = true;
+                coords.sidePathPosition = 0
                 break;
             case 1:
                 if (coords.sidePathPosition == -1) {
@@ -115,6 +116,7 @@
             case 2:
                 coords.zone -= 1;
                 resetCount = true
+                coords.sidePathPosition = 0
                 break;
         }
         

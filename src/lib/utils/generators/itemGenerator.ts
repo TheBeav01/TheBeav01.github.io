@@ -15,16 +15,6 @@ const ITEM_POOL_1 : BaseItem[] = [{
     name: CHEST_BONE,
     description: "The chest bone of an animal. Better than nothing."
 }]
-
-const ITEM_POOL_2 : BaseItem[] = [{
-    name: CHEST_BONE,
-    description: "The chest bone of an animal. Better than nothing.",
-    baseAmount: 2
-}, {
-    name: "Leg Bone",
-    description: "The leg of an animal",
-    multiplier: 1.2
-}]
 export const generateItems = (zone: number) => {
     const item = new Item()
     item.consumable = false
@@ -33,15 +23,8 @@ export const generateItems = (zone: number) => {
     item.attackSpeedStat.value = 0
     item.critRateStat.value = 0
     let gennedItem = null
-    if (zone > 0 && zone <= 8) {
-        gennedItem = pickItemFromWeightedList(ITEM_POOL_1)
-    }
-    else if (zone > 8 && zone <= 12) {
-        gennedItem = pickItemFromWeightedList(ITEM_POOL_2)
-    }
-    else {
-        gennedItem = pickItemFromWeightedList(ITEM_POOL_1)
-    }
+    gennedItem = pickItemFromWeightedList(ITEM_POOL_1)
+    // TODO: Upgrade-based item pools
     item.name = gennedItem.name
     item.description = gennedItem.description
     const base = gennedItem.baseAmount ?? 1

@@ -149,14 +149,12 @@ function handleMigration(save: SaveObject) {
   const inSave = UpgradeUtils.allUpgrades.find(u => u.name === "Enemy Simulation")
   if (pass == null) {
     save.coordinates.sidePathPosition = 0
-    if (inSave) {
+    if (inSave && save.highestArea >= 7) {
       const upgrade = new Upgrade(inSave)
       upgrade.isPassive = true
       upgrade.upgradeToggled = false
       upgrade.togglable = false
-      if (save.highestArea >= 7) {
-        upgrade.add(0)
-      }
+      upgrade.add(0)
       resourceStore.set(upgrade.name, upgrade)
     }
   }
