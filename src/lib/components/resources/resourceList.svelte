@@ -58,7 +58,7 @@
         <!-- TODO: sort out how to do dev stuff and move this there -->
         <!-- <button onclick={() => awardResource(key)}>Award 10</button> -->
         <div>
-            <span>{res?.name}: {res?.amt ? res.amt.toFixed(1) : 0}
+            <span>{res?.name}: {res?.amt ? res.amt.toFixed(2) : 0}
                 {#if deconUnlocked}
                 <DeconstructButton res={res} type={type}/>
                 {/if}

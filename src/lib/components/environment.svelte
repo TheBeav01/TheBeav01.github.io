@@ -16,6 +16,7 @@
     import EncounterEntity from "./environment/encounterEntity.svelte";
     import UpgradePane from "./upgrades/upgradePane.svelte";
     import { UNLOCKED_COMBAT, UNLOCKED_NAVIGATION, FIRST_ENEMY_ENCOUNTER, UNLOCKED_FIRST_WEAPON } from "../constants/constants";
+    import StoryMessageContainer from "./storyMessageContainer.svelte";
     let message = $derived(StoryUtils.getStoryState(gameSave.save));
     let save = $derived(gameSave.save);
     let navigationUnlocked = $derived.by(() => {
@@ -198,7 +199,10 @@
         {#if thirdPhaseUnlocked}
             <div class={`battle-panel fit-height`}>
                 {#if encounter.remaining <= 0 && coords.sidePathPosition === 0}
-                    <div>No entities found in area</div>
+                    <div>
+                        <div>No entities found in area</div>
+                        <StoryMessageContainer/>
+                    </div>
                 {/if}
                 {#if encounter.remaining > 0 || coords.sidePathPosition !== 0}
                     <div class="ally">
