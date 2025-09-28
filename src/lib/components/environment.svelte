@@ -108,7 +108,7 @@
                 coords.sidePathPosition = 1;
                 break;
             case 3:
-                if (coords.sidePathPosition == 1) {
+                if (coords.sidePathPosition == -1) {
                     coords.sidePathPosition = 0;
                     break;
                 }
@@ -174,23 +174,24 @@
             <div class="nav-button-group">
                 <div>
                     <button
-                        disabled={coords.zone == 0}
+                        disabled={coords.zone == 0 || coords.sidePathPosition == -1}
                         onclick={() => onTravel(2)}>Retreat</button>
-                    <button disabled={encounter.remaining > 0 || !getFlagComplete(UNLOCKED_COMBAT)}
+                    <button disabled={encounter.remaining > 0 || !getFlagComplete(UNLOCKED_COMBAT) || coords.sidePathPosition == -1}
                         onclick={() => onTravel(0)}>Advance</button>
                     
                 </div>
                 {#if getPassiveValue("Enemy Simulation") != null}
                 <div hidden={getPassiveValue("Enemy Simulation") == null}>
                     <button
-                        disabled={coords.zone == 0 ||
-                            coords.sidePathPosition === -1}
-                        onclick={() => onTravel(3)}>Left Path</button
-                    >
-                    <button
-                        disabled={coords.zone == 0 ||
-                            coords.sidePathPosition === 1}
-                        onclick={() => onTravel(1)}>Right Path</button
+                        disabled={coords.zone == 0}
+                        onclick={() => onTravel(3)}>
+                        {#if coords.sidePathPosition == -1}
+                            Stop
+                        {/if}
+                        {#if coords.sidePathPosition != -1}
+                            Simulate
+                        {/if}
+                        </button
                     >
                 </div>
                 {/if}

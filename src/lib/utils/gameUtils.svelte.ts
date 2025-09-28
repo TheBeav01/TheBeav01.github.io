@@ -5,8 +5,12 @@ export function generateRandomNumber(max: number, min: number = 0, exclusive = f
 }
 
 export function getEnemiesPerZone(zone: number) {
-    return Math.min(
-        zone == 0 ? 1 : (2*zone) - 1,
-        100,
-    )
+    if (zone <= 5) {
+        return Math.max(1, (2*zone) - 1)
+    }
+    return 9 + Math.trunc((zone-5) / 2)
+    // return Math.min(
+    //     zone == 0 ? 1 : (2*zone) - 1,
+    //     100,
+    // )
 }
