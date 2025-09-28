@@ -40,7 +40,7 @@
     </div>
     {#if !passive || (passive && upgrade.amt == 0)}
         <div>
-            {upgrade.currentCost.toFixed(0)} {upgrade.resourceUsed}
+            {upgrade.currentCost.toFixed(2)} {upgrade.resourceUsed}
         </div>
         <div>
             {upgrade.getUpgradeText()}
