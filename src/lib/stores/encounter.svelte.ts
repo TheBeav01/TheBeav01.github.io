@@ -95,7 +95,7 @@ export function attackManually() {
 }
 
 export function simulateDamage(p: Player, onFoe: LivingEntity) {
-    return p.getBaseDamage(onFoe)
+    return AttackUtils.calculateDamage(p, onFoe, true)
 }
 
 export function tick(num?: number) {

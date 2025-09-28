@@ -20,6 +20,7 @@ export default class LivingEntity implements BaseEntity {
         this.hpStat = new HealthStat(maxHp)
     }
     name: string = "";
+    baseAttack = 1
     attackStat = new AttackStat();
     defenseStat = new DefenseStat();
     // Attacks / s
@@ -141,5 +142,9 @@ export default class LivingEntity implements BaseEntity {
         const f = new LivingEntity()
         f.fromBase(foe)
         return f
+    }
+
+    increaseBaseAttack(by: number) {
+        this.baseAttack += Math.max(0,by)
     }
 }

@@ -20,15 +20,28 @@ export default class AttackStat implements BaseStat<number> {
         if (attackingEntity.isDead() || defendingEntity.isDead() || !attackingEntity.shouldAttack(val.manual)) {
             return null
         }
-        let damage = AttackUtils.calculateDamage(attackingEntity, defendingEntity)
-        if (val.manual && damage < 1) {
-            damage = 1
+        let originalDamage = AttackUtils.calculateDamage(attackingEntity, defendingEntity)
+        if (val.manual && originalDamage < 1) {
+            originalDamage = 1
         }
         // Swoop/Rescue
-        if (defenderIsUs && damage >= defendingEntity.hpStat.value) {
+        if (defenderIsUs && originalDamage >= defendingEntity.hpStat.value) {
             const swoop = getPassive("Swoop")
             const rescue = getPassive("Rescue")
-            
+            const swoopToggled = swoop && swoop.bought && swoop.toggled
+            const rescueToggled = rescue && rescue.bought && rescue.toggled
+            // if (swoopToggled && rescueToggled) {
+            //     // Attacker goes to the creature with a higher defense and HP
+            //     const player = playerStore.get("player")!
+            //     const partner = playerStore.get("partner")!
+            //     if (player.defenseStat >= partner.defenseStat) {
+            //         defendingEntity = player
+            //         log("You defend [[partnername]]")
+            //     } else {
+            //         defendingEntity = partner
+            //         log("[[partnername]] defends you")
+            //     }
+            // }
             if (swoop && swoop.bought && swoop.toggled && defendingEntity.entityType == "Player") {
                 defendingEntity = playerStore.get("partner")!
                 log("[[partnername]] defends you")
@@ -38,7 +51,8 @@ export default class AttackStat implements BaseStat<number> {
                 log("You defend [[partnername]]")
             }
         }
-        defendingEntity.hpStat.applyTo(attackingEntity, defendingEntity, damage)
+        let recalculated = AttackUtils.calculateDamage(attackingEntity, defendingEntity)
+        defendingEntity.hpStat.applyTo(attackingEntity, defendingEntity, recalculated)
         return defendingEntity
     };
     

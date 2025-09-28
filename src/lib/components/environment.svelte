@@ -196,6 +196,10 @@
                 {/if}
             </div>
         </div>
+        
+        {#if !thirdPhaseUnlocked}
+            <StoryMessageContainer/>
+        {/if}
         {#if thirdPhaseUnlocked}
             <div class={`battle-panel fit-height`}>
                 {#if encounter.remaining <= 0 && coords.sidePathPosition === 0}

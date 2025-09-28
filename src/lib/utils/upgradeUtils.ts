@@ -39,7 +39,7 @@ export default class UpgradeUtils {
             }
             return false
         }).map(u => resourceStore.get(u.name) as Upgrade ?? u)
-        return newList
+        return [...newList]
     }
 
     private static createAttackItem(name: string, baseCost: number, attack: number, scalingFactor: number, resourceUsed = "Mana", unlocked = () => true) {

@@ -119,9 +119,14 @@ const applyModifiers = (entity: LivingEntity, left: number) : EnemyDisplay => {
     const baseAttackSpeed = calculateAttackSpeed()
     entity.attackSpeedStat.value = baseAttackSpeed * pickModifier(enemy.name, "speed")
     entity.critRateStat.value = pickModifier(enemy.name, "crit")
+    entity.baseAttack = pickBaseAttack()
     entity.resetAttackTime()
     entity.inventory = generateItems(entity.coordinates.zone)
     return {entity, labels: generateLabels(enemy.name)}
+}
+
+const pickBaseAttack = () => {
+    return Math.max(1,gameSave.save.difficultyFactor)
 }
 
 const calculateAttackSpeed = () => {
